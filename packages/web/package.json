@@ -1,0 +1,26 @@
+{
+  "name": "@biz42/web",
+  "version": "0.1.0",
+  "private": true,
+  "description": "SPA for browsing biz42 business model workspaces.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "vp build",
+    "dev": "vp dev",
+    "check": "vp check"
+  },
+  "dependencies": {
+    "@biz42/core": "workspace:*",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.23",
+    "@types/react-dom": "^18.3.7",
+    "@types/node": "catalog:",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "catalog:",
+    "vite-plus": "catalog:"
+  }
+}

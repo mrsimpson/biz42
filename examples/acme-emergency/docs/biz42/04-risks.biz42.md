@@ -4,82 +4,87 @@
 
 The works council may block deployment if they conclude the system enables
 employee surveillance. German co-determination law (BetrVG §87) gives the
-works council veto power over systems that monitor employee behavior. Location-
-aware alerting is inherently close to this boundary. If the privacy architecture
-doesn't convince the works council, the project is dead regardless of technical
-merit.
+works council veto power. If the privacy architecture doesn't convince them,
+the project is dead regardless of technical merit.
 
-Arises from: signal "Works Council Sensitivity to Employee Tracking",
-expectation "Works Council — Privacy Safeguards".
-Impact: critical (complete project stop).
-Status: open.
-Addressed by: objective obj-privacy-architecture.
-Affects: capability-location-routing, product-alert-service.
+```biz42
+:::risk
+id: risk-works-council
+title: Works Council Rejection
+severity: high
+mitigation: Design privacy-first location architecture; obtain formal Betriebsvereinbarung before deployment
+:::
+```
 
 ## Adoption Failure
 
 If employees don't install the app or don't trust the system, it doesn't
-matter how well it works technically. Adoption risk is twofold: practical
-(people won't install a work app on their personal phone) and cultural
-(people won't use a system they suspect tracks them). Both must be addressed
-simultaneously.
+matter how well it works technically. Adoption risk is both practical (personal
+devices) and cultural (surveillance concerns).
 
-Arises from: expectation "Employees — Fast Help When It Matters",
-expectation "IT Operations — Integration With Existing Infrastructure".
-Impact: high (product becomes irrelevant without users).
-Status: open.
-Addressed by: objective obj-adoption-rate.
-Affects: product-alert-service.
+```biz42
+:::risk
+id: risk-adoption
+title: Adoption Failure
+severity: high
+mitigation: Transparent privacy communication, voluntary participation design, UX simplicity
+:::
+```
 
 ## Connectivity Gaps
 
 The organization operates in environments with unreliable or no network
 connectivity: railway tunnels, underground stations, basements, rural track
-sections, and industrial areas with electromagnetic interference. An alerting
-system that fails when you're in a tunnel is failing in exactly the places
-where emergencies are most dangerous.
+sections. An alerting system that fails in a tunnel fails exactly where
+emergencies are most dangerous.
 
-Arises from: (implicit — operational reality of transportation/industrial
-environments).
-Impact: high (service unreliable in highest-risk locations).
-Status: open.
-Addressed by: objective obj-offline-resilience.
-Affects: capability-alert-delivery, capability-location-routing.
+```biz42
+:::risk
+id: risk-connectivity
+title: Connectivity Gaps in High-Risk Environments
+severity: high
+mitigation: Device-to-device offline alert delivery; mesh networking fallback
+:::
+```
 
 ## Incumbent Response
 
-The provider of the existing enterprise notification system could respond to
-this initiative by offering a lower-cost tier or adding location-based alerting
-features. Given their existing relationship with the organization and
-established procurement channel, they could pre-empt ACME Emergency before
-it launches.
+The provider of the existing enterprise notification system could offer a
+lower-cost tier or add location-based alerting before ACME Emergency launches.
 
-Arises from: signal "Existing Enterprise Notification Systems Are Overbuilt
-for Local Alerting".
-Impact: medium (project loses justification if incumbent closes the gap).
-Status: open — monitoring incumbent's product roadmap.
-Addressed by: objective obj-time-to-deployment.
-Affects: product-alert-service.
+```biz42
+:::risk
+id: risk-incumbent-response
+title: Incumbent Response From Enterprise Notification Vendor
+severity: medium
+mitigation: Fast rollout; differentiate on proximity routing and cost
+:::
+```
 
 ## Reputational Risk From Inaction
 
 If another workplace incident occurs before a systematic alerting solution is
-in place, the organization faces renewed media and political criticism. The
-existence of an unfunded or stalled alerting initiative would make this worse,
-not better.
+in place, the organization faces renewed media and political criticism.
 
-Arises from: signal "Political Pressure After Workplace Incidents".
-Impact: high (reputational, political).
-Status: open — mitigated by fast rollout timeline.
-Addressed by: objective obj-time-to-deployment.
+```biz42
+:::risk
+id: risk-reputational
+title: Reputational Risk From Inaction
+severity: high
+mitigation: Fast 12-month rollout timeline; visible commitment to safety
+:::
+```
 
 ## Rollout Timeline
 
-Company-wide rollout within 12 months is ambitious. If the rollout stalls at
-pilot stage, management confidence erodes, budget gets reallocated, and the
-incumbent has time to respond. The 12-month window is a constraint, not a wish.
+Company-wide rollout within 12 months is ambitious. If rollout stalls at
+pilot stage, management confidence erodes and the incumbent has time to respond.
 
-Arises from: expectation "Management — Cost-Effective Alternative".
-Impact: high (project viability).
-Status: open.
-Addressed by: objective obj-time-to-deployment.
+```biz42
+:::risk
+id: risk-rollout-timeline
+title: Rollout Timeline Overrun
+severity: high
+mitigation: Phased site rollout with hard deadlines; dedicated project lead
+:::
+```
