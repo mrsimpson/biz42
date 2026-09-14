@@ -19,20 +19,22 @@ after a chain of phone calls.
   incident. Full crisis communication and escalation workflows remain with
   existing enterprise notification systems.
 - **Emergency dispatch** — we don't integrate 112 or dispatch professional
-  emergency services. We might dispatch users of our system to them under 
-  certain conditions.
-- **Public alerting** — this is a workplace service, not a public warning
-  system. Members of the public are not alerted.
+  emergency services.
+- **Public alerting** — this is a workplace service, not a public warning system.
 - **Non-DACH markets** — until the core product is proven internally.
 
 ## 1.3 Boundaries
 
 - **Existing enterprise notification system** — handles organization-wide
-  crisis communication. ACME Emergency handles fast, local, proximity-based
-  alerts. The two complement each other.
+  crisis communication. ACME Emergency handles fast, local, proximity-based alerts.
 - **Positioning infrastructure** — we consume location data from existing
-  systems (indoor positioning, asset tracking). We don't install or operate
-  positioning hardware.
+  systems. We don't install or operate positioning hardware.
 - **Sensor and building systems** — we receive events from existing IoT and
-  building management systems. We define the integration contract; they
-  connect to us.
+  building management systems.
+
+```biz42
+:::scope
+id: scope-acme
+title: ACME Emergency Response
+:::
+```

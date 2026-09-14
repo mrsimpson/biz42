@@ -1,0 +1,32 @@
+# Introduction and Goals
+
+The biz42 toolchain is a Markdown-based DSL and validation engine for software
+architecture documentation following the ISO 9001 template. It targets architects, maintainers,
+and AI agents who need to write, read, and validate architecture documentation without
+heavyweight tooling.
+
+## Requirements Overview
+
+The toolchain must:
+
+- Parse `.biz42.md` files and extract structured elements (building blocks, decisions,
+  quality goals, scenarios, etc.)
+- Validate cross-references, required fields, and ISO 9001 structural conventions
+- Render the workspace as a text/JSON overview via a CLI
+- Work as a CI-friendly, scriptable command-line tool with stable JSON output and
+  conventional exit codes
+- Support AI agents as first-class authors of architecture documentation
+
+## Quality Goals
+
+See [10-quality-requirements.biz42.md](10-quality-requirements.biz42.md) for the complete
+quality catalog with priorities and measurable scenarios.
+
+## Stakeholders
+
+| Role/Name   | Contact | Expectations                                                              |
+| ----------- | ------- | ------------------------------------------------------------------------- |
+| Architect   | —       | Communicating and evolving the system's design; clear block syntax        |
+| Maintainer  | —       | Consistent, reliable toolchain; rules for structural and semantic quality |
+| AI Agent    | —       | Understanding and updating architecture correctly; stable, simple DSL     |
+| CI Pipeline | —       | Stable JSON output; exit code 1 on errors, 0 on clean                     |

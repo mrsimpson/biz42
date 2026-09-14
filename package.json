@@ -1,0 +1,33 @@
+{
+  "name": "biz42",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "pnpm run check:templates && vp run -r build",
+    "test": "vp test",
+    "check": "pnpm run check:templates && vp check",
+    "ready": "pnpm run check && pnpm run test && pnpm run build",
+    "validate:docs": "node packages/cli/dist/cli.mjs --dir docs/arc42 validate --strict",
+    "validate:examples": "node packages/cli/dist/cli.mjs --dir examples/acme-emergency validate",
+    "validate:all": "pnpm run validate:docs && pnpm run validate:examples",
+    "check:templates": "node --conditions=development --experimental-strip-types --no-warnings scripts/check-starter-templates.ts",
+    "version:patch": "pnpm --filter @doctc/biz42 exec npm version patch --no-git-tag-version",
+    "version:minor": "pnpm --filter @doctc/biz42 exec npm version minor --no-git-tag-version",
+    "version:major": "pnpm --filter @doctc/biz42 exec npm version major --no-git-tag-version",
+    "release": "pnpm publish -r --access public"
+  },
+  "devDependencies": {
+    "@biz42/workspace-fs": "workspace:*",
+    "@semantic-release/changelog": "catalog:",
+    "@semantic-release/exec": "catalog:",
+    "@semantic-release/github": "catalog:",
+    "@semantic-release/npm": "catalog:",
+    "semantic-release": "catalog:",
+    "vite-plus": "catalog:"
+  },
+  "engines": {
+    "node": ">=22.6"
+  },
+  "packageManager": "pnpm@10.32.1"
+}
