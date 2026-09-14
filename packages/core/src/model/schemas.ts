@@ -53,15 +53,32 @@ export const ScopeSchema = z
   .object({
     id: z.string().min(1).meta({ description: "Unique identifier (used in cross-references)" }),
     title: z.string().min(1).meta({ description: "Human-readable name of the scope" }),
+    included: z
+      .string()
+      .optional()
+      .meta({ description: "What is explicitly within this scope (comma-separated or free text)" }),
+    excluded: z
+      .string()
+      .optional()
+      .meta({
+        description: "What is explicitly outside this scope (comma-separated or free text)",
+      }),
+    parent: z
+      .string()
+      .optional()
+      .meta({ description: "ID of the parent scope when this is a nested or subordinate scope" }),
   })
   .meta({
     description: "Defines the organisation, its purpose, and the boundaries of the business model.",
     biz42Chapter: 1,
-    crossRefs: [] satisfies CrossRefMeta[],
+    crossRefs: [
+      { field: "parent", targetKind: "scope", cardinality: "one" },
+    ] satisfies CrossRefMeta[],
     authoringTips: [
-      "Keep the scope concise — one paragraph that any stakeholder can understand.",
-      "Be explicit about what is in scope and what is intentionally excluded.",
-      "Name the primary customer segments and value propositions here.",
+      "A biz42 model has exactly one scope block — it is the boundary declaration for the whole model.",
+      "Use 'included' and 'excluded' to make the boundary explicit and machine-readable.",
+      "Use 'parent' to link this model's scope to a broader organisational scope in a nested model.",
+      "Keep the title concise — one short name that any stakeholder can understand.",
       "Align with ISO 9001 §4.3: determine the scope of the quality management system.",
     ],
   });
