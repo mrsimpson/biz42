@@ -85,9 +85,9 @@ export const SignalSchema = z
     id: z.string().min(1).meta({ description: "Unique identifier" }),
     title: z.string().min(1).meta({ description: "Short name for the signal" }),
     source: z
-      .string()
+      .enum(["external", "internal"])
       .optional()
-      .meta({ description: "Origin of the signal: 'external', 'internal', or free text" }),
+      .meta({ description: "Origin of the signal: 'external' or 'internal'" }),
     surfaces: splitListSchema.meta({
       description:
         "Comma-separated risk or opportunity IDs this signal surfaces — the analytical step from observation to identified risk/opportunity",
@@ -271,15 +271,27 @@ export const CapabilitySchema = z
       .enum(["exists", "planned", "gap"])
       .optional()
       .meta({ description: "Current availability: exists, planned, or gap" }),
+    enables: splitListSchema.meta({
+      description: "Comma-separated product IDs that this capability enables or delivers through",
+    }),
+    owner: z
+      .string()
+      .optional()
+      .meta({ description: "ID of the owner accountable for this capability" }),
   })
   .meta({
     description:
       "An organisational ability, skill, or resource required to achieve one or more objectives.",
     biz42Chapter: 9,
-    crossRefs: [] satisfies CrossRefMeta[],
+    crossRefs: [
+      { field: "enables", targetKind: "product", cardinality: "many" },
+      { field: "owner", targetKind: "owner", cardinality: "one" },
+    ] satisfies CrossRefMeta[],
     authoringTips: [
       "Use status: gap to flag capabilities that must be built or acquired.",
-      "A capability not referenced by any objective or product may be redundant.",
+      "A capability not referenced by any objective may be redundant.",
+      "Use 'enables' to link capabilities to the products they make possible.",
+      "Assign an owner to make accountability explicit.",
       "Capabilities bridge objectives (what we want) and products (how we deliver).",
       "Aligns with ISO 9001 §7.1 and §7.2: resources and competence.",
     ],
@@ -289,20 +301,26 @@ export const ProductSchema = z
   .object({
     id: z.string().min(1).meta({ description: "Unique identifier" }),
     title: z.string().min(1).meta({ description: "Name of the product or service" }),
-    enables: splitListSchema.meta({
-      description:
-        "Comma-separated capability IDs that this product provides, enables, or requires",
+    fulfills: splitListSchema.meta({
+      description: "Comma-separated expectation IDs that this product fulfills for stakeholders",
     }),
+    owner: z
+      .string()
+      .optional()
+      .meta({ description: "ID of the owner accountable for this product" }),
   })
   .meta({
     description:
-      "A product or service delivered by the organisation that realises one or more capabilities.",
+      "A product or service delivered by the organisation that fulfils stakeholder expectations.",
     biz42Chapter: 10,
     crossRefs: [
-      { field: "enables", targetKind: "capability", cardinality: "many" },
+      { field: "fulfills", targetKind: "expectation", cardinality: "many" },
+      { field: "owner", targetKind: "owner", cardinality: "one" },
     ] satisfies CrossRefMeta[],
     authoringTips: [
-      "A product with no enables entries has no modelled link to capabilities — add them.",
+      "Use 'fulfills' to link each product to the stakeholder expectations it satisfies.",
+      "A product with no fulfills entries has no modelled stakeholder rationale — add them.",
+      "Assign an owner to make delivery accountability explicit.",
       "Products represent the delivery vehicle; capabilities represent the underlying ability.",
       "Aligns with ISO 9001 §8.1: operational planning and control.",
     ],
@@ -316,15 +334,20 @@ export const EvaluationSchema = z
       .string()
       .optional()
       .meta({ description: "How evaluation is conducted (e.g. quarterly review, audit)" }),
+    evaluates: splitListSchema.meta({
+      description: "Comma-separated measure IDs that this evaluation reviews against",
+    }),
   })
   .meta({
     description:
       "A described practice for evaluating performance, customer satisfaction, or system effectiveness.",
     biz42Chapter: 11,
-    crossRefs: [] satisfies CrossRefMeta[],
+    crossRefs: [
+      { field: "evaluates", targetKind: "measure", cardinality: "many" },
+    ] satisfies CrossRefMeta[],
     authoringTips: [
       "Evaluation is a practice, not a single event — describe the cadence and method.",
-      "Reference the measures used in evaluation in prose.",
+      "Use 'evaluates' to link this practice to the measures it reviews.",
       "Include both internal performance review and customer satisfaction evaluation.",
       "Aligns with ISO 9001 §9: performance evaluation.",
     ],
@@ -334,9 +357,17 @@ export const ImprovementSchema = z
   .object({
     id: z.string().min(1).meta({ description: "Unique identifier" }),
     title: z.string().min(1).meta({ description: "Short name for the improvement action" }),
+    type: z.enum(["corrective", "preventive", "innovative"]).meta({
+      description:
+        "Type of improvement: corrective (fix nonconformity), preventive (prevent failure), innovative (exploit opportunity)",
+    }),
+    "triggered-by": z
+      .string()
+      .optional()
+      .meta({ description: "ID of the evaluation that triggered this improvement" }),
     addresses: splitListSchema.meta({
       description:
-        "Comma-separated objective, risk, or measure IDs that this improvement responds to",
+        "Comma-separated objective, capability, or product IDs that this improvement targets",
     }),
   })
   .meta({
@@ -344,12 +375,15 @@ export const ImprovementSchema = z
       "A planned or ongoing action to improve the business model in response to evaluation findings.",
     biz42Chapter: 12,
     crossRefs: [
-      { field: "addresses", targetKind: "objective, risk, or measure", cardinality: "many" },
+      { field: "triggered-by", targetKind: "evaluation", cardinality: "one" },
+      { field: "addresses", targetKind: "objective, capability, or product", cardinality: "many" },
     ] satisfies CrossRefMeta[],
     authoringTips: [
+      "Set 'type' to corrective (fix a confirmed problem), preventive (prevent a potential one), or innovative (exploit an opportunity).",
+      "Use 'triggered-by' to link this improvement to the evaluation that identified the need.",
+      "Use 'addresses' to link to the objective, capability, or product being improved.",
       "Every improvement should address a specific gap identified in evaluation.",
       "Improvements with no addresses entries have no traceability — add them.",
-      "Distinguish corrective actions (fixing problems) from innovations (creating opportunities).",
       "Aligns with ISO 9001 §10: improvement.",
     ],
   });

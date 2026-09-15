@@ -180,14 +180,20 @@ function renderFields(el: Element): React.ReactNode {
       break;
     case "capability":
       if (el.status) fields.push(["status", el.status]);
+      if (el.enables?.length) fields.push(["enables", el.enables.join(", ")]);
+      if (el.owner) fields.push(["owner", el.owner]);
       break;
     case "product":
-      if (el.enables?.length) fields.push(["enables", el.enables.join(", ")]);
+      if (el.fulfills?.length) fields.push(["fulfills", el.fulfills.join(", ")]);
+      if (el.owner) fields.push(["owner", el.owner]);
       break;
     case "evaluation":
       if (el.method) fields.push(["method", el.method]);
+      if (el.evaluates?.length) fields.push(["evaluates", el.evaluates.join(", ")]);
       break;
     case "improvement":
+      fields.push(["type", el.type]);
+      if (el["triggered-by"]) fields.push(["triggered-by", el["triggered-by"]]);
       if (el.addresses?.length) fields.push(["addresses", el.addresses.join(", ")]);
       break;
   }

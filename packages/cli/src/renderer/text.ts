@@ -58,17 +58,26 @@ export class TextGetRenderer implements GetRenderer {
         return `  ${el.id}  ${el.title}${el.target ? `  → ${el.target}` : ""}`;
       case "owner":
         return `  ${el.id}  ${el.title}${el.role ? `  [${el.role}]` : ""}`;
-      case "capability":
-        return `  ${el.id}  ${el.title}${el.status ? `  [${el.status}]` : ""}`;
-      case "product": {
-        const parts = [`  ${el.id}  ${el.title}`];
+      case "capability": {
+        const parts = [`  ${el.id}  ${el.title}${el.status ? `  [${el.status}]` : ""}`];
         if (el.enables.length > 0) parts.push(`    enables: ${el.enables.join(", ")}`);
+        if (el.owner) parts.push(`    owner: ${el.owner}`);
         return parts.join("\n");
       }
-      case "evaluation":
-        return `  ${el.id}  ${el.title}${el.method ? `  [${el.method}]` : ""}`;
-      case "improvement": {
+      case "product": {
         const parts = [`  ${el.id}  ${el.title}`];
+        if (el.fulfills.length > 0) parts.push(`    fulfills: ${el.fulfills.join(", ")}`);
+        if (el.owner) parts.push(`    owner: ${el.owner}`);
+        return parts.join("\n");
+      }
+      case "evaluation": {
+        const parts = [`  ${el.id}  ${el.title}${el.method ? `  [${el.method}]` : ""}`];
+        if (el.evaluates.length > 0) parts.push(`    evaluates: ${el.evaluates.join(", ")}`);
+        return parts.join("\n");
+      }
+      case "improvement": {
+        const parts = [`  ${el.id}  ${el.title}  [${el.type}]`];
+        if (el["triggered-by"]) parts.push(`    triggered-by: ${el["triggered-by"]}`);
         if (el.addresses.length > 0) parts.push(`    addresses: ${el.addresses.join(", ")}`);
         return parts.join("\n");
       }

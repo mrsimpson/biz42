@@ -24,7 +24,7 @@ A minimal, outside-in model of a business. Each section describes one model elem
 
 **What it is:** An observable external or internal condition that may affect the business. Market shifts, technology trends, regulatory changes, competitive moves, macro-economic developments. Signals are impersonal — they exist whether or not anyone is watching.
 
-**Structure:** Each signal has a name, a source (external/internal), and a description of the observed condition.
+**Structure:** Each signal has a name, a source (`external` or `internal`), and a description of the observed condition.
 
 **Relates to:** Each signal may give rise to one or more _Risks_ or _Opportunities_.
 
@@ -108,7 +108,7 @@ A minimal, outside-in model of a business. Each section describes one model elem
 
 **What it is:** Something the business can do — an ability it possesses or needs to acquire. Capabilities are abstract and shared: multiple products may draw on the same capability, and a single capability may serve multiple objectives.
 
-**Structure:** Each capability has a name, a description, a status (existing, planned, or gap), and an _Owner_. Each capability references the _Objective(s)_ it supports and the _Product(s) & Service(s)_ it enables.
+**Structure:** Each capability has a name, a description, a status (existing, planned, or gap), an _Owner_, and a list of the _Products & Services_ it enables.
 
 **Relates to:** Capabilities enable _Products & Services_. Objectives may require specific capabilities. A gap between required and existing capabilities is a strategic finding.
 
@@ -120,7 +120,7 @@ A minimal, outside-in model of a business. Each section describes one model elem
 
 **What it is:** What the business offers to its customers. The tangible output that meets _Expectations_, delivers on _Objectives_, and draws on _Capabilities_.
 
-**Structure:** Each product or service has a name, a description, an _Owner_, and references to the _Capabilities_ it requires and the _Expectations_ it fulfills.
+**Structure:** Each product or service has a name, a description, an _Owner_, and references to the _Expectations_ it fulfills.
 
 **Relates to:** Products & Services fulfill _Expectations_. They draw on _Capabilities_. They are shaped by _Objectives_.
 
@@ -132,7 +132,7 @@ A minimal, outside-in model of a business. Each section describes one model elem
 
 **What it is:** The practice of reviewing _Measures_ to determine whether _Objectives_ are being met, whether _Risks_ are under control, and whether _Opportunities_ are being realized.
 
-**Structure:** Not a list of entities but a described practice: what is reviewed, how often, and by whom. References the _Measures_ it evaluates.
+**Structure:** Not a list of entities but a described practice: what is reviewed, how often, and by whom. References the _Measures_ it evaluates via the `evaluates` field.
 
 **Relates to:** Evaluation findings feed into _Improvements_.
 
@@ -144,7 +144,7 @@ A minimal, outside-in model of a business. Each section describes one model elem
 
 **What it is:** What the business changes when evaluation reveals a gap, a failure, or a better way. Includes corrective actions (fixing what went wrong) and continual improvement (making things better even when they're not broken).
 
-**Structure:** Each improvement has a description, a reference to the _Evaluation_ finding that triggered it, and a target (which _Capability_, _Product/Service_, or _Objective_ is being changed).
+**Structure:** Each improvement has a `type` (`corrective`, `preventive`, or `innovative`), a description, a reference to the _Evaluation_ that triggered it (`triggered-by`), and a target (`addresses`) pointing to the _Capability_, _Product/Service_, or _Objective_ being changed.
 
 **Relates to:** Improvements may create new _Signals_ (internal), modify _Capabilities_, change _Products & Services_, or revise _Objectives_. This closes the loop back to the top of the model.
 

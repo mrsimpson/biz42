@@ -8,27 +8,22 @@ export const h003CapabilityNoProduct: Rule = {
     severity: "hint",
     type: "suggestion",
     docs: {
-      description: "Capability without a product — capability is not enabled by any product",
+      description: "Capability without a product — capability.enables is empty",
       rationale:
-        "A capability not linked to any product has no delivery vehicle. Consider whether a product should be added or whether the capability is purely internal.",
+        "A capability that enables no products has no delivery vehicle modelled. Add enables entries to make explicit which products this capability makes possible.",
       biz42Chapter: 9,
       recommended: true,
     },
   },
-  check(workspace: Workspace, index: ReferenceIndex): Diagnostic[] {
+  check(workspace: Workspace, _index: ReferenceIndex): Diagnostic[] {
     const diagnostics: Diagnostic[] = [];
     for (const el of workspace.elements) {
       if (el.kind !== "capability") continue;
-      const referencedBy = index.refsTo.get(el.id) ?? [];
-      const enabledByProduct = referencedBy.some((refId) => {
-        const refEl = index.byId.get(refId);
-        return refEl?.kind === "product";
-      });
-      if (!enabledByProduct) {
+      if (el.enables.length === 0) {
         diagnostics.push({
           code: "H003",
           severity: "hint",
-          message: `Capability '${el.id}' is not enabled by any product`,
+          message: `Capability '${el.id}' enables no products`,
           file: el.loc.file,
           line: el.loc.line,
         });

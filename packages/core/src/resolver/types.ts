@@ -8,13 +8,17 @@ export interface Edge {
   to: string;
   /** The semantic relationship type */
   relation:
+    | "surfaces"
     | "addresses"
     | "measured-by"
     | "owner"
     | "requires"
     | "enables"
+    | "fulfills"
+    | "evaluates"
+    | "triggered-by"
     | "improvement-addresses"
-    | "surfaces";
+    | "parent";
 }
 
 export interface ReferenceIndex {
