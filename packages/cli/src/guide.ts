@@ -153,12 +153,20 @@ biz42 models a business outside-in: you start with the world the organisation
 operates in and work inward to what it does. Follow the sequence below.
 Each chapter builds on the previous one — do not skip ahead.
 
+The model will be inconsistent for most of the build. That is expected.
+Forward references (risks that have no objective yet, objectives with no
+measure yet) will appear as warnings as you write them. Note them and keep
+going. Consistency is only required at the end.
+
 ## Step 0 — Scaffold the workspace
 
   biz42 init template --dir ./docs/biz42
 
-This creates all 12 chapter files with starter templates. Open them in your
-editor or share them with your agent.
+This creates all 12 chapter files with starter templates. Then run:
+
+  biz42 validate
+
+You should see no errors on an empty scaffold. Note the baseline.
 
 ## Step 1 — Ask the right questions first
 
@@ -192,33 +200,62 @@ who knows the business:
 
 ## Step 2 — Work chapter by chapter
 
-For each chapter, get authoring instructions and a template:
+For each chapter, get authoring instructions:
 
   biz42 guide chapter 1   # Scope
   biz42 guide chapter 2   # Signals
   ...
   biz42 guide chapter 12  # Improvements
 
-After filling in each chapter, validate immediately:
+After writing each chapter, validate and note what is outstanding:
 
   biz42 validate
 
-Fix all errors (E) before moving on. Warnings (W) are planning gaps — address
-them before the model is complete. Hints (H) are suggestions.
+Expected pattern as you progress:
+  - Ch 1 (Scope):        0 errors, 0 warnings — self-contained
+  - Ch 2 (Signals):      warnings: H001 surfaces empty — expected, resolves in ch 4–5
+  - Ch 3 (Expectations): warnings: H002 surfaces empty — expected, resolves in ch 4–5
+  - Ch 4 (Risks):        warnings: W001 no addressing objective — expected, resolves in ch 6
+  - Ch 5 (Opportunities):warnings: W008 no addressing objective — expected, resolves in ch 6
+  - Ch 6 (Objectives):   warnings: W002 no measure, W003 no owner — expected, resolves in ch 7–8
+                         errors:   E002 unresolved refs if measure/owner ids don't exist yet
+  - Ch 7 (Measures):     W002 clears; W004 orphaned measure if not yet in objective
+  - Ch 8 (Owners):       W003 clears; W005 unassigned owner resolves as objectives reference them
+  - Ch 9 (Capabilities): H003/H007 may appear — resolves in ch 10 or when objectives use requires
+  - Ch 10 (Products):    H004 may appear if fulfills is empty
+  - Ch 11 (Evaluation):  W012 if evaluates is empty
+  - Ch 12 (Improvements):W013/H006 until addresses and triggered-by are filled
 
-## Step 3 — Check what you have
+Errors (E) mean a block is broken and will be excluded from the model. Fix
+E-errors immediately — they indicate a missing id reference or parse error.
 
-At any point, inspect the workspace:
+Warnings (W) and hints (H) during the build are expected forward references.
+Keep a list of open warnings as you go and resolve them in later chapters.
+
+## Step 3 — Close the loop
+
+After all 12 chapters are written, work through the outstanding warnings:
+
+  biz42 validate
+
+Go back and fill in the fields that close the cross-references:
+  - signals/expectations: add surfaces entries pointing to the risks/opps you wrote
+  - risks/opportunities: confirm they are addressed by objectives
+  - objectives: confirm measured-by, owner, and requires are all filled
+  - products: add fulfills entries pointing to expectations
+
+Repeat until:
+
+  biz42 validate --strict
+
+exits with code 0 — no errors, no warnings, no hints.
+
+## Step 4 — Inspect and understand
 
   biz42 get                          # summary of all elements
   biz42 get --type objective         # list all objectives
   biz42 get obj-my-objective         # inspect one element and its links
-  biz42 validate                     # check consistency
-
-## Step 4 — Understand the rules
-
   biz42 rules                        # all validation rules with explanations
-  biz42 rules --chapter 6            # rules for Objectives only
   biz42 explain objective            # field reference for a block type
 
 ## Step 5 — View the model
@@ -239,14 +276,7 @@ Every element must connect upward and downward:
     └─ evaluates → measure
          └─ triggered-by ← improvement → addresses → objective / risk / measure
 
-A model is consistent when:
-  - Every signal and expectation surfaces at least one risk or opportunity
-  - Every risk and opportunity is addressed by at least one objective
-  - Every objective has a measure, an owner, and addresses something
-  - Every measure is referenced by an objective
-  - Every capability is required by an objective or enabled by a product
-
-Run \`biz42 validate\` to check. Run \`biz42 rules\` to understand each rule.
+The model is consistent when biz42 validate --strict exits 0.
 `;
 
 const MIGRATION_GUIDE = `# biz42 DSL Migration Guide
