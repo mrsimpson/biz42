@@ -22,7 +22,6 @@ import {
   formatExplainText,
   formatExplainListText,
   ELEMENT_KIND_ORDER,
-  loadWorkspaceFromDocuments,
 } from "@biz42/core";
 import { builtinGetRenderers, rendererById } from "./renderer/index.ts";
 import type { BlockType, Diagnostic } from "@biz42/core";

@@ -49,7 +49,7 @@ export const e012SipocDiagramValidation: Rule = {
       recommended: true,
     },
   },
-  check(workspace: Workspace, index: ReferenceIndex): Diagnostic[] {
+  check(workspace: Workspace, _index: ReferenceIndex): Diagnostic[] {
     const diagnostics: Diagnostic[] = [];
 
     for (const diagram of workspace.diagrams) {
