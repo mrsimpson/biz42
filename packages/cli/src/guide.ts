@@ -131,14 +131,15 @@ Options:
 `;
 
     case "guide":
-      return `biz42 guide — show authoring guides
+      return `biz42 guide — authoring guides for building a biz42 workspace
 
 Usage:
   biz42 guide [<topic>] [<chapter>]
 
 Topics:
-  migration        How to migrate from prose to DSL format
+  (no topic)       Start here — workflow for building a new workspace
   chapter <n>      Guidance for a specific chapter (1–12)
+  migration        How to migrate from prose to DSL format
 `;
 
     default:
@@ -146,9 +147,109 @@ Topics:
   }
 }
 
-export function guideText(topic: string, argument?: string): string {
-  if (topic === "migration") {
-    return `# biz42 DSL Migration Guide
+const NEW_WORKSPACE_GUIDE = `# Building a biz42 Workspace from Scratch
+
+biz42 models a business outside-in: you start with the world the organisation
+operates in and work inward to what it does. Follow the sequence below.
+Each chapter builds on the previous one — do not skip ahead.
+
+## Step 0 — Scaffold the workspace
+
+  biz42 init template --dir ./docs/biz42
+
+This creates all 12 chapter files with starter templates. Open them in your
+editor or share them with your agent.
+
+## Step 1 — Ask the right questions first
+
+Before writing any blocks, gather answers to these questions from the person
+who knows the business:
+
+  1. What does this organisation do, and what does it explicitly not do?
+     (→ Scope)
+  2. What is happening in the market, technology, or regulation that could
+     affect this organisation? (→ Signals)
+  3. Who has a stake in this organisation — customers, regulators, employees,
+     partners? What do they need? (→ Expectations)
+  4. Which of those signals and expectations represent a threat?
+     (→ Risks)
+  5. Which represent an opportunity to grow or improve?
+     (→ Opportunities)
+  6. What commitments is the organisation making in response?
+     (→ Objectives)
+  7. How will it know whether those commitments are met?
+     (→ Measures)
+  8. Who is accountable for each commitment?
+     (→ Owners)
+  9. What organisational abilities are needed to deliver on those commitments?
+     (→ Capabilities)
+  10. What products or services does the organisation offer to its customers?
+     (→ Products & Services)
+  11. How does the organisation review its own performance?
+     (→ Evaluation)
+  12. What is it actively changing or improving as a result?
+     (→ Improvements)
+
+## Step 2 — Work chapter by chapter
+
+For each chapter, get authoring instructions and a template:
+
+  biz42 guide chapter 1   # Scope
+  biz42 guide chapter 2   # Signals
+  ...
+  biz42 guide chapter 12  # Improvements
+
+After filling in each chapter, validate immediately:
+
+  biz42 validate
+
+Fix all errors (E) before moving on. Warnings (W) are planning gaps — address
+them before the model is complete. Hints (H) are suggestions.
+
+## Step 3 — Check what you have
+
+At any point, inspect the workspace:
+
+  biz42 get                          # summary of all elements
+  biz42 get --type objective         # list all objectives
+  biz42 get obj-my-objective         # inspect one element and its links
+  biz42 validate                     # check consistency
+
+## Step 4 — Understand the rules
+
+  biz42 rules                        # all validation rules with explanations
+  biz42 rules --chapter 6            # rules for Objectives only
+  biz42 explain objective            # field reference for a block type
+
+## Step 5 — View the model
+
+  biz42 serve                        # open the SPA viewer in your browser
+
+## Traceability chain
+
+Every element must connect upward and downward:
+
+  signal / expectation
+    └─ surfaces → risk / opportunity
+                     └─ addresses ← objective → measured-by → measure
+                                              └─ owner
+                                              └─ requires → capability
+                                                               └─ enables ← product
+  evaluation
+    └─ evaluates → measure
+         └─ triggered-by ← improvement → addresses → objective / risk / measure
+
+A model is consistent when:
+  - Every signal and expectation surfaces at least one risk or opportunity
+  - Every risk and opportunity is addressed by at least one objective
+  - Every objective has a measure, an owner, and addresses something
+  - Every measure is referenced by an objective
+  - Every capability is required by an objective or enabled by a product
+
+Run \`biz42 validate\` to check. Run \`biz42 rules\` to understand each rule.
+`;
+
+const MIGRATION_GUIDE = `# biz42 DSL Migration Guide
 
 ## From prose to DSL
 
@@ -183,6 +284,14 @@ ${BLOCK_TYPES.map((t) => `  ${t}`).join("\n")}
 
 ${CHAPTERS.map((ch) => `  ${String(ch.number).padStart(2, "0")}  ${ch.title}`).join("\n")}
 `;
+
+export function guideText(topic: string, argument?: string): string {
+  if (!topic || topic === "new") {
+    return NEW_WORKSPACE_GUIDE;
+  }
+
+  if (topic === "migration") {
+    return MIGRATION_GUIDE;
   }
 
   if (topic === "chapter") {
@@ -191,8 +300,8 @@ ${CHAPTERS.map((ch) => `  ${String(ch.number).padStart(2, "0")}  ${ch.title}`).j
     if (!chapter) {
       throw new Error(`Unknown chapter '${argument ?? ""}'. Use a number 1–12.`);
     }
-    return `# Chapter ${chapter.number}: ${chapter.title}\n\n${chapter.template}`;
+    return `# Chapter ${chapter.number}: ${chapter.title}\n\n${chapter.guide}`;
   }
 
-  throw new Error(`Unknown guide topic '${topic}'. Try: migration, chapter <n>`);
+  throw new Error(`Unknown guide topic '${topic}'. Try: (no topic), chapter <n>, migration`);
 }
