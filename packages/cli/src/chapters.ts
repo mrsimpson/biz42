@@ -21,16 +21,69 @@ export const CHAPTERS: readonly Chapter[] = [
     title: "Scope",
     template: `# Scope
 
-This chapter defines the organisation, its primary purpose, and the boundaries of this business model. A biz42 model has exactly one scope block. Use \`included\` and \`excluded\` to make the boundary machine-readable; use \`parent\` to link this scope to a broader organisational scope in a nested model. Corresponds to ISO 9001 §4.3. Run \`biz42 explain scope\` to see all fields and authoring tips.
+Write one paragraph here describing the organisation's primary purpose and what this business model covers. This becomes the prose introduction for the scope block below.
 
 \`\`\`biz42
 :::scope
 id: scope-main
 title: <Organisation Name>
-included: <What is in scope>
+included: <What is in scope — markets, regions, customer segments>
 excluded: <What is explicitly out of scope>
 :::
 \`\`\`
+
+## 1.1 Included
+
+Describe what is explicitly within scope: customer segments, markets, geographies, and starting position.
+
+## 1.2 Excluded
+
+List what is out of scope, with a brief explanation for each exclusion to prevent future confusion.
+
+## 1.3 Boundaries
+
+Describe the interfaces with adjacent systems, platforms, or organisations. What does this business model consume or integrate with, but not own or operate?
+
+## 1.4 Process Overview
+
+Add a SIPOC diagram to make the scope machine-readable and auditable. The SIPOC maps who supplies what, what the process does, what it produces, and who receives the value.
+
+:::diagram
+id: diagram-sipoc-main
+title: <Process Name> — SIPOC Overview
+notation: sipoc
+:::
+
+\`\`\`mermaid
+flowchart TD
+    subgraph sipoc-supplier["Supplier"]
+        direction LR
+        s1["<Supplier A>"] ~~~ s2["<Supplier B>"]
+    end
+    subgraph sipoc-input["Input"]
+        direction LR
+        exp-xxx["<Expectation>"] ~~~ signal-xxx["<Signal>"]
+    end
+    subgraph sipoc-process["Process"]
+        direction LR
+        obj-xxx["<Objective>"]
+    end
+    subgraph sipoc-output["Output"]
+        direction LR
+        product-xxx["<Product>"]
+    end
+    subgraph sipoc-customer["Customer"]
+        direction LR
+        c1["<Customer A>"]
+    end
+
+    sipoc-supplier --> sipoc-input
+    sipoc-input --> sipoc-process
+    sipoc-process --> sipoc-output
+    sipoc-output --> sipoc-customer
+\`\`\`
+
+Corresponds to ISO 9001 §4.3 (scope of the QMS). Run \`biz42 explain scope\` for all fields and authoring tips.
 `,
   },
   {
