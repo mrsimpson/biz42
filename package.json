@@ -6,6 +6,7 @@
   "scripts": {
     "build": "pnpm run check:templates && vp run -r build",
     "test": "vp test",
+    "test:e2e": "pnpm --filter @biz42/web test:e2e",
     "check": "pnpm run check:templates && vp check",
     "ready": "pnpm run check && pnpm run test && pnpm run build",
     "validate:docs": "node packages/cli/dist/cli.mjs --dir docs/arc42 validate --strict",

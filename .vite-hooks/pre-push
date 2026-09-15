@@ -1,6 +1,7 @@
 pnpm run build
 pnpm run check
 pnpm run test
+pnpm run test:e2e
 if ! git diff --quiet || ! git diff --cached --quiet; then
   echo "Working directory is not clean — skipping biz42 validate"
 else

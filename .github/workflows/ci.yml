@@ -43,6 +43,12 @@ jobs:
       - name: Test
         run: pnpm test
 
+      - name: Install Playwright browsers
+        run: pnpm --filter @biz42/web exec playwright install chromium --with-deps
+
+      - name: Test e2e
+        run: pnpm run test:e2e
+
       - name: Cache build artifacts
         uses: actions/cache/save@v6
         with:
