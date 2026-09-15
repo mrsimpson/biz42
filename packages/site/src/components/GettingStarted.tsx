@@ -9,28 +9,33 @@ export function GettingStarted() {
         </header>
         <div className="gs__grid gs__grid--2">
           <div className="gs__card">
-            <div className="gs__card-label">Impatient developer</div>
+            <div className="gs__card-label">Impatient strategist</div>
             <h3 className="gs__card-title">Install the skill</h3>
-            <p className="gs__card-desc">Make your agent familiar with the biz42 model and CLI.</p>
+            <p className="gs__card-desc">
+              Give your agent the biz42 skill, then let it guide you through the model chapter by
+              chapter — starting with scope and working outside-in.
+            </p>
             <div className="gs__snippet">
               <code>npx skills add mrsimpson/biz42</code>
             </div>
-            <h3 className="gs__card-title">Model your business with your agent</h3>
+            <h3 className="gs__card-title">Start the conversation</h3>
             <div className="gs__snippet">
-              <code>
-                &quot;Make the business context of this project machine readable biz42&quot;
-              </code>
+              <code>&quot;Start a biz42 model for [organisation]. Use the guide.&quot;</code>
             </div>
           </div>
           <div className="gs__card">
             <div className="gs__card-label">AI agent</div>
-            <h3 className="gs__card-title">Use the CLI</h3>
+            <h3 className="gs__card-title">Use the guide command</h3>
             <p className="gs__card-desc">
-              Run the CLI directly. <code>--help</code> lists all commands. As agent, ask the
-              developer for business context — not everything can be derived from the repo.
+              The <code>guide</code> command is your entry point. It walks each chapter with
+              templates and authoring tips. Ask the human questions — business context cannot be
+              derived from the repo.
             </p>
             <div className="gs__snippet">
-              <code>npx @biz42/cli --help</code>
+              <code>npx @biz42/cli init template</code>
+            </div>
+            <div className="gs__snippet">
+              <code>npx @biz42/cli guide chapter 1</code>
             </div>
           </div>
         </div>
