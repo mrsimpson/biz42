@@ -1,5 +1,16 @@
 # Scope
 
+ACME Emergency Response reliably does one job best: Alert when somebody's in need.
+
+```biz42
+:::scope
+id: scope-acme
+title: ACME Emergency Response
+included: DACH region, B2B for large companies, start as intrapeneuer
+excluded: Crisis communication, public alerting
+:::
+```
+
 ## 1.1 Included
 
 ACME Emergency provides location-based emergency alerting for large
@@ -73,11 +84,4 @@ flowchart TD
     sipoc-input --> sipoc-process
     sipoc-process --> sipoc-output
     sipoc-output --> sipoc-customer
-```
-
-```biz42
-:::scope
-id: scope-acme
-title: ACME Emergency Response
-:::
 ```
