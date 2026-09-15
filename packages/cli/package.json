@@ -29,12 +29,14 @@
     "provenance": true
   },
   "scripts": {
-    "prebuild": "pnpm --filter @biz42/workspace-fs build",
+    "check:templates": "node --conditions=development --experimental-strip-types --no-warnings ../../scripts/check-starter-templates.ts",
+    "prebuild": "pnpm run check:templates && pnpm --filter @biz42/workspace-fs build",
     "build": "pnpm build:web && vp pack",
     "build:web": "pnpm --filter @biz42/web build",
     "dev": "vp pack --watch",
     "test": "vp test",
-    "check": "vp check"
+    "check": "pnpm run check:templates && vp check",
+    "prepack": "pnpm run check:templates"
   },
   "devDependencies": {
     "@biz42/core": "workspace:*",

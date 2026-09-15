@@ -1,0 +1,106 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  ci:
+    name: CI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.32.1
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Check
+        run: pnpm run check
+
+      - name: Validate own arc42 docs
+        run: pnpm run validate:docs
+
+      - name: Validate examples
+        run: pnpm run validate:examples
+
+      - name: Test
+        run: pnpm test
+
+      - name: Cache build artifacts
+        uses: actions/cache/save@v6
+        with:
+          path: |
+            packages/cli/dist
+            packages/core/dist
+          key: build-${{ hashFiles('packages/*/src/**', 'packages/*/package.json', 'pnpm-lock.yaml') }}
+
+  release:
+    name: Release
+    needs: ci
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 10.32.1
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Restore build artifacts
+        id: cache-restore
+        uses: actions/cache/restore@v6
+        with:
+          path: |
+            packages/cli/dist
+            packages/core/dist
+          key: build-${{ hashFiles('packages/*/src/**', 'packages/*/package.json', 'pnpm-lock.yaml') }}
+
+      - name: Build (cache miss fallback)
+        if: steps.cache-restore.outputs.cache-hit != 'true'
+        run: pnpm run build
+
+      - name: Check (cache miss fallback)
+        if: steps.cache-restore.outputs.cache-hit != 'true'
+        run: pnpm run check
+
+      - name: Test (cache miss fallback)
+        if: steps.cache-restore.outputs.cache-hit != 'true'
+        run: pnpm test
+
+      - name: Release
+        run: pnpm exec semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

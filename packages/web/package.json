@@ -6,7 +6,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "build": "vp build",
+    "build": "tsc --noEmit && vp build",
     "dev": "vp dev",
     "check": "vp check"
   },
