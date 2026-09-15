@@ -32,7 +32,7 @@ export function Nav() {
         </div>
         <div className="nav__actions">
           <a
-            href="https://github.com/docToolchain/biz42"
+            href="https://github.com/mrsimpson/biz42"
             className="nav__icon-btn"
             aria-label="GitHub repository"
             target="_blank"

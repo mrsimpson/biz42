@@ -74,6 +74,21 @@ export function IntroSection() {
             traceability chain runs from Expectation → Product → arc42 quality goal → quality
             scenario → architecture decision → building block.
           </p>
+          <p>
+            The{" "}
+            <a
+              href="https://www.npmjs.com/package/@doctc/arc42"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              @doctc/arc42
+            </a>{" "}
+            CLI brings the same plain-text, git-native approach to architecture documentation.{" "}
+            <a href="./docs/" target="_blank" rel="noopener noreferrer">
+              See the architecture of biz42 itself
+            </a>{" "}
+            as a live example.
+          </p>
         </div>
       </div>
     </section>

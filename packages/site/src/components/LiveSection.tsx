@@ -3,25 +3,12 @@ export function LiveSection() {
     <section className="section" aria-labelledby="live-heading" id="examples">
       <div className="container">
         <h2 className="live__title" id="live-heading">
-          See it live
+          Example
         </h2>
         <p className="live__sub">
-          Real workspaces, built with <code>biz42 build</code> and deployed here.
+          A real workspace, built with <code>biz42 build</code> and deployed here.
         </p>
         <div className="live__grid">
-          <a href="./docs/" className="live-card" aria-label="View architecture docs workspace">
-            <div className="live-card__icon" aria-hidden="true">
-              <BookIcon />
-            </div>
-            <h3 className="live-card__title">Architecture Docs</h3>
-            <p className="live-card__desc">
-              The project's own arc42 workspace. 12 chapters, cross-linked. biz42 eating its own dog
-              food.
-            </p>
-            <span className="live-card__arrow" aria-hidden="true">
-              Open →
-            </span>
-          </a>
           <a
             href="./acme-emergency/"
             className="live-card"
@@ -42,25 +29,6 @@ export function LiveSection() {
         </div>
       </div>
     </section>
-  );
-}
-
-function BookIcon() {
-  return (
-    <svg
-      width="32"
-      height="32"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z" />
-      <path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z" />
-    </svg>
   );
 }
 

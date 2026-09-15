@@ -16,13 +16,13 @@ export function Footer() {
             />
           </a>
           <a
-            href="https://github.com/docToolchain/biz42/actions"
+            href="https://github.com/mrsimpson/biz42/actions"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="CI status"
           >
             <img
-              src="https://img.shields.io/github/actions/workflow/status/docToolchain/biz42/ci.yml?style=flat-square&label=CI"
+              src="https://img.shields.io/github/actions/workflow/status/mrsimpson/biz42/ci.yml?style=flat-square&label=CI"
               alt="CI status"
               height="20"
             />
@@ -30,7 +30,7 @@ export function Footer() {
         </div>
         <div className="footer__links">
           <a
-            href="https://github.com/docToolchain/biz42/blob/main/LICENSE"
+            href="https://github.com/mrsimpson/biz42/blob/main/LICENSE"
             className="footer__link"
             target="_blank"
             rel="noopener noreferrer"
@@ -41,7 +41,7 @@ export function Footer() {
             ·
           </span>
           <a
-            href="https://github.com/docToolchain/biz42"
+            href="https://github.com/mrsimpson/biz42"
             className="footer__link"
             target="_blank"
             rel="noopener noreferrer"
