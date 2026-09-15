@@ -15,6 +15,7 @@ below 30% after 2 months, or a connectivity failure prevents alert delivery.
 id: eval-project-review
 title: Project Review Cadence
 method: bi-weekly (build phase), monthly (post-deployment)
+evaluates: measure-works-council-approval, measure-site-coverage, measure-adoption-rate, measure-routing-accuracy, measure-moving-asset-coverage, measure-offline-delivery, measure-sensor-integrations
 :::
 ```
 
@@ -28,5 +29,6 @@ discovered at milestone reviews.
 id: eval-escalation
 title: Escalation Criteria for Key Measures
 method: threshold-based escalation per measure (see chapter 7)
+evaluates: measure-works-council-approval, measure-site-coverage, measure-adoption-rate
 :::
 ```

@@ -19,6 +19,8 @@ audit transparency requirements, conditions for location processing.
 :::improvement
 id: impr-works-council-findings
 title: Privacy Architecture Improvements From Works Council Negotiation
+type: corrective
+triggered-by: eval-project-review
 addresses: obj-privacy-architecture
 :::
 ```
@@ -33,6 +35,8 @@ stress, operator usability, integration pain points with corporate infrastructur
 :::improvement
 id: impr-first-site-lessons
 title: Improvements From First Site Deployment
+type: corrective
+triggered-by: eval-project-review
 addresses: obj-time-to-deployment, obj-adoption-rate
 :::
 ```

@@ -56,6 +56,8 @@ is the highest-risk technical unknown.
 id: capability-alert-delivery
 title: Alert Delivery
 status: planned
+enables: product-alert-service, product-sensor-bridge
+owner: owner-tech-lead
 :::
 ```
 
@@ -70,6 +72,8 @@ be processed only during active alert situations, never stored for tracking.
 id: capability-location-routing
 title: Location Routing
 status: gap
+enables: product-alert-service
+owner: owner-tech-lead
 :::
 ```
 
@@ -83,6 +87,8 @@ combining voluntary check-in with existing asset tracking systems.
 id: capability-asset-integration
 title: Asset Integration
 status: gap
+enables: product-alert-service
+owner: owner-tech-lead
 :::
 ```
 
@@ -97,6 +103,8 @@ in the loop.
 id: capability-sensor-ingestion
 title: Sensor Ingestion
 status: gap
+enables: product-sensor-bridge
+owner: owner-tech-lead
 :::
 ```
 
@@ -111,5 +119,7 @@ notification system.
 id: capability-platform-integration
 title: Platform Integration
 status: exists
+enables: product-alert-service
+owner: owner-tech-lead
 :::
 ```

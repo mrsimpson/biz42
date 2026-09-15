@@ -11,7 +11,8 @@ notification system.
 :::product
 id: product-alert-service
 title: Alert Service
-enables: capability-alert-delivery, capability-location-routing, capability-platform-integration, capability-asset-integration
+fulfills: exp-employees-fast-help, exp-safety-compliance, exp-management-cost, exp-it-integration
+owner: owner-product-lead
 :::
 ```
 
@@ -25,6 +26,7 @@ Requires the alert service as its delivery backend.
 :::product
 id: product-sensor-bridge
 title: Sensor Bridge
-enables: capability-sensor-ingestion, capability-alert-delivery
+fulfills: exp-sensor-integration
+owner: owner-tech-lead
 :::
 ```
