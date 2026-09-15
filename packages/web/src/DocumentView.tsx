@@ -105,6 +105,8 @@ interface DocumentViewProps {
   edges: Edge[];
   diagrams: Diagram[];
   chapterMap: Map<string, number>;
+  targetElementId?: string | null;
+  onTargetConsumed?: () => void;
 }
 
 export function DocumentView({
@@ -115,6 +117,8 @@ export function DocumentView({
   edges,
   diagrams,
   chapterMap,
+  targetElementId = null,
+  onTargetConsumed,
 }: DocumentViewProps) {
   const groups = useMemo(() => groupNodes(doc.nodes), [doc]);
 
@@ -148,6 +152,7 @@ export function DocumentView({
           );
         }
         // prose-run (with optional attached biz42 block)
+        const blockId = group.block?.attributes["id"] ?? null;
         const proseRunNode: ProseRunNode = {
           kind: "prose-run",
           text: group.text,
@@ -163,6 +168,8 @@ export function DocumentView({
             edges={edges}
             diagrams={diagrams}
             chapterMap={chapterMap}
+            targetElementId={blockId === targetElementId ? targetElementId : null}
+            onTargetConsumed={blockId === targetElementId ? onTargetConsumed : undefined}
           />
         );
       })}

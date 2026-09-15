@@ -133,10 +133,12 @@ export function ElementCard({
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function refHref(targetId: string, elementDocMap: Map<string, string>): string {
-  const docFile = elementDocMap.get(targetId);
-  if (docFile) {
-    // Navigate to doc by filename; scroll to element anchor within it
-    return `#doc:el-${targetId}`;
+  const filePath = elementDocMap.get(targetId);
+  if (filePath) {
+    // Navigate to the owning document and auto-expand the element card.
+    // Hash scheme: #filename:el-{id}  (same as arc42-language)
+    const file = filePath.split("/").pop() ?? filePath;
+    return `#${file}:el-${targetId}`;
   }
   return `#el-${targetId}`;
 }

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { marked } from "marked";
 import type { AstNode, BlockNode, DiagramNode, Element, Edge } from "@biz42/core";
 import docStyles from "./DocumentView.module.css";
@@ -23,6 +23,9 @@ export interface AstNodeRendererProps {
   edges: Edge[];
   diagrams?: Diagram[];
   chapterMap?: Map<string, number>;
+  /** Element id to auto-expand when this renderer mounts/updates */
+  targetElementId?: string | null;
+  onTargetConsumed?: () => void;
 }
 
 // ─── Main renderer ────────────────────────────────────────────────────────────
@@ -35,6 +38,8 @@ export function AstNodeRenderer({
   edges,
   diagrams = [],
   chapterMap = new Map(),
+  targetElementId,
+  onTargetConsumed,
 }: AstNodeRendererProps) {
   switch (node.kind) {
     case "heading": {
@@ -70,6 +75,8 @@ export function AstNodeRenderer({
           elementsMap={elementsMap}
           elementDocMap={elementDocMap}
           edges={edges}
+          targetElementId={targetElementId ?? null}
+          onTargetConsumed={onTargetConsumed}
         />
       );
     }
@@ -155,10 +162,41 @@ interface ProseRunProps {
   elementsMap: Map<string, Element>;
   elementDocMap: Map<string, string>;
   edges: Edge[];
+  targetElementId: string | null;
+  onTargetConsumed?: () => void;
 }
 
-function ProseRun({ text, block, viewMode, elementsMap, elementDocMap, edges }: ProseRunProps) {
-  const [showCard, setShowCard] = useState(false);
+function ProseRun({
+  text,
+  block,
+  viewMode,
+  elementsMap,
+  elementDocMap,
+  edges,
+  targetElementId,
+  onTargetConsumed,
+}: ProseRunProps) {
+  const blockId = block?.attributes["id"] ?? null;
+  const autoExpand = targetElementId !== null && blockId === targetElementId;
+  const [showCard, setShowCard] = useState(autoExpand);
+
+  // Auto-expand and scroll when targetElementId matches this block
+  useEffect(() => {
+    if (autoExpand && block !== null) {
+      setShowCard(true);
+      onTargetConsumed?.();
+      // Scroll after React renders the card
+      const id = block.attributes["id"] ?? "";
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          document.getElementById(`el-${id}`)?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        });
+      });
+    }
+  }, [autoExpand]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Determine stripe colour from the attached block's element kind
   const stripeColor = useMemo(() => {
