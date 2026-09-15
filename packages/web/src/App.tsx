@@ -1,8 +1,8 @@
 import { useState, useEffect, useMemo } from "react";
 import type { WorkspacePayload } from "./types.ts";
-import { ELEMENT_KIND_ORDER, ELEMENT_CHAPTER, CHAPTER_TITLE } from "@biz42/core";
-import type { Element, BlockType, Diagram } from "@biz42/core";
-import { DiagramView } from "./DiagramView.tsx";
+import { ELEMENT_CHAPTER } from "@biz42/core";
+import type { Element, Edge, DocumentAst, Diagram, BlockType } from "@biz42/core";
+import { DocumentView } from "./DocumentView.tsx";
 import "./styles.css";
 
 // ---------------------------------------------------------------------------
@@ -10,212 +10,89 @@ import "./styles.css";
 // ---------------------------------------------------------------------------
 
 async function fetchWorkspace(): Promise<WorkspacePayload> {
-  // Injected at build time (biz42 build command)
   if (window.__WORKSPACE__) return window.__WORKSPACE__;
-  // Live from dev server / biz42 serve
   const res = await fetch("/api/workspace");
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.json() as Promise<WorkspacePayload>;
 }
 
 // ---------------------------------------------------------------------------
-// Colour per block type
+// Sidebar
 // ---------------------------------------------------------------------------
 
-const KIND_COLOR: Record<string, string> = {
-  scope: "#7c3aed",
-  signal: "#0891b2",
-  expectation: "#0e7490",
-  risk: "#dc2626",
-  opportunity: "#16a34a",
-  objective: "#2563eb",
-  measure: "#9333ea",
-  owner: "#78350f",
-  capability: "#1d4ed8",
-  product: "#0f766e",
-  evaluation: "#b45309",
-  improvement: "#15803d",
-};
-
-function kindColor(kind: string): string {
-  return KIND_COLOR[kind] ?? "#555";
+/** Extract the H1 heading text from a document's AST nodes */
+function docTitle(doc: DocumentAst): string {
+  const h1 = doc.nodes.find((n) => n.kind === "heading" && (n as { level: number }).level === 1);
+  if (h1) return (h1 as { text: string }).text;
+  // Fallback: derive from filename
+  const base = doc.filePath.split("/").pop() ?? doc.filePath;
+  return base.replace(/\.biz42\.md$/, "");
 }
-
-
-
-// ---------------------------------------------------------------------------
-// Agent-view JSON card
-// ---------------------------------------------------------------------------
-
-function AgentCard({ element }: { element: Element }) {
-  return (
-    <pre
-      style={{
-        background: "#0f172a",
-        color: "#e2e8f0",
-        padding: "12px 16px",
-        borderRadius: 6,
-        fontSize: 12,
-        overflowX: "auto",
-        marginBottom: 16,
-      }}
-    >
-      {JSON.stringify(element, null, 2)}
-    </pre>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Human-view element card
-// ---------------------------------------------------------------------------
-
-function ElementCard({ element }: { element: Element }) {
-  const color = kindColor(element.kind);
-  return (
-    <div
-      style={{
-        border: `1px solid ${color}33`,
-        borderLeft: `4px solid ${color}`,
-        borderRadius: 6,
-        padding: "12px 16px",
-        marginBottom: 12,
-        background: "#fafafa",
-      }}
-    >
-      <div style={{ display: "flex", gap: 8, alignItems: "baseline", marginBottom: 4 }}>
-        <span
-          style={{
-            fontSize: 10,
-            fontWeight: 700,
-            textTransform: "uppercase",
-            color,
-            letterSpacing: "0.05em",
-          }}
-        >
-          {element.kind}
-        </span>
-        <span style={{ fontSize: 11, color: "#888" }}>{element.id}</span>
-      </div>
-      <div style={{ fontWeight: 600, marginBottom: 6 }}>{element.title}</div>
-      <ElementFields element={element} />
-    </div>
-  );
-}
-
-function ElementFields({ element }: { element: Element }) {
-  const fields: [string, string][] = [];
-
-  if (element.kind === "risk") {
-    fields.push(["severity", element.severity]);
-    if (element.mitigation) fields.push(["mitigation", element.mitigation]);
-  } else if (element.kind === "signal") {
-    if (element.source) fields.push(["source", element.source]);
-  } else if (element.kind === "expectation") {
-    if (element.source) fields.push(["source", element.source]);
-  } else if (element.kind === "objective") {
-    if (element.addresses.length > 0) fields.push(["addresses", element.addresses.join(", ")]);
-    if (element["measured-by"].length > 0) fields.push(["measured-by", element["measured-by"].join(", ")]);
-    if (element.owner) fields.push(["owner", element.owner]);
-    if (element.requires.length > 0) fields.push(["requires", element.requires.join(", ")]);
-  } else if (element.kind === "measure") {
-    if (element.target) fields.push(["target", element.target]);
-  } else if (element.kind === "owner") {
-    if (element.role) fields.push(["role", element.role]);
-  } else if (element.kind === "capability") {
-    if (element.status) fields.push(["status", element.status]);
-  } else if (element.kind === "product") {
-    if (element.enables.length > 0) fields.push(["enables", element.enables.join(", ")]);
-  } else if (element.kind === "evaluation") {
-    if (element.method) fields.push(["method", element.method]);
-  } else if (element.kind === "improvement") {
-    if (element.addresses.length > 0) fields.push(["addresses", element.addresses.join(", ")]);
-  }
-
-  if (fields.length === 0) return null;
-
-  return (
-    <table style={{ fontSize: 12, borderCollapse: "collapse", width: "100%" }}>
-      <tbody>
-        {fields.map(([k, v]) => (
-          <tr key={k}>
-            <td style={{ color: "#888", paddingRight: 12, whiteSpace: "nowrap", verticalAlign: "top", paddingBottom: 2 }}>{k}</td>
-            <td style={{ color: "#333" }}>{v}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Sidebar chapter navigation
-// ---------------------------------------------------------------------------
 
 function Sidebar({
-  activeChapter,
-  elementsByChapter,
-  onSelectChapter,
+  documents,
+  activeDocIndex,
+  onSelectDoc,
 }: {
-  activeChapter: number | null;
-  elementsByChapter: Map<number, Element[]>;
-  onSelectChapter: (ch: number | null) => void;
+  documents: DocumentAst[];
+  activeDocIndex: number | null;
+  onSelectDoc: (idx: number) => void;
 }) {
-  const chapters = [...elementsByChapter.keys()].sort((a, b) => a - b);
   return (
     <nav
       style={{
-        width: 220,
+        width: 240,
         flexShrink: 0,
-        borderRight: "1px solid #e0e0e0",
+        borderRight: "1px solid var(--border)",
         padding: "16px 0",
         overflowY: "auto",
+        background: "var(--bg-sidebar)",
       }}
     >
-      <div style={{ padding: "0 16px 12px", fontWeight: 700, fontSize: 13, color: "#444" }}>
-        biz42
-      </div>
-      <button
-        onClick={() => onSelectChapter(null)}
+      <div
         style={{
-          display: "block",
-          width: "100%",
-          textAlign: "left",
-          padding: "6px 16px",
-          background: activeChapter === null ? "#eff6ff" : "transparent",
-          border: "none",
-          cursor: "pointer",
+          padding: "0 16px 12px",
+          fontWeight: 700,
           fontSize: 13,
-          fontWeight: activeChapter === null ? 600 : 400,
-          color: activeChapter === null ? "#2563eb" : "#333",
+          color: "var(--text-muted)",
+          letterSpacing: "0.05em",
+          textTransform: "uppercase",
         }}
       >
-        All elements
-      </button>
-      {chapters.map((ch) => {
-        const count = elementsByChapter.get(ch)?.length ?? 0;
-        const active = activeChapter === ch;
+        biz42
+      </div>
+      {documents.map((doc, idx) => {
+        const active = activeDocIndex === idx;
+        const basename = doc.filePath.split("/").pop() ?? "";
+        const numMatch = /^(\d+)-/.exec(basename);
+        const num = numMatch ? numMatch[1] : null;
+        const title = docTitle(doc);
         return (
           <button
-            key={ch}
-            onClick={() => onSelectChapter(ch)}
+            key={doc.filePath}
+            onClick={() => onSelectDoc(idx)}
             style={{
               display: "flex",
-              justifyContent: "space-between",
+              alignItems: "baseline",
+              gap: 8,
               width: "100%",
               textAlign: "left",
               padding: "6px 16px",
-              background: active ? "#eff6ff" : "transparent",
+              background: active
+                ? "color-mix(in srgb, var(--accent) 10%, transparent)"
+                : "transparent",
               border: "none",
+              borderLeft: active ? "3px solid var(--accent)" : "3px solid transparent",
               cursor: "pointer",
               fontSize: 13,
               fontWeight: active ? 600 : 400,
-              color: active ? "#2563eb" : "#333",
+              color: active ? "var(--accent)" : "var(--text)",
             }}
           >
-            <span>
-              {String(ch).padStart(2, "0")} {CHAPTER_TITLE[ch] ?? `Ch. ${ch}`}
-            </span>
-            <span style={{ color: "#888", fontSize: 11 }}>{count}</span>
+            {num && (
+              <span style={{ fontSize: 11, color: "var(--text-muted)", minWidth: 18 }}>{num}</span>
+            )}
+            <span>{title}</span>
           </button>
         );
       })}
@@ -231,48 +108,48 @@ export function App() {
   const [payload, setPayload] = useState<WorkspacePayload | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [agentView, setAgentView] = useState(false);
-  const [activeChapter, setActiveChapter] = useState<number | null>(null);
+  const [activeDocIndex, setActiveDocIndex] = useState<number | null>(null);
 
   useEffect(() => {
     fetchWorkspace()
-      .then(setPayload)
+      .then((p) => {
+        setPayload(p);
+        if (p.documents.length > 0) setActiveDocIndex(0);
+      })
       .catch((e: unknown) => setError(String(e)));
 
-    // SSE live reload (biz42 serve)
+    // SSE live reload
     const es = new EventSource("/api/workspace/events");
     es.addEventListener("workspace", () => {
-      fetchWorkspace().then(setPayload).catch(() => null);
+      fetchWorkspace()
+        .then(setPayload)
+        .catch(() => null);
     });
     return () => es.close();
   }, []);
 
-  // Handle hash navigation from clickable diagram nodes: #chapter-{n}-{elementId}
-  useEffect(() => {
-    function handleHashChange() {
-      const hash = window.location.hash;
-      const match = /^#chapter-(\d+)-/.exec(hash);
-      if (match) {
-        const chapter = parseInt(match[1]!, 10);
-        setActiveChapter(chapter);
-      }
-    }
-    // Handle initial hash on load
-    handleHashChange();
-    window.addEventListener("hashchange", handleHashChange);
-    return () => window.removeEventListener("hashchange", handleHashChange);
-  }, []);
-
-  // All useMemo hooks must be called unconditionally — before any early returns
-  const elementsByChapter = useMemo(() => {
-    const map = new Map<number, Element[]>();
-    for (const el of payload?.elements ?? []) {
-      const ch = ELEMENT_CHAPTER[el.kind as BlockType];
-      if (!map.has(ch)) map.set(ch, []);
-      map.get(ch)!.push(el);
-    }
+  // Build elements map (id → element) — used by ElementCard and AstNodeRenderer
+  const elementsMap = useMemo(() => {
+    const map = new Map<string, Element>();
+    for (const el of payload?.elements ?? []) map.set(el.id, el);
     return map;
   }, [payload?.elements]);
 
+  // Build elementDocMap (elementId → filePath) for cross-doc ref links
+  const elementDocMap = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const doc of payload?.documents ?? []) {
+      for (const node of doc.nodes) {
+        if (node.kind === "block") {
+          const id = (node as { attributes: Record<string, string> }).attributes["id"];
+          if (id) map.set(id, doc.filePath);
+        }
+      }
+    }
+    return map;
+  }, [payload?.documents]);
+
+  // Build chapterMap (elementId → chapter number) for DiagramView
   const chapterMap = useMemo(() => {
     const map = new Map<string, number>();
     for (const el of payload?.elements ?? []) {
@@ -281,74 +158,51 @@ export function App() {
     return map;
   }, [payload?.elements]);
 
-  // Map diagrams to chapters by parsing the filename prefix (02-signals.biz42.md → chapter 2)
-  const diagramsByChapter = useMemo(() => {
-    const map = new Map<number, Diagram[]>();
-    for (const d of payload?.diagrams ?? []) {
-      const basename = d.loc.file.split("/").pop() ?? "";
-      const m = /^(\d+)-/.exec(basename);
-      if (m) {
-        const ch = parseInt(m[1]!, 10);
-        if (!map.has(ch)) map.set(ch, []);
-        map.get(ch)!.push(d);
-      }
-    }
-    return map;
-  }, [payload?.diagrams]);
+  const edges: Edge[] = payload?.edges ?? [];
+  const documents: DocumentAst[] = payload?.documents ?? [];
+  const diagrams: Diagram[] = payload?.diagrams ?? [];
 
   if (error) {
     return (
-      <div style={{ padding: 32, color: "#dc2626" }}>
+      <div style={{ padding: 32, color: "var(--color-error)" }}>
         <strong>Failed to load workspace:</strong> {error}
       </div>
     );
   }
 
   if (!payload) {
-    return <div style={{ padding: 32, color: "#888" }}>Loading…</div>;
+    return <div style={{ padding: 32, color: "var(--text-muted)" }}>Loading…</div>;
   }
 
-  const diagramsForChapter = activeChapter !== null ? (diagramsByChapter.get(activeChapter) ?? []) : [];
-
-  // Filter elements to display
-  const displayElements =
-    activeChapter !== null
-      ? (elementsByChapter.get(activeChapter) ?? [])
-      : payload.elements;
-
-  const title =
-    activeChapter !== null
-      ? `${String(activeChapter).padStart(2, "0")} — ${CHAPTER_TITLE[activeChapter] ?? `Chapter ${activeChapter}`}`
-      : "All elements";
+  const activeDoc = activeDocIndex !== null ? (documents[activeDocIndex] ?? null) : null;
 
   return (
     <div style={{ display: "flex", height: "100vh", overflow: "hidden" }}>
       <Sidebar
-        activeChapter={activeChapter}
-        elementsByChapter={elementsByChapter}
-        onSelectChapter={setActiveChapter}
+        documents={documents}
+        activeDocIndex={activeDocIndex}
+        onSelectDoc={setActiveDocIndex}
       />
 
-      <main style={{ flex: 1, overflowY: "auto", padding: "20px 28px" }}>
+      <main style={{ flex: 1, overflowY: "auto", padding: "20px 36px" }}>
         {/* Header */}
         <div
           style={{
             display: "flex",
-            justifyContent: "space-between",
+            justifyContent: "flex-end",
             alignItems: "center",
-            marginBottom: 20,
+            marginBottom: 8,
           }}
         >
-          <h1 style={{ fontSize: 18, fontWeight: 700 }}>{title}</h1>
           <div style={{ display: "flex", gap: 8 }}>
             <button
               onClick={() => setAgentView(false)}
               style={{
                 padding: "4px 12px",
                 borderRadius: 4,
-                border: "1px solid #e0e0e0",
-                background: !agentView ? "#2563eb" : "#fff",
-                color: !agentView ? "#fff" : "#333",
+                border: "1px solid var(--border)",
+                background: !agentView ? "var(--accent)" : "transparent",
+                color: !agentView ? "#fff" : "var(--text)",
                 cursor: "pointer",
                 fontSize: 12,
               }}
@@ -360,9 +214,9 @@ export function App() {
               style={{
                 padding: "4px 12px",
                 borderRadius: 4,
-                border: "1px solid #e0e0e0",
-                background: agentView ? "#2563eb" : "#fff",
-                color: agentView ? "#fff" : "#333",
+                border: "1px solid var(--border)",
+                background: agentView ? "var(--accent)" : "transparent",
+                color: agentView ? "#fff" : "var(--text)",
                 cursor: "pointer",
                 fontSize: 12,
               }}
@@ -372,32 +226,19 @@ export function App() {
           </div>
         </div>
 
-        {/* Diagrams (scope chapter) */}
-        {diagramsForChapter.length > 0 && (
-          <div style={{ marginBottom: 24 }}>
-            {diagramsForChapter.map((d: Diagram) => (
-              <DiagramView
-                key={d.id}
-                diagram={d}
-                elements={payload.elements}
-                chapterMap={chapterMap}
-                agentView={agentView}
-              />
-            ))}
-          </div>
-        )}
-
-        {/* Element list */}
-        {displayElements.length === 0 ? (
-          <div style={{ color: "#888" }}>No elements in this chapter.</div>
+        {/* Document content */}
+        {activeDoc ? (
+          <DocumentView
+            doc={activeDoc}
+            viewMode={agentView ? "agent" : "human"}
+            elementsMap={elementsMap}
+            elementDocMap={elementDocMap}
+            edges={edges}
+            diagrams={diagrams}
+            chapterMap={chapterMap}
+          />
         ) : (
-          displayElements.map((el) =>
-            agentView ? (
-              <AgentCard key={el.id} element={el} />
-            ) : (
-              <ElementCard key={el.id} element={el} />
-            ),
-          )
+          <div style={{ color: "var(--text-muted)", padding: "2rem" }}>No document selected.</div>
         )}
       </main>
     </div>

@@ -121,6 +121,9 @@ importers:
       '@biz42/core':
         specifier: workspace:*
         version: link:../core
+      marked:
+        specifier: ^14.0.0
+        version: 14.1.4
       mermaid:
         specifier: 11.17.2
         version: 11.17.2
@@ -1945,6 +1948,11 @@ packages:
     engines: {node: '>=16.0.0'}
     peerDependencies:
       marked: '>=1 <16'
+
+  marked@14.1.4:
+    resolution: {integrity: sha512-vkVZ8ONmUdPnjCKc5uTRvmkRbx4EAi2OkTOXmfTDhZz3OFqMNBM1oTTWwTr4HY4uAEojhzPf+Fy8F1DWa3Sndg==}
+    engines: {node: '>= 18'}
+    hasBin: true
 
   marked@15.0.12:
     resolution: {integrity: sha512-8dD6FusOQSrpv9Z1rdNMdlSgQOIP880DHqnohobOmYLElGEqAL/JvxvuxZO16r4HtjTlfPRDC1hbvxC9dPN2nA==}
@@ -4344,6 +4352,8 @@ snapshots:
       marked: 15.0.12
       node-emoji: 2.2.0
       supports-hyperlinks: 3.2.0
+
+  marked@14.1.4: {}
 
   marked@15.0.12: {}
 

@@ -12,14 +12,15 @@
   },
   "dependencies": {
     "@biz42/core": "workspace:*",
+    "marked": "^14.0.0",
     "mermaid": "11.17.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@types/node": "catalog:",
     "@types/react": "^18.3.23",
     "@types/react-dom": "^18.3.7",
-    "@types/node": "catalog:",
     "@vitejs/plugin-react": "^4.3.4",
     "typescript": "catalog:",
     "vite-plus": "catalog:"

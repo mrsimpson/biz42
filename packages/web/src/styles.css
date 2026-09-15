@@ -1,4 +1,35 @@
+/* ─── Design tokens ────────────────────────────────────────────────────────── */
 :root {
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "SF Mono", Menlo, Monaco, "Cascadia Code", monospace;
+  --radius: 6px;
+
+  --bg: #ffffff;
+  --bg-sidebar: #f7f7f8;
+  --bg-card: #fafafa;
+  --bg-code: #f4f4f5;
+  --border: #e4e4e7;
+  --text: #18181b;
+  --text-muted: #71717a;
+  --text-link: #2563eb;
+  --accent: #3b82f6;
+
+  /* biz42 element kind colours (also exposed as --color-* for backward compat) */
+  --c-ch0: #94a3b8;
+  --c-scope: #7c3aed;
+  --c-signal: #0891b2;
+  --c-expectation: #0e7490;
+  --c-risk: #dc2626;
+  --c-opportunity: #16a34a;
+  --c-objective: #2563eb;
+  --c-measure: #9333ea;
+  --c-owner: #78350f;
+  --c-capability: #1d4ed8;
+  --c-product: #0f766e;
+  --c-evaluation: #b45309;
+  --c-improvement: #15803d;
+
+  /* backward-compat aliases used by older inline styles */
   --color-bg: #ffffff;
   --color-surface: #f8f8f8;
   --color-border: #e0e0e0;
@@ -8,36 +39,27 @@
   --color-error: #dc2626;
   --color-warning: #d97706;
   --color-hint: #6b7280;
-  --color-scope: #7c3aed;
-  --color-signal: #0891b2;
-  --color-expectation: #0e7490;
-  --color-risk: #dc2626;
-  --color-opportunity: #16a34a;
-  --color-objective: #2563eb;
-  --color-measure: #9333ea;
-  --color-owner: #78350f;
-  --color-capability: #1d4ed8;
-  --color-product: #0f766e;
-  --color-evaluation: #b45309;
-  --color-improvement: #15803d;
 }
 
-* {
+/* ─── Reset ─────────────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--font-sans);
   font-size: 14px;
-  line-height: 1.5;
-  color: var(--color-text);
-  background: var(--color-bg);
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
 }
 
 a {
-  color: var(--color-accent);
+  color: var(--text-link);
   text-decoration: none;
 }
 
@@ -45,7 +67,8 @@ a:hover {
   text-decoration: underline;
 }
 
-code, pre {
-  font-family: "SF Mono", Menlo, Monaco, "Cascadia Code", monospace;
+code,
+pre {
+  font-family: var(--font-mono);
   font-size: 12px;
 }

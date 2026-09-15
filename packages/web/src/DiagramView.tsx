@@ -148,7 +148,12 @@ export interface DiagramViewProps {
   agentView?: boolean;
 }
 
-export function DiagramView({ diagram, elements, chapterMap, agentView = false }: DiagramViewProps) {
+export function DiagramView({
+  diagram,
+  elements,
+  chapterMap,
+  agentView = false,
+}: DiagramViewProps) {
   const clickableNodes = useMemo(
     () => buildClickableNodes(diagram.source, elements, chapterMap),
     [diagram.source, elements, chapterMap],
@@ -156,8 +161,7 @@ export function DiagramView({ diagram, elements, chapterMap, agentView = false }
 
   // Human-readable title: prefer explicit title, fall back to formatted id
   const displayTitle =
-    diagram.title ??
-    diagram.id.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+    diagram.title ?? diagram.id.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
   if (agentView) {
     // Reconstruct the :::diagram block + mermaid fence as raw source
@@ -204,11 +208,7 @@ export function DiagramView({ diagram, elements, chapterMap, agentView = false }
         {displayTitle}
       </h3>
       {/* Mermaid diagram */}
-      <MermaidDiagram
-        source={diagram.source}
-        id={diagram.id}
-        clickableNodes={clickableNodes}
-      />
+      <MermaidDiagram source={diagram.source} id={diagram.id} clickableNodes={clickableNodes} />
       {/* Methodology description — collapsed by default */}
       <MethodologyDescription notation={diagram.notation} />
     </div>
