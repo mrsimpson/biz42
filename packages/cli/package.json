@@ -1,6 +1,6 @@
 {
   "name": "@biz42/cli",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "CLI for validating and querying biz42 DSL files.",
   "keywords": [
     "biz42",
@@ -11,8 +11,12 @@
     "iso9001",
     "validation"
   ],
-  "homepage": "https://github.com/docToolchain/biz42",
+  "homepage": "https://github.com/mrsimpson/biz42",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mrsimpson/biz42.git"
+  },
   "bin": {
     "biz42": "./dist/cli.mjs"
   },

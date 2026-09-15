@@ -418,7 +418,7 @@ function runGuide(args: string[]) {
     allowPositionals: true,
   });
 
-  const subcommand = positionals[0] ?? "migration";
+  const subcommand = positionals[0] ?? "new";
   const argument = positionals[1];
   try {
     console.log(guideText(subcommand, argument));
