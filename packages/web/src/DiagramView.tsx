@@ -145,16 +145,50 @@ export interface DiagramViewProps {
   diagram: Diagram;
   elements: Element[];
   chapterMap: Map<string, number>;
+  agentView?: boolean;
 }
 
-export function DiagramView({ diagram, elements, chapterMap }: DiagramViewProps) {
+export function DiagramView({ diagram, elements, chapterMap, agentView = false }: DiagramViewProps) {
   const clickableNodes = useMemo(
     () => buildClickableNodes(diagram.source, elements, chapterMap),
     [diagram.source, elements, chapterMap],
   );
 
   // Human-readable title: prefer explicit title, fall back to formatted id
-  const displayTitle = diagram.title ?? diagram.id.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  const displayTitle =
+    diagram.title ??
+    diagram.id.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+
+  if (agentView) {
+    // Reconstruct the :::diagram block + mermaid fence as raw source
+    const blockLines = [
+      `:::diagram`,
+      `id: ${diagram.id}`,
+      ...(diagram.title ? [`title: ${diagram.title}`] : []),
+      `notation: ${diagram.notation}`,
+      `:::`,
+      ``,
+      "```mermaid",
+      diagram.source.trim(),
+      "```",
+    ];
+    return (
+      <pre
+        style={{
+          background: "#0f172a",
+          color: "#e2e8f0",
+          padding: "12px 16px",
+          borderRadius: 6,
+          fontSize: 12,
+          overflowX: "auto",
+          marginBottom: 16,
+          whiteSpace: "pre",
+        }}
+      >
+        {blockLines.join("\n")}
+      </pre>
+    );
+  }
 
   return (
     <div style={{ marginBottom: 32 }}>

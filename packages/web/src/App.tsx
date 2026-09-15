@@ -381,6 +381,7 @@ export function App() {
                 diagram={d}
                 elements={payload.elements}
                 chapterMap={chapterMap}
+                agentView={agentView}
               />
             ))}
           </div>
