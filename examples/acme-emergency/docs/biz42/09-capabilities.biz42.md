@@ -1,5 +1,47 @@
 # Capabilities
 
+## Alert Delivery Process Audit
+
+The turtle diagram audits the alert delivery process against six questions:
+what resources it needs, who is accountable, what objectives it must achieve,
+who benefits, and what measures define success.
+
+:::diagram
+id: diagram-turtle-alert-delivery
+title: Alert Delivery — Process Audit
+notation: turtle
+:::
+
+```mermaid
+flowchart TD
+    subgraph resources["With what? (Capabilities)"]
+        capability-alert-delivery["Alert Delivery"]
+        capability-location-routing["Location Routing"]
+        capability-platform-integration["Platform Integration"]
+    end
+    subgraph people["With whom? (Owners)"]
+        owner-tech-lead["Tech Lead"]
+        owner-product-lead["Product Lead"]
+        owner-project-lead["Project Lead"]
+    end
+    process(["Alert Delivery Process"])
+    subgraph how["How? (Objectives)"]
+        obj-location-routing["Location-Based Routing"]
+        obj-offline-resilience["Offline Resilience"]
+        obj-time-to-deployment["Company-Wide Rollout"]
+    end
+    subgraph results["Results (Measures)"]
+        measure-routing-accuracy["Routing Accuracy ≥80%"]
+        measure-site-coverage["Site Coverage ≥90%"]
+        measure-offline-delivery["Offline Delivery"]
+    end
+
+    resources --> process
+    people --> process
+    process --> how
+    process --> results
+```
+
 ## Alert Delivery
 
 The ability to deliver alerts from any source (human or machine) to nearby

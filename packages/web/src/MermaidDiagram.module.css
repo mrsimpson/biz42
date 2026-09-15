@@ -1,0 +1,99 @@
+.figure {
+  margin: 1.5em 0;
+  padding: 1rem;
+  background: #fafafa;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.viewport {
+  overflow: visible;
+}
+.pannable {
+  cursor: grab;
+  touch-action: none;
+}
+.panning {
+  cursor: grabbing;
+  user-select: none;
+}
+.svg svg {
+  width: 100%;
+  height: auto;
+}
+.svg {
+  width: 100%;
+  transform-origin: top left;
+  transition: transform 120ms ease;
+}
+.toolbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.5rem;
+}
+.toolbar button {
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background: #fff;
+  color: #333;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  font-size: 12px;
+}
+.toolbar button:hover {
+  background: #f5f5f5;
+}
+.fullscreenButton {
+  padding: 0.25rem 0.5rem !important;
+}
+.toolbar span {
+  min-width: 3.5rem;
+  color: #888;
+  font-size: 0.8rem;
+  text-align: center;
+}
+.fullscreen {
+  position: fixed;
+  z-index: 30;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  border-radius: 0;
+  background: #fff;
+}
+.fullscreen .viewport {
+  flex: 1;
+  max-height: none;
+}
+.loading {
+  opacity: 0.5;
+}
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid #e0e0e0;
+  border-top-color: #2563eb;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin: 1rem auto;
+}
+.error {
+  border-color: #f97316;
+}
+.errorMsg {
+  font-size: 0.8rem;
+  color: #f97316;
+  margin-top: 0.5rem;
+}
+.raw {
+  font-size: 0.8rem;
+  color: #888;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

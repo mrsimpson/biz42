@@ -1,5 +1,59 @@
 # Objectives
 
+## Strategic Overview
+
+The strategy map below shows why each objective exists (the risk or opportunity
+it addresses) and how success is measured. Arrows read as cause-and-effect:
+a risk or opportunity drives an objective, which is tracked by a measure.
+
+:::diagram
+id: diagram-strategy-map
+title: Strategy Map — Objectives and Their Causes
+notation: strategy-map
+:::
+
+```mermaid
+flowchart LR
+    subgraph risks["Risks & Opportunities"]
+        risk-works-council(["Works Council Risk"])
+        risk-adoption(["Adoption Risk"])
+        risk-connectivity(["Connectivity Risk"])
+        risk-rollout-timeline(["Rollout Risk"])
+        opp-location-routing(["Location Routing Opp."])
+        opp-sensor-bridge(["Sensor Bridge Opp."])
+    end
+    subgraph objectives["Objectives"]
+        obj-privacy-architecture["Privacy Architecture"]
+        obj-adoption-rate["Adoption Rate"]
+        obj-offline-resilience["Offline Resilience"]
+        obj-time-to-deployment["Rollout"]
+        obj-location-routing["Location Routing"]
+        obj-sensor-bridge["Sensor Bridge"]
+    end
+    subgraph measures["Measures"]
+        measure-works-council-approval["WC Approval"]
+        measure-adoption-rate["Adoption Rate"]
+        measure-offline-delivery["Offline Delivery"]
+        measure-site-coverage["Site Coverage"]
+        measure-routing-accuracy["Routing Accuracy"]
+        measure-sensor-integrations["Sensor Integrations"]
+    end
+
+    risk-works-council --> obj-privacy-architecture
+    risk-adoption --> obj-adoption-rate
+    risk-connectivity --> obj-offline-resilience
+    risk-rollout-timeline --> obj-time-to-deployment
+    opp-location-routing --> obj-location-routing
+    opp-sensor-bridge --> obj-sensor-bridge
+
+    obj-privacy-architecture --> measure-works-council-approval
+    obj-adoption-rate --> measure-adoption-rate
+    obj-offline-resilience --> measure-offline-delivery
+    obj-time-to-deployment --> measure-site-coverage
+    obj-location-routing --> measure-routing-accuracy
+    obj-sensor-bridge --> measure-sensor-integrations
+```
+
 ## Privacy Architecture Approved by Works Council
 
 Design a privacy model for location-based alerting that satisfies the works

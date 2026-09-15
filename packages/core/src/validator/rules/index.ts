@@ -7,11 +7,18 @@ import { w002ObjectiveNoMeasure } from "./w002-objective-no-measure.ts";
 import { w003ObjectiveNoOwner } from "./w003-objective-no-owner.ts";
 import { w004OrphanedMeasure } from "./w004-orphaned-measure.ts";
 import { w005OwnerNoAssignments } from "./w005-owner-no-assignments.ts";
+import { w006BlockWithoutProse } from "./w006-block-without-prose.ts";
+import { w007MultipleBlocksUnderHeading } from "./w007-multiple-blocks-under-heading.ts";
+import { w009BareMermaid } from "./w009-bare-mermaid.ts";
+import { w010MissingSipocInScope } from "./w010-missing-sipoc-in-scope.ts";
+import { e011UnknownDiagramElement } from "./e011-unknown-diagram-element.ts";
+import { e012SipocDiagramValidation } from "./e012-sipoc-diagram-validation.ts";
+import { e013TurtleDiagramValidation } from "./e013-turtle-diagram-validation.ts";
+import { e014StrategyMapValidation } from "./e014-strategy-map-validation.ts";
 import { h001SignalNoRiskOpportunity } from "./h001-signal-no-risk-opportunity.ts";
 import { h002ExpectationNoRiskOpportunity } from "./h002-expectation-no-risk-opportunity.ts";
 import { h003CapabilityNoProduct } from "./h003-capability-no-product.ts";
 import { h004ProductNoCapability } from "./h004-product-no-capability.ts";
-import { h005BlockWithoutProse } from "./h005-block-without-prose.ts";
 import type { Rule } from "../types.ts";
 
 export const builtinRules: readonly Rule[] = [
@@ -24,11 +31,18 @@ export const builtinRules: readonly Rule[] = [
   w003ObjectiveNoOwner,
   w004OrphanedMeasure,
   w005OwnerNoAssignments,
+  w006BlockWithoutProse,
+  w007MultipleBlocksUnderHeading,
+  w009BareMermaid,
+  w010MissingSipocInScope,
+  e011UnknownDiagramElement,
+  e012SipocDiagramValidation,
+  e013TurtleDiagramValidation,
+  e014StrategyMapValidation,
   h001SignalNoRiskOpportunity,
   h002ExpectationNoRiskOpportunity,
   h003CapabilityNoProduct,
   h004ProductNoCapability,
-  h005BlockWithoutProse,
 ];
 
 export const rulesByCode: Readonly<Record<string, Rule>> = Object.fromEntries(

@@ -46,7 +46,39 @@ export interface IgnoreNode {
   endLine: number;
 }
 
-export type AstNode = HeadingNode | ProseNode | BlockNode | IgnoreNode;
+/**
+ * A `:::diagram` block followed by a ```mermaid fence.
+ * The `notation` field comes from the `notation:` attribute; defaults to "auto".
+ * The `title` field comes from the `title:` attribute (optional).
+ */
+export interface DiagramNode {
+  kind: "diagram";
+  id: string;
+  title?: string;
+  notation: string;
+  source: string;
+  startLine: number;
+  endLine: number;
+}
+
+/**
+ * A bare ```mermaid fence without a preceding `:::diagram` block.
+ * Fires W009; still rendered in the webapp.
+ */
+export interface BareMermaidNode {
+  kind: "bare-mermaid";
+  source: string;
+  startLine: number;
+  endLine: number;
+}
+
+export type AstNode =
+  | HeadingNode
+  | ProseNode
+  | BlockNode
+  | IgnoreNode
+  | DiagramNode
+  | BareMermaidNode;
 
 export interface DocumentAst {
   filePath: string;

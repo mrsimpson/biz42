@@ -39,9 +39,13 @@ export type {
   ParseError,
   IgnoreDirective,
   SourceLocation,
+  Diagram,
 } from "./model/types.ts";
 
 export { ELEMENT_KIND_ORDER, ELEMENT_CHAPTER, CHAPTER_TITLE } from "./model/types.ts";
+
+// Re-export validateAsync for consumers who want mermaid syntax validation
+export { validateAsync } from "./validator/index.ts";
 
 export type { ReferenceIndex, Edge } from "./resolver/types.ts";
 
@@ -53,6 +57,8 @@ export type {
   HeadingNode,
   ProseNode,
   BlockNode,
+  DiagramNode,
+  BareMermaidNode,
 } from "./ast.ts";
 
 // Rule registry

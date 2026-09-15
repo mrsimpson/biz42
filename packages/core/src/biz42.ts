@@ -4,7 +4,7 @@ import { buildIndex } from "./resolver/index.ts";
 import { validate } from "./validator/index.ts";
 import { ELEMENT_KIND_ORDER } from "./model/types.ts";
 import type { Diagnostic, ValidationContext } from "./validator/types.ts";
-import type { Element } from "./model/types.ts";
+import type { Element, Diagram } from "./model/types.ts";
 import type { ReferenceIndex } from "./resolver/types.ts";
 import type { DocumentAst } from "./ast.ts";
 import type { Workspace } from "./model/types.ts";
@@ -51,6 +51,7 @@ export interface WorkspacePayload {
   elements: Element[];
   edges: ReferenceIndex["edges"];
   documents: DocumentAst[];
+  diagrams: Diagram[];
 }
 
 export function parseBusinessDocument(filePath: string, content: string): DocumentAst {
@@ -89,6 +90,7 @@ export function loadWorkspaceFromDocuments(documents: DocumentAst[]): WorkspaceP
     elements,
     edges: index.edges,
     documents: workspace.documents,
+    diagrams: workspace.diagrams,
   };
 }
 

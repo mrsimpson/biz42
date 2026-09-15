@@ -1,7 +1,8 @@
 import type { DocumentAst } from "../ast.ts";
-import type { Workspace, Element, ParseError, IgnoreDirective } from "./types.ts";
+import type { Workspace, Element, ParseError, IgnoreDirective, Diagram } from "./types.ts";
 import { ELEMENT_SCHEMAS } from "./schemas.ts";
 import type { BlockType } from "../ast.ts";
+import type { MermaidNotation } from "@biz42/mermaid";
 
 /**
  * Map a Zod parse failure into a human-friendly ParseError message.
@@ -41,6 +42,7 @@ export function buildWorkspace(documents: DocumentAst[]): Workspace {
   const elements: Element[] = [];
   const parseErrors: ParseError[] = [];
   const ignoreDirectives: IgnoreDirective[] = [];
+  const diagrams: Diagram[] = [];
 
   for (const doc of documents) {
     let currentHeading: string | undefined = undefined;
@@ -68,6 +70,26 @@ export function buildWorkspace(documents: DocumentAst[]): Workspace {
 
       if (node.kind === "prose") {
         pendingProse.push(node.text);
+        continue;
+      }
+
+      if (node.kind === "diagram") {
+        const proseText = pendingProse.length > 0 ? pendingProse.join("\n") : undefined;
+        const loc = {
+          file: doc.filePath,
+          line: node.startLine,
+          heading: currentHeading,
+          prose: proseText,
+        };
+        const notation = (node.notation || "auto") as MermaidNotation;
+        diagrams.push({ id: node.id, title: node.title, notation, source: node.source, loc });
+        pendingProse = [];
+        continue;
+      }
+
+      if (node.kind === "bare-mermaid") {
+        // bare mermaid nodes are not added to diagrams — W009 fires for them
+        pendingProse = [];
         continue;
       }
 
@@ -126,5 +148,5 @@ export function buildWorkspace(documents: DocumentAst[]): Workspace {
     }
   }
 
-  return { elements, parseErrors, documents, ignoreDirectives };
+  return { elements, parseErrors, documents, diagrams, ignoreDirectives };
 }

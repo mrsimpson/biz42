@@ -6,15 +6,22 @@ interface IgnoreMetadata {
   startLine: number;
 }
 
+interface DiagramMetadata {
+  id: string;
+  title?: string;
+  notation: string;
+  startLine: number;
+}
+
 /**
  * Line-oriented parser for .biz42.md files.
  * Parser is intentionally dumb — unknown block types are emitted as-is;
  * the meta-model builder rejects them.
  *
- * Differences from arc42-language parser:
- * - Recognises ```biz42 ... ``` fence (also accepts ```arc42 for compat)
- * - No diagram support (no :::diagram blocks, no bare mermaid)
- * - Simplified — no DiagramNode, BareMermaidNode emitted
+ * Supported constructs:
+ * - ```biz42 ... ``` fence (also accepts ```arc42 for compat)
+ * - :::diagram blocks followed by ```mermaid fences → DiagramNode
+ * - Bare ```mermaid fences (no :::diagram) → BareMermaidNode
  */
 export function parseMarkdown(filePath: string, content: string): DocumentAst {
   const lines = content.split("\n");
@@ -29,6 +36,11 @@ export function parseMarkdown(filePath: string, content: string): DocumentAst {
   let pendingIgnore: IgnoreMetadata | null = null;
   let inHtmlComment = false;
   let inBiz42Fence = false;
+
+  // Diagram parsing state
+  let pendingDiagram: DiagramMetadata | null = null; // after :::diagram, before ```mermaid
+  let inMermaidFence: { startLine: number; bare: boolean } | null = null;
+  let mermaidLines: string[] = [];
 
   for (let i = 0; i < lines.length; i++) {
     const lineNo = i + 1;
@@ -51,6 +63,37 @@ export function parseMarkdown(filePath: string, content: string): DocumentAst {
       continue;
     }
 
+    // Inside a mermaid fence — collect lines until closing ```
+    if (inMermaidFence !== null) {
+      if (/^```\s*$/.test(line)) {
+        const source = mermaidLines.join("\n");
+        if (inMermaidFence.bare) {
+          nodes.push({
+            kind: "bare-mermaid",
+            source,
+            startLine: inMermaidFence.startLine,
+            endLine: lineNo,
+          });
+        } else if (pendingDiagram !== null) {
+          nodes.push({
+            kind: "diagram",
+            id: pendingDiagram.id,
+            title: pendingDiagram.title,
+            notation: pendingDiagram.notation,
+            source,
+            startLine: pendingDiagram.startLine,
+            endLine: lineNo,
+          });
+          pendingDiagram = null;
+        }
+        inMermaidFence = null;
+        mermaidLines = [];
+        continue;
+      }
+      mermaidLines.push(line);
+      continue;
+    }
+
     // biz42 fence: ```biz42 ... ``` or ```arc42 ... ``` wraps :::blocks
     if (/^```(biz42|arc42)\s*$/.test(line)) {
       inBiz42Fence = true;
@@ -58,6 +101,19 @@ export function parseMarkdown(filePath: string, content: string): DocumentAst {
     }
     if (inBiz42Fence && /^```\s*$/.test(line)) {
       inBiz42Fence = false;
+      continue;
+    }
+
+    // Bare mermaid fence (not inside a biz42 fence, no pending :::diagram)
+    if (/^```mermaid\s*$/.test(line)) {
+      if (pendingDiagram !== null) {
+        // A :::diagram was open — start collecting as DiagramNode
+        inMermaidFence = { startLine: lineNo, bare: false };
+      } else {
+        // No :::diagram — bare mermaid
+        inMermaidFence = { startLine: lineNo, bare: true };
+      }
+      mermaidLines = [];
       continue;
     }
 
@@ -109,6 +165,15 @@ export function parseMarkdown(filePath: string, content: string): DocumentAst {
             startLine: openBlock.startLine,
             endLine: lineNo,
           });
+        } else if (openBlock.blockType === "diagram") {
+          // :::diagram block closed — set up pendingDiagram to capture the following mermaid fence
+          const attrs = openBlock.attributes;
+          pendingDiagram = {
+            id: attrs["id"] ?? "",
+            notation: attrs["notation"] ?? "auto",
+            title: attrs["title"],
+            startLine: openBlock.startLine,
+          };
         } else {
           nodes.push({
             kind: "block",

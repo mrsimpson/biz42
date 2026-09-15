@@ -57,12 +57,9 @@ export const ScopeSchema = z
       .string()
       .optional()
       .meta({ description: "What is explicitly within this scope (comma-separated or free text)" }),
-    excluded: z
-      .string()
-      .optional()
-      .meta({
-        description: "What is explicitly outside this scope (comma-separated or free text)",
-      }),
+    excluded: z.string().optional().meta({
+      description: "What is explicitly outside this scope (comma-separated or free text)",
+    }),
     parent: z
       .string()
       .optional()

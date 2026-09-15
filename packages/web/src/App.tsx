@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import type { WorkspacePayload } from "./types.ts";
 import { ELEMENT_KIND_ORDER, ELEMENT_CHAPTER, CHAPTER_TITLE } from "@biz42/core";
-import type { Element, BlockType } from "@biz42/core";
+import type { Element, BlockType, Diagram } from "@biz42/core";
+import { DiagramView } from "./DiagramView.tsx";
 import "./styles.css";
 
 // ---------------------------------------------------------------------------
@@ -39,6 +40,8 @@ const KIND_COLOR: Record<string, string> = {
 function kindColor(kind: string): string {
   return KIND_COLOR[kind] ?? "#555";
 }
+
+
 
 // ---------------------------------------------------------------------------
 // Agent-view JSON card
@@ -243,6 +246,56 @@ export function App() {
     return () => es.close();
   }, []);
 
+  // Handle hash navigation from clickable diagram nodes: #chapter-{n}-{elementId}
+  useEffect(() => {
+    function handleHashChange() {
+      const hash = window.location.hash;
+      const match = /^#chapter-(\d+)-/.exec(hash);
+      if (match) {
+        const chapter = parseInt(match[1]!, 10);
+        setActiveChapter(chapter);
+      }
+    }
+    // Handle initial hash on load
+    handleHashChange();
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
+
+  // All useMemo hooks must be called unconditionally — before any early returns
+  const elementsByChapter = useMemo(() => {
+    const map = new Map<number, Element[]>();
+    for (const el of payload?.elements ?? []) {
+      const ch = ELEMENT_CHAPTER[el.kind as BlockType];
+      if (!map.has(ch)) map.set(ch, []);
+      map.get(ch)!.push(el);
+    }
+    return map;
+  }, [payload?.elements]);
+
+  const chapterMap = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const el of payload?.elements ?? []) {
+      map.set(el.id, ELEMENT_CHAPTER[el.kind as BlockType]);
+    }
+    return map;
+  }, [payload?.elements]);
+
+  // Map diagrams to chapters by parsing the filename prefix (02-signals.biz42.md → chapter 2)
+  const diagramsByChapter = useMemo(() => {
+    const map = new Map<number, Diagram[]>();
+    for (const d of payload?.diagrams ?? []) {
+      const basename = d.loc.file.split("/").pop() ?? "";
+      const m = /^(\d+)-/.exec(basename);
+      if (m) {
+        const ch = parseInt(m[1]!, 10);
+        if (!map.has(ch)) map.set(ch, []);
+        map.get(ch)!.push(d);
+      }
+    }
+    return map;
+  }, [payload?.diagrams]);
+
   if (error) {
     return (
       <div style={{ padding: 32, color: "#dc2626" }}>
@@ -255,13 +308,7 @@ export function App() {
     return <div style={{ padding: 32, color: "#888" }}>Loading…</div>;
   }
 
-  // Group by chapter
-  const elementsByChapter = new Map<number, Element[]>();
-  for (const el of payload.elements) {
-    const ch = ELEMENT_CHAPTER[el.kind as BlockType];
-    if (!elementsByChapter.has(ch)) elementsByChapter.set(ch, []);
-    elementsByChapter.get(ch)!.push(el);
-  }
+  const diagramsForChapter = activeChapter !== null ? (diagramsByChapter.get(activeChapter) ?? []) : [];
 
   // Filter elements to display
   const displayElements =
@@ -324,6 +371,20 @@ export function App() {
             </button>
           </div>
         </div>
+
+        {/* Diagrams (scope chapter) */}
+        {diagramsForChapter.length > 0 && (
+          <div style={{ marginBottom: 24 }}>
+            {diagramsForChapter.map((d: Diagram) => (
+              <DiagramView
+                key={d.id}
+                diagram={d}
+                elements={payload.elements}
+                chapterMap={chapterMap}
+              />
+            ))}
+          </div>
+        )}
 
         {/* Element list */}
         {displayElements.length === 0 ? (

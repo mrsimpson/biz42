@@ -1,6 +1,7 @@
 // Meta-model element types for biz42
 
 import type { BlockType, DocumentAst } from "../ast.ts";
+import type { MermaidNotation } from "@biz42/mermaid";
 import { z } from "zod";
 import {
   ELEMENT_SCHEMAS,
@@ -167,11 +168,22 @@ export interface IgnoreDirective {
   used: boolean;
 }
 
+/** A diagram extracted from a `:::diagram` block in a biz42 document. */
+export interface Diagram {
+  id: string;
+  title?: string;
+  notation: MermaidNotation;
+  source: string;
+  loc: SourceLocation;
+}
+
 export interface Workspace {
   elements: Element[];
   parseErrors: ParseError[];
   /** Raw parsed documents — used by structure-aware validation rules */
   documents: DocumentAst[];
+  /** Diagrams extracted from :::diagram blocks */
+  diagrams: Diagram[];
   /** Document-scoped ignore directives extracted by the builder */
   ignoreDirectives?: IgnoreDirective[];
 }
