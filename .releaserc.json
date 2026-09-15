@@ -12,7 +12,7 @@
     [
       "@semantic-release/exec",
       {
-        "prepareCmd": "pnpm --filter @biz42/cli exec npm version ${nextRelease.version} --no-git-tag-version",
+        "prepareCmd": "pnpm --filter @biz42/cli exec npm version ${nextRelease.version} --no-git-tag-version --allow-same-version",
         "publishCmd": "pnpm --filter @biz42/cli publish --access public --no-git-checks --provenance"
       }
     ],
