@@ -18,7 +18,13 @@ import { extractMermaidSubgraphIds, sourceContainsId } from "../mermaid-utils.ts
  *   e.g. sipoc-supplier, sipoc-input, sipoc-process, sipoc-output, sipoc-customer
  */
 
-const SIPOC_SLOTS = ["sipoc-supplier", "sipoc-input", "sipoc-process", "sipoc-output", "sipoc-customer"] as const;
+const SIPOC_SLOTS = [
+  "sipoc-supplier",
+  "sipoc-input",
+  "sipoc-process",
+  "sipoc-output",
+  "sipoc-customer",
+] as const;
 type SipocSlot = (typeof SIPOC_SLOTS)[number];
 
 const SIPOC_ELEMENT_KINDS: Record<SipocSlot, string[]> = {
@@ -71,9 +77,7 @@ export const e012SipocDiagramValidation: Rule = {
         if (!subgraphIds.has(slot)) continue; // already reported above
 
         const allowedKinds = SIPOC_ELEMENT_KINDS[slot];
-        const matchingElements = workspace.elements.filter((e) =>
-          allowedKinds.includes(e.kind),
-        );
+        const matchingElements = workspace.elements.filter((e) => allowedKinds.includes(e.kind));
 
         const anyFound = matchingElements.some((e) => sourceContainsId(diagram.source, e.id));
         if (!anyFound) {

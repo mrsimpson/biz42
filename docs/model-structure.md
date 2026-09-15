@@ -14,7 +14,7 @@ A minimal, outside-in model of a business. Each section describes one model elem
 
 **Structure:** A description of what is included, a description of what is excluded, and the rationale for each exclusion.
 
-**Relates to:** Scope bounds everything that follows. *Signals* and *Expectations* are only relevant if they fall within scope. *Products & Services*, *Capabilities*, and *Objectives* must stay within scope or the scope must be revised.
+**Relates to:** Scope bounds everything that follows. _Signals_ and _Expectations_ are only relevant if they fall within scope. _Products & Services_, _Capabilities_, and _Objectives_ must stay within scope or the scope must be revised.
 
 ---
 
@@ -26,7 +26,7 @@ A minimal, outside-in model of a business. Each section describes one model elem
 
 **Structure:** Each signal has a name, a source (external/internal), and a description of the observed condition.
 
-**Relates to:** Each signal may give rise to one or more *Risks* or *Opportunities*.
+**Relates to:** Each signal may give rise to one or more _Risks_ or _Opportunities_.
 
 ---
 
@@ -38,7 +38,7 @@ A minimal, outside-in model of a business. Each section describes one model elem
 
 **Structure:** Each expectation has a named interested party, a description of what they expect, and an indication of whether the expectation is mandatory (regulatory, contractual) or desired.
 
-**Relates to:** Each expectation may give rise to one or more *Risks* or *Opportunities*.
+**Relates to:** Each expectation may give rise to one or more _Risks_ or _Opportunities_.
 
 ---
 
@@ -46,11 +46,11 @@ A minimal, outside-in model of a business. Each section describes one model elem
 
 **ISO 9001 mapping:** Clause 6.1 — Actions to address risks and opportunities
 
-**What it is:** Something that could prevent the business from achieving its objectives, reduce customer satisfaction, or cause harm. A risk is always an interpretation of one or more *Signals* or *Expectations* — the same signal can be a risk for one business and irrelevant to another.
+**What it is:** Something that could prevent the business from achieving its objectives, reduce customer satisfaction, or cause harm. A risk is always an interpretation of one or more _Signals_ or _Expectations_ — the same signal can be a risk for one business and irrelevant to another.
 
 **Structure:** Each risk has a name, a description, a reference to the signal(s) or expectation(s) it arises from, and an assessment of its potential impact.
 
-**Relates to:** Each risk should be addressed by at least one *Objective*. May affect one or more *Capabilities* or *Products & Services*.
+**Relates to:** Each risk should be addressed by at least one _Objective_. May affect one or more _Capabilities_ or _Products & Services_.
 
 ---
 
@@ -58,11 +58,11 @@ A minimal, outside-in model of a business. Each section describes one model elem
 
 **ISO 9001 mapping:** Clause 6.1 — Actions to address risks and opportunities
 
-**What it is:** Something the business could capitalize on to improve outcomes, gain advantage, or grow. Like a risk, an opportunity is an interpretation of one or more *Signals* or *Expectations*.
+**What it is:** Something the business could capitalize on to improve outcomes, gain advantage, or grow. Like a risk, an opportunity is an interpretation of one or more _Signals_ or _Expectations_.
 
 **Structure:** Each opportunity has a name, a description, a reference to the signal(s) or expectation(s) it arises from, and an assessment of its potential value.
 
-**Relates to:** Each opportunity should be addressed by at least one *Objective*. May require one or more *Capabilities* and result in new or changed *Products & Services*.
+**Relates to:** Each opportunity should be addressed by at least one _Objective_. May require one or more _Capabilities_ and result in new or changed _Products & Services_.
 
 ---
 
@@ -72,9 +72,9 @@ A minimal, outside-in model of a business. Each section describes one model elem
 
 **What it is:** A measurable, time-bound commitment the business makes in response to its risks and opportunities. ISO 9001 requires each objective to have an owner, a target, a timeframe, allocated resources, and a method of evaluation.
 
-**Structure:** Each objective has a name, a measurable target, a deadline, an *Owner*, and a reference to the risk(s) or opportunity/opportunities it addresses.
+**Structure:** Each objective has a name, a measurable target, a deadline, an _Owner_, and a reference to the risk(s) or opportunity/opportunities it addresses.
 
-**Relates to:** Each objective has at least one *Measure*. Achievement of objectives may require one or more *Capabilities*. Each objective is assigned to exactly one *Owner*.
+**Relates to:** Each objective has at least one _Measure_. Achievement of objectives may require one or more _Capabilities_. Each objective is assigned to exactly one _Owner_.
 
 ---
 
@@ -84,9 +84,9 @@ A minimal, outside-in model of a business. Each section describes one model elem
 
 **What it is:** How the business knows whether an objective is being achieved. A measure defines what is monitored, how, when, and what constitutes success or failure.
 
-**Structure:** Each measure has a name, the method of measurement, the frequency of evaluation, and success/failure criteria. Each measure references the *Objective* it evaluates.
+**Structure:** Each measure has a name, the method of measurement, the frequency of evaluation, and success/failure criteria. Each measure references the _Objective_ it evaluates.
 
-**Relates to:** Measures feed into *Evaluation* (section 11). A measure without an objective is orphaned; an objective without a measure is unverifiable.
+**Relates to:** Measures feed into _Evaluation_ (section 11). A measure without an objective is orphaned; an objective without a measure is unverifiable.
 
 ---
 
@@ -96,9 +96,9 @@ A minimal, outside-in model of a business. Each section describes one model elem
 
 **What it is:** A person or role accountable for achieving an objective, maintaining a capability, or delivering a product or service. Ownership means accountability for outcomes, authority to act, and responsibility to report.
 
-**Structure:** Each owner has a name or role title, a description of their accountability, and references to the *Objectives*, *Capabilities*, or *Products & Services* they are accountable for.
+**Structure:** Each owner has a name or role title, a description of their accountability, and references to the _Objectives_, _Capabilities_, or _Products & Services_ they are accountable for.
 
-**Relates to:** Every *Objective* must have an *Owner*. *Capabilities* and *Products & Services* should have an *Owner*. An owner without any assigned element has no purpose in the model.
+**Relates to:** Every _Objective_ must have an _Owner_. _Capabilities_ and _Products & Services_ should have an _Owner_. An owner without any assigned element has no purpose in the model.
 
 ---
 
@@ -108,9 +108,9 @@ A minimal, outside-in model of a business. Each section describes one model elem
 
 **What it is:** Something the business can do — an ability it possesses or needs to acquire. Capabilities are abstract and shared: multiple products may draw on the same capability, and a single capability may serve multiple objectives.
 
-**Structure:** Each capability has a name, a description, a status (existing, planned, or gap), and an *Owner*. Each capability references the *Objective(s)* it supports and the *Product(s) & Service(s)* it enables.
+**Structure:** Each capability has a name, a description, a status (existing, planned, or gap), and an _Owner_. Each capability references the _Objective(s)_ it supports and the _Product(s) & Service(s)_ it enables.
 
-**Relates to:** Capabilities enable *Products & Services*. Objectives may require specific capabilities. A gap between required and existing capabilities is a strategic finding.
+**Relates to:** Capabilities enable _Products & Services_. Objectives may require specific capabilities. A gap between required and existing capabilities is a strategic finding.
 
 ---
 
@@ -118,11 +118,11 @@ A minimal, outside-in model of a business. Each section describes one model elem
 
 **ISO 9001 mapping:** Clause 8 — Operation (what is offered; not how it is produced)
 
-**What it is:** What the business offers to its customers. The tangible output that meets *Expectations*, delivers on *Objectives*, and draws on *Capabilities*.
+**What it is:** What the business offers to its customers. The tangible output that meets _Expectations_, delivers on _Objectives_, and draws on _Capabilities_.
 
-**Structure:** Each product or service has a name, a description, an *Owner*, and references to the *Capabilities* it requires and the *Expectations* it fulfills.
+**Structure:** Each product or service has a name, a description, an _Owner_, and references to the _Capabilities_ it requires and the _Expectations_ it fulfills.
 
-**Relates to:** Products & Services fulfill *Expectations*. They draw on *Capabilities*. They are shaped by *Objectives*.
+**Relates to:** Products & Services fulfill _Expectations_. They draw on _Capabilities_. They are shaped by _Objectives_.
 
 ---
 
@@ -130,11 +130,11 @@ A minimal, outside-in model of a business. Each section describes one model elem
 
 **ISO 9001 mapping:** Clause 9 — Performance evaluation
 
-**What it is:** The practice of reviewing *Measures* to determine whether *Objectives* are being met, whether *Risks* are under control, and whether *Opportunities* are being realized.
+**What it is:** The practice of reviewing _Measures_ to determine whether _Objectives_ are being met, whether _Risks_ are under control, and whether _Opportunities_ are being realized.
 
-**Structure:** Not a list of entities but a described practice: what is reviewed, how often, and by whom. References the *Measures* it evaluates.
+**Structure:** Not a list of entities but a described practice: what is reviewed, how often, and by whom. References the _Measures_ it evaluates.
 
-**Relates to:** Evaluation findings feed into *Improvements*.
+**Relates to:** Evaluation findings feed into _Improvements_.
 
 ---
 
@@ -144,9 +144,9 @@ A minimal, outside-in model of a business. Each section describes one model elem
 
 **What it is:** What the business changes when evaluation reveals a gap, a failure, or a better way. Includes corrective actions (fixing what went wrong) and continual improvement (making things better even when they're not broken).
 
-**Structure:** Each improvement has a description, a reference to the *Evaluation* finding that triggered it, and a target (which *Capability*, *Product/Service*, or *Objective* is being changed).
+**Structure:** Each improvement has a description, a reference to the _Evaluation_ finding that triggered it, and a target (which _Capability_, _Product/Service_, or _Objective_ is being changed).
 
-**Relates to:** Improvements may create new *Signals* (internal), modify *Capabilities*, change *Products & Services*, or revise *Objectives*. This closes the loop back to the top of the model.
+**Relates to:** Improvements may create new _Signals_ (internal), modify _Capabilities_, change _Products & Services_, or revise _Objectives_. This closes the loop back to the top of the model.
 
 ---
 
@@ -179,7 +179,7 @@ Scope (bounds everything below)
 ## ISO 9001:2015 Coverage
 
 | Model Element     | ISO Clause | Covered |
-|-------------------|------------|---------|
+| ----------------- | ---------- | ------- |
 | Scope             | 4.3        | ✓       |
 | Signals           | 4.1        | ✓       |
 | Expectations      | 4.2        | ✓       |
@@ -193,13 +193,13 @@ Scope (bounds everything below)
 | Evaluation        | 9          | ✓       |
 | Improvements      | 10         | ✓       |
 
-| Excluded                        | ISO Clause   | Reason                    |
-|---------------------------------|--------------|---------------------------|
-| Processes                       | 4.4, 8.x    | Implementation detail     |
-| Quality policy                  | 5.2          | Governance detail         |
-| Awareness & communication       | 7.3, 7.4    | Operational practice      |
-| Documented information          | 7.5          | Operational practice      |
-| Change planning                 | 6.3          | Meta-level concern        |
-| Design/development procedures   | 8.3          | Implementation detail     |
-| External provider management    | 8.4          | Implementation detail     |
-| Nonconforming output handling   | 8.7          | Implementation detail     |
+| Excluded                      | ISO Clause | Reason                |
+| ----------------------------- | ---------- | --------------------- |
+| Processes                     | 4.4, 8.x   | Implementation detail |
+| Quality policy                | 5.2        | Governance detail     |
+| Awareness & communication     | 7.3, 7.4   | Operational practice  |
+| Documented information        | 7.5        | Operational practice  |
+| Change planning               | 6.3        | Meta-level concern    |
+| Design/development procedures | 8.3        | Implementation detail |
+| External provider management  | 8.4        | Implementation detail |
+| Nonconforming output handling | 8.7        | Implementation detail |

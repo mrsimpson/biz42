@@ -25,8 +25,7 @@ export const e014StrategyMapValidation: Rule = {
     severity: "error",
     type: "problem",
     docs: {
-      description:
-        "Strategy map diagram must reference at least one objective and one measure",
+      description: "Strategy map diagram must reference at least one objective and one measure",
       rationale:
         "A strategy map without objective ids has no connection to the business model's commitment layer. Without measure ids, success criteria are absent and the map cannot support performance review. Both are required for the diagram to be a useful strategic artefact.",
       biz42Chapter: 0,

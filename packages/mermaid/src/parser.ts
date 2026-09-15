@@ -20,6 +20,9 @@ const diagramHeaders: Record<MermaidParseRequest["notation"], string[]> = {
   flowchart: ["flowchart", "graph"],
   class: ["classDiagram"],
   auto: [],
+  sipoc: ["flowchart", "graph"],
+  turtle: ["flowchart", "graph"],
+  "strategy-map": ["flowchart", "graph"],
 };
 
 function normalizeError(error: unknown): string {

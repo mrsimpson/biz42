@@ -85,9 +85,7 @@ export function extractMermaidEdges(source: string): MermaidEdge[] {
   for (const line of lines) {
     if (!line.includes("-->")) continue;
     // Strip inline node definition from source side
-    const stripped = line
-      .trim()
-      .replace(/^([a-zA-Z][a-zA-Z0-9_-]*)(?:\s*[[(][^\])\n]*)/, "$1");
+    const stripped = line.trim().replace(/^([a-zA-Z][a-zA-Z0-9_-]*)(?:\s*[[(][^\])\n]*)/, "$1");
 
     const withLabel =
       /^([a-zA-Z][a-zA-Z0-9_-]*)\s*-->\s*\|"?([^"|]*)["?]\|\s*([a-zA-Z][a-zA-Z0-9_-]*)/.exec(
@@ -103,8 +101,7 @@ export function extractMermaidEdges(source: string): MermaidEdge[] {
       continue;
     }
 
-    const noLabel =
-      /^([a-zA-Z][a-zA-Z0-9_-]*)\s*-->\s*([a-zA-Z][a-zA-Z0-9_-]*)/.exec(stripped);
+    const noLabel = /^([a-zA-Z][a-zA-Z0-9_-]*)\s*-->\s*([a-zA-Z][a-zA-Z0-9_-]*)/.exec(stripped);
     if (noLabel) {
       const from = noLabel[1]!;
       const to = noLabel[2]!;

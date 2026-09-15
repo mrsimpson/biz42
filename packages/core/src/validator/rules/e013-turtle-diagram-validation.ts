@@ -54,9 +54,7 @@ export const e013TurtleDiagramValidation: Rule = {
       if (!diagram.source.trim()) continue;
 
       for (const slot of TURTLE_SLOTS) {
-        const matchingElements = workspace.elements.filter((e) =>
-          slot.kinds.includes(e.kind),
-        );
+        const matchingElements = workspace.elements.filter((e) => slot.kinds.includes(e.kind));
         const anyFound = matchingElements.some((e) => sourceContainsId(diagram.source, e.id));
         if (!anyFound) {
           diagnostics.push({

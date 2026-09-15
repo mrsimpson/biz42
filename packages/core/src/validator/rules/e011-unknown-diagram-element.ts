@@ -51,8 +51,7 @@ export const e011UnknownDiagramElement: Rule = {
     severity: "error",
     type: "problem",
     docs: {
-      description:
-        "Diagram references an element id that does not exist in the workspace",
+      description: "Diagram references an element id that does not exist in the workspace",
       rationale:
         "A diagram node that uses a biz42 element id as its Mermaid node id creates a semantic link between the diagram and the model. If the element does not exist, the diagram is inconsistent with the model — it describes a relationship that has no backing entity.",
       biz42Chapter: 0,

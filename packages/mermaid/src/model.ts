@@ -1,5 +1,13 @@
 /** Mermaid notation understood by the biz42 syntax boundary. */
-export type MermaidNotation = "architecture" | "sequence" | "flowchart" | "class" | "auto";
+export type MermaidNotation =
+  | "architecture"
+  | "sequence"
+  | "flowchart"
+  | "class"
+  | "auto"
+  | "sipoc"
+  | "turtle"
+  | "strategy-map";
 
 export interface MermaidParseRequest {
   notation: MermaidNotation;

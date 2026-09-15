@@ -8,7 +8,7 @@ files that document an organisation's strategy using the biz42 DSL.
 Each chapter is a separate `.biz42.md` file. Blocks use `:::type ... :::` syntax
 inside optional ` ```biz42 ``` ` fences:
 
-```markdown
+````markdown
 ```biz42
 :::objective
 id: obj-example
@@ -19,6 +19,8 @@ owner: owner-cto
 requires: capability-foo
 :::
 ```
+````
+
 ```
 
 ## 12 Block types
@@ -41,15 +43,17 @@ requires: capability-foo
 ## Traceability chain
 
 ```
+
 signal ──surfaces──▶ risk/opportunity ◀──surfaces── expectation
-                            │
-                       addresses
-                            ▼
-                        objective ──measured-by──▶ measure
-                                   ──owner──▶ owner
-                                   ──requires──▶ capability ◀──enables── product
+│
+addresses
+▼
+objective ──measured-by──▶ measure
+──owner──▶ owner
+──requires──▶ capability ◀──enables── product
 improvement ──addresses──▶ objective | risk | measure
-```
+
+````
 
 ## Key field reference
 
@@ -84,17 +88,19 @@ biz42 init skill [--path <dest>]             # install this SKILL.md
 biz42 serve [--port 3142] [--open]           # open SPA in browser
 biz42 build --out <dir>                      # static SPA export
 biz42 guide [migration|chapter <n>]          # authoring guidance
-```
+````
 
 ## Validation rules quick reference
 
 **Errors (E):**
+
 - E001 Duplicate element id
 - E002 Unresolved cross-reference
 - E003 Unknown block type / missing required field
 - E004 Element in wrong chapter file
 
 **Warnings (W):**
+
 - W001 Risk not addressed by any objective
 - W002 Objective has no measured-by entries
 - W003 Objective has no owner
@@ -102,6 +108,7 @@ biz42 guide [migration|chapter <n>]          # authoring guidance
 - W005 Owner not assigned to any objective
 
 **Hints (H):**
+
 - H001 Signal has no `surfaces` entries — not linked to any risk or opportunity
 - H002 Expectation has no `surfaces` entries — not linked to any risk or opportunity
 - H003 Capability not enabled by any product

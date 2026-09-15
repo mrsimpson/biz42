@@ -11,6 +11,11 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "outDir": "dist"
-  }
+    "outDir": "dist",
+    "noEmit": true,
+    "customConditions": ["development"],
+    "allowImportingTsExtensions": true,
+    "esModuleInterop": true
+  },
+  "exclude": ["packages/web"]
 }
