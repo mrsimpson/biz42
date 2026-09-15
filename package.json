@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "build": "pnpm run check:templates && vp run -r build",
+    "build:site": "pnpm --filter @biz42/site run build",
+    "docs:preview": "node --experimental-strip-types --no-warnings scripts/docs-preview.mjs",
     "test": "vp test",
     "test:e2e": "pnpm --filter @biz42/web test:e2e",
     "check": "pnpm run check:templates && vp check",

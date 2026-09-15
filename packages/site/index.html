@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>biz42 — Plain-text business model for the age of coding agents</title>
+    <meta
+      name="description"
+      content="A plain-text, outside-in model for describing a business. Makes the chain from business goal to product to feature explicit, traceable, and readable by both humans and machines."
+    />
+    <script>
+      // Apply theme before React hydrates to avoid flash of wrong theme
+      (function () {
+        var stored = localStorage.getItem("theme");
+        if (stored === "dark" || stored === "light") {
+          document.documentElement.setAttribute("data-theme", stored);
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

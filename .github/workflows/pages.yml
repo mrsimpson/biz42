@@ -39,9 +39,15 @@ jobs:
       - name: Build all packages
         run: pnpm run build
 
+      - name: Build landing page
+        run: pnpm run build:site
+        env:
+          VITE_BASE: /biz42/
+
       - name: Assemble site
         run: |
           mkdir -p site
+          cp -r packages/site/dist/. site/
           node packages/cli/dist/cli.mjs --dir docs/arc42 build --out site/docs --base /biz42/docs/
           node packages/cli/dist/cli.mjs --dir examples/acme-emergency build --out site/acme-emergency --base /biz42/acme-emergency/
 
