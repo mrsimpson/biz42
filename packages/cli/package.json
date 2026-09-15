@@ -1,5 +1,5 @@
 {
-  "name": "@doctc/biz42",
+  "name": "@biz42/cli",
   "version": "0.0.1",
   "description": "CLI for validating and querying biz42 DSL files.",
   "keywords": [

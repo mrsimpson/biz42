@@ -4,13 +4,13 @@ export function Footer() {
       <div className="footer__inner">
         <div className="footer__badges">
           <a
-            href="https://www.npmjs.com/package/@doctc/biz42"
+            href="https://www.npmjs.com/package/@biz42/cli"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="npm package"
           >
             <img
-              src="https://img.shields.io/npm/v/@doctc/biz42?style=flat-square&label=npm&color=3b82f6"
+              src="https://img.shields.io/npm/v/@biz42/cli?style=flat-square&label=npm&color=3b82f6"
               alt="npm version"
               height="20"
             />

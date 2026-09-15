@@ -26,7 +26,7 @@ addresses: qg-readability, qg-agent-writability
 ## Monorepo to Ship One Source of Truth to Multiple Audiences
 
 The toolchain is split into `@biz42/core` (parser, model, validator, renderer),
-`@doctc/biz42` (human-facing command-line tool), and `@biz42/skill` (agent-facing skill and
+`@biz42/cli` (human-facing command-line tool), and `@biz42/skill` (agent-facing skill and
 templates) — all in one monorepo. This structure lets a single source of truth produce
 artefacts for three distinct audiences: agents consuming the skill and templates, humans
 using the CLI, and documentation consumers reading the rendered output. A separate-repo

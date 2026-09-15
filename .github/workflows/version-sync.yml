@@ -36,7 +36,7 @@ jobs:
       - name: Sync version from release tag
         run: |
           VERSION=${GITHUB_REF_NAME#v}
-          pnpm --filter @doctc/biz42 exec npm version "$VERSION" --no-git-tag-version
+          pnpm --filter @biz42/cli exec npm version "$VERSION" --no-git-tag-version
           git config user.email "action@github.com"
           git config user.name "GitHub Action"
           git add packages/cli/package.json

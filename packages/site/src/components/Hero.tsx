@@ -21,7 +21,7 @@ function copyToClipboard(text: string): Promise<void> {
 
 export function Hero() {
   const [copied, setCopied] = useState(false);
-  const startCmd = "npx @doctc/biz42 --help";
+  const startCmd = "npx skills add mrsimpson/biz42";
 
   const handleCopy = () => {
     copyToClipboard(startCmd)
@@ -46,7 +46,7 @@ export function Hero() {
         <p className="hero__sub">
           Plain-text. Outside-in. Traceable from business goal to product to feature.
         </p>
-        <div className="hero__install" role="group" aria-label="Install command">
+        <div className="hero__install" role="group" aria-label="Install skill command">
           <span className="hero__install-prompt">$</span>
           <code>{startCmd}</code>
           <button

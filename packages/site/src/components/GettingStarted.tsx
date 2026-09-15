@@ -30,7 +30,7 @@ export function GettingStarted() {
               developer for business context — not everything can be derived from the repo.
             </p>
             <div className="gs__snippet">
-              <code>npx @doctc/biz42 --help</code>
+              <code>npx @biz42/cli --help</code>
             </div>
           </div>
         </div>

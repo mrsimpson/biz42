@@ -17,7 +17,7 @@ addresses: qg-readability, qg-agent-writability, qg-verifiability, qg-extensibil
 
 ## Focused Package Boundaries
 
-The toolchain is organized as a monorepo of focused packages: `@biz42/core`, `@doctc/biz42`, and
+The toolchain is organized as a monorepo of focused packages: `@biz42/core`, `@biz42/cli`, and
 `@biz42/skill`. Core owns the parser, document model, reference graph, validation, and rendering;
 the CLI provides the executable interface for humans, agents, and CI; and the skill gives agents
 the architecture guidance they need. This keeps consumers thin and preserves one source of truth
