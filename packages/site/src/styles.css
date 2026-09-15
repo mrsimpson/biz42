@@ -617,6 +617,11 @@ code {
   text-decoration: none;
 }
 
+/* ─── Intro section ───────────────────────────────────────────────────────────── */
+.intro__body {
+  max-width: 720px;
+}
+
 /* ─── Responsive ──────────────────────────────────────────────────────────────── */
 @media (max-width: 640px) {
   .features,

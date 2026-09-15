@@ -3,6 +3,7 @@ import { Hero } from "./components/Hero";
 import { GettingStarted } from "./components/GettingStarted";
 import { FeatureStrip } from "./components/FeatureStrip";
 import { ModelSection } from "./components/ModelSection";
+import { IntroSection } from "./components/IntroSection";
 import { LiveSection } from "./components/LiveSection";
 import { Footer } from "./components/Footer";
 
@@ -15,6 +16,7 @@ export function App() {
         <GettingStarted />
         <FeatureStrip />
         <ModelSection />
+        <IntroSection />
         <LiveSection />
       </main>
       <Footer />

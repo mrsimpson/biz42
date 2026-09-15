@@ -20,14 +20,13 @@ export function Nav() {
           <a href="#model" className="nav__link">
             The Model
           </a>
+          <a href="#introduction" className="nav__link">
+            Why biz42
+          </a>
           <a href="#examples" className="nav__link">
             Examples
           </a>
-          <a
-            href="https://github.com/docToolchain/biz42#readme"
-            target="_blank"
-            className="nav__link"
-          >
+          <a href="https://github.com/mrsimpson/biz42#readme" target="_blank" className="nav__link">
             README ↗
           </a>
         </div>
