@@ -165,7 +165,6 @@ function renderFields(el: Element): React.ReactNode {
       if (el.mitigation) fields.push(["mitigation", el.mitigation]);
       break;
     case "opportunity":
-      if (el.description) fields.push(["description", el.description]);
       break;
     case "objective":
       if (el.addresses?.length) fields.push(["addresses", el.addresses.join(", ")]);
@@ -181,18 +180,15 @@ function renderFields(el: Element): React.ReactNode {
       break;
     case "capability":
       if (el.status) fields.push(["status", el.status]);
-      if (el.description) fields.push(["description", el.description]);
       break;
     case "product":
       if (el.enables?.length) fields.push(["enables", el.enables.join(", ")]);
-      if (el.description) fields.push(["description", el.description]);
       break;
     case "evaluation":
       if (el.method) fields.push(["method", el.method]);
       break;
     case "improvement":
       if (el.addresses?.length) fields.push(["addresses", el.addresses.join(", ")]);
-      if (el.description) fields.push(["description", el.description]);
       break;
   }
 
