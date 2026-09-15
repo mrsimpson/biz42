@@ -13,4 +13,8 @@ export default defineConfig({
   run: {
     cache: true,
   },
+  test: {
+    // Exclude Playwright test files — they run via `playwright test`, not vitest.
+    exclude: ["**/node_modules/**", "**/dist/**", "**/packages/web/tests/**"],
+  },
 });
