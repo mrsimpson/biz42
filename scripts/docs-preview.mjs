@@ -18,6 +18,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, "..");
 const outDir = join(root, ".docs-preview");
 const cliMjs = join(root, "packages/cli/dist/cli.mjs");
+const arc42Bin = join(root, "node_modules/.bin/arc42");
 const siteDir = join(root, "packages/site/dist");
 
 const { values } = parseArgs({
@@ -57,7 +58,7 @@ mkdirSync(join(outDir, "biz42"), { recursive: true });
 cpSync(siteDir, join(outDir, "biz42"), { recursive: true });
 
 run(
-  `node "${cliMjs}" --dir docs/arc42 build --out "${join(outDir, "biz42", "docs")}" --base /biz42/docs/`,
+  `node "${arc42Bin}" --dir docs/arc42 build --out "${join(outDir, "biz42", "docs")}" --base /biz42/docs/`,
 );
 run(
   `node "${cliMjs}" --dir examples/acme-emergency build --out "${join(outDir, "biz42", "acme-emergency")}" --base /biz42/acme-emergency/`,

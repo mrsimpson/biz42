@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "@biz42/workspace-fs": "workspace:*",
+    "@doctc/arc42": "catalog:",
     "@semantic-release/changelog": "catalog:",
     "@semantic-release/exec": "catalog:",
     "@semantic-release/github": "catalog:",

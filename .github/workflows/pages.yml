@@ -48,7 +48,7 @@ jobs:
         run: |
           mkdir -p site
           cp -r packages/site/dist/. site/
-          node packages/cli/dist/cli.mjs --dir docs/arc42 build --out site/docs --base /biz42/docs/
+          node_modules/.bin/arc42 --dir docs/arc42 build --out site/docs --base /biz42/docs/
           node packages/cli/dist/cli.mjs --dir examples/acme-emergency build --out site/acme-emergency --base /biz42/acme-emergency/
 
       - name: Upload Pages artifact

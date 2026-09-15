@@ -13,7 +13,7 @@ export function GettingStarted() {
             <h3 className="gs__card-title">Install the skill</h3>
             <p className="gs__card-desc">Make your agent familiar with the biz42 model and CLI.</p>
             <div className="gs__snippet">
-              <code>npx skills add docToolchain/biz42</code>
+              <code>npx skills add mrsimpson/biz42</code>
             </div>
             <h3 className="gs__card-title">Model your business with your agent</h3>
             <div className="gs__snippet">
