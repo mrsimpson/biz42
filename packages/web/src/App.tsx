@@ -128,6 +128,26 @@ export function App() {
     return () => es.close();
   }, []);
 
+  // Handle hash navigation from clickable diagram nodes: #chapter-{n}-{elementId}
+  // Map the chapter number to the document index whose filename starts with that number.
+  useEffect(() => {
+    function handleHashChange() {
+      const hash = window.location.hash;
+      const match = /^#chapter-(\d+)-/.exec(hash);
+      if (!match || !payload) return;
+      const chapter = parseInt(match[1]!, 10);
+      const idx = payload.documents.findIndex((doc) => {
+        const basename = doc.filePath.split("/").pop() ?? "";
+        const m = /^(\d+)-/.exec(basename);
+        return m ? parseInt(m[1]!, 10) === chapter : false;
+      });
+      if (idx >= 0) setActiveDocIndex(idx);
+    }
+    handleHashChange();
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, [payload]);
+
   // Build elements map (id → element) — used by ElementCard and AstNodeRenderer
   const elementsMap = useMemo(() => {
     const map = new Map<string, Element>();
