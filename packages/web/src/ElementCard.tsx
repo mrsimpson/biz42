@@ -148,7 +148,9 @@ function renderFields(el: Element): React.ReactNode {
 
   switch (el.kind) {
     case "scope":
-      if (el.description) fields.push(["description", el.description]);
+      if (el.included) fields.push(["included", el.included]);
+      if (el.excluded) fields.push(["excluded", el.excluded]);
+      if (el.parent) fields.push(["parent", el.parent]);
       break;
     case "signal":
       if (el.source) fields.push(["source", el.source]);
