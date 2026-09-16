@@ -36,23 +36,12 @@ without context.
 ## What to write
 
 Write one prose paragraph that answers the first two questions. Then fill in
-the scope block. The \`included\` and \`excluded\` fields must be explicit —
+the scope block. Be explicit about what is in and what is out —
 vague scope leads to vague everything else.
-
-## Template
-
-\`\`\`biz42
-:::scope
-id: scope-main
-title: <Organisation Name>
-included: <markets, regions, customer segments>
-excluded: <what is deliberately out of scope>
-:::
-\`\`\`
 
 ## CLI
 
-  biz42 explain scope          # full field reference
+  biz42 explain scope          # block syntax and full field reference
   biz42 validate               # check after filling in
 
 ## Done when
@@ -146,35 +135,23 @@ or opportunities yet — that interpretation comes in chapters 4 and 5.
 ## What to write
 
 For each signal: one prose sentence explaining what is observable and why it
-matters. Then a signal block. Use \`surfaces\` to link forward to the risks
-and opportunities it gives rise to — you can fill these in after chapters 4
-and 5.
-
-## Template
-
-\`\`\`biz42
-:::signal
-id: signal-xxx
-title: <Observable condition>
-source: external
-surfaces: risk-xxx, opp-xxx
-:::
-\`\`\`
+matters. Then a signal block. Link it forward to the risks and opportunities
+it gives rise to — you can fill these in after chapters 4 and 5.
 
 ## CLI
 
-  biz42 explain signal         # full field reference
-  biz42 validate               # H001 fires if surfaces is empty
+  biz42 explain signal         # block syntax and full field reference
+  biz42 validate               # check after filling in
 
 ## Done when
 
   - At least 2–3 signals exist covering market, technology, and regulation
-  - Each signal has a surfaces field (can point to risks/opps not yet written)
+  - Each signal is linked to the risks/opps it gives rise to
   - biz42 validate shows no E errors for chapter 2
 `,
     template: `# Signals
 
-This chapter documents external and internal factors that could affect the organisation's ability to achieve its intended outcomes, corresponding to ISO 9001 §4.1. Each signal should be an observable fact or trend, not a strategic response. Use \`surfaces\` to link each signal to the risks or opportunities it gives rise to. Run \`biz42 explain signal\` to see all fields and authoring tips.
+This chapter documents external and internal factors that could affect the organisation's ability to achieve its intended outcomes, corresponding to ISO 9001 §4.1. Each signal should be an observable fact or trend, not a strategic response. Link each signal to the risks or opportunities it gives rise to. Run \`biz42 explain signal\` to see all fields and authoring tips.
 
 \`\`\`biz42
 :::signal
@@ -205,34 +182,23 @@ personal: there is always a source actor.
 ## What to write
 
 For each expectation: one prose sentence naming the stakeholder and their
-need. Then an expectation block. Use \`surfaces\` to link to the risks or
-opportunities this expectation creates.
-
-## Template
-
-\`\`\`biz42
-:::expectation
-id: exp-xxx
-title: <What the stakeholder needs>
-source: <Stakeholder name or regulation>
-surfaces: risk-xxx, opp-xxx
-:::
-\`\`\`
+need. Then an expectation block. Link it to the risks or opportunities
+this expectation creates.
 
 ## CLI
 
-  biz42 explain expectation    # full field reference
-  biz42 validate               # H002 fires if surfaces is empty
+  biz42 explain expectation    # block syntax and full field reference
+  biz42 validate               # check after filling in
 
 ## Done when
 
   - Key stakeholder groups are represented (customers, regulators, at minimum)
-  - Each expectation has a source and surfaces entries
+  - Each expectation is linked to the risks or opportunities it creates
   - biz42 validate shows no E errors for chapter 3
 `,
     template: `# Expectations
 
-This chapter documents the requirements and needs of interested parties such as customers, regulators, employees, and investors, corresponding to ISO 9001 §4.2. Map each expectation to a specific stakeholder. Use \`surfaces\` to link to the risks or opportunities it creates. Run \`biz42 explain expectation\` to see all fields and authoring tips.
+This chapter documents the requirements and needs of interested parties such as customers, regulators, employees, and investors, corresponding to ISO 9001 §4.2. Map each expectation to a specific stakeholder. Link each expectation to the risks or opportunities it creates. Run \`biz42 explain expectation\` to see all fields and authoring tips.
 
 \`\`\`biz42
 :::expectation
@@ -263,30 +229,18 @@ context and vulnerability.
 ## What to write
 
 For each risk: one prose paragraph explaining the threat and why it matters.
-Then a risk block. Go back to chapters 2 and 3 and fill in the \`surfaces\`
-fields on the signals and expectations that give rise to each risk.
-
-## Template
-
-\`\`\`biz42
-:::risk
-id: risk-xxx
-title: <What could go wrong>
-severity: high
-mitigation: <How the organisation plans to respond>
-:::
-\`\`\`
+Then a risk block. Go back to chapters 2 and 3 and link the signals and
+expectations that give rise to this risk.
 
 ## CLI
 
-  biz42 explain risk           # full field reference
-  biz42 validate               # W001 fires if risk has no addressing objective
+  biz42 explain risk           # block syntax and full field reference
+  biz42 validate               # check after filling in
 
 ## Done when
 
   - Every significant signal and expectation surfaces at least one risk
   - biz42 validate shows no E errors for chapter 4
-  - W001 warnings are expected at this stage — they resolve in chapter 6
 `,
     template: `# Risks
 
@@ -320,32 +274,22 @@ chapter 6.
 ## What to write
 
 For each opportunity: one prose sentence describing the upside. Then an
-opportunity block. Go back to chapters 2 and 3 and add to the \`surfaces\`
-fields where applicable.
-
-## Template
-
-\`\`\`biz42
-:::opportunity
-id: opp-xxx
-title: <What could be capitalised on>
-:::
-\`\`\`
+opportunity block. Go back to chapters 2 and 3 and link the signals and
+expectations that surface it.
 
 ## CLI
 
-  biz42 explain opportunity    # full field reference
-  biz42 validate               # W008 fires if opportunity has no addressing objective
+  biz42 explain opportunity    # block syntax and full field reference
+  biz42 validate               # check after filling in
 
 ## Done when
 
   - Key opportunities are captured from signals and expectations
   - biz42 validate shows no E errors for chapter 5
-  - W008 warnings are expected — they resolve in chapter 6
 `,
     template: `# Opportunities
 
-This chapter documents potential positive outcomes the organisation could pursue, corresponding to ISO 9001 §6.1. An opportunity is a possibility, not a commitment — commitments belong in chapter 6 (Objectives). Opportunities are referenced by objectives via the \`addresses\` field. Run \`biz42 explain opportunity\` to see all fields and authoring tips.
+This chapter documents potential positive outcomes the organisation could pursue, corresponding to ISO 9001 §6.1. An opportunity is a possibility, not a commitment — commitments belong in chapter 6 (Objectives). Link back to the signals or expectations that surfaced each opportunity. Run \`biz42 explain opportunity\` to see all fields and authoring tips.
 
 \`\`\`biz42
 :::opportunity
@@ -376,50 +320,23 @@ owner is unaccountable.
 ## What to write
 
 For each objective: one prose paragraph explaining the commitment and the
-business rationale. Then an objective block. Use \`addresses\` to link back
-to the risks or opportunities from chapters 4 and 5.
-
-## Template
-
-\`\`\`biz42
-:::objective
-id: obj-xxx
-title: <Measurable commitment>
-addresses: risk-xxx, opp-xxx
-measured-by: measure-xxx
-owner: owner-xxx
-requires: capability-xxx
-:::
-\`\`\`
+business rationale. Then an objective block. Connect it back to the risks or
+opportunities from chapters 4 and 5, and forward to a measure, owner, and
+the capabilities it requires.
 
 ## CLI
 
-  biz42 explain objective      # full field reference
-  biz42 validate               # W001/W008 should clear as you add objectives
-                               # W002 fires if measured-by is empty
-                               # W003 fires if owner is empty
+  biz42 explain objective      # block syntax and full field reference
+  biz42 validate               # check after each change
 
 ## Done when
 
   - Every risk and opportunity from chapters 4–5 is addressed by at least one objective
-  - W001 and W008 warnings are gone
   - biz42 validate shows no E errors for chapter 6
-  - W002 and W003 resolve after chapters 7 and 8
 `,
     template: `# Objectives
 
 This chapter documents specific, time-bound outcomes the organisation commits to achieving, corresponding to ISO 9001 §6.2. Each objective is the hub of the traceability chain: it addresses risks or opportunities, is evaluated by measures, is owned by a person or role, and requires capabilities. An objective without a measure is unverifiable; one without an owner is unaccountable. Run \`biz42 explain objective\` to see all fields and authoring tips.
-
-\`\`\`biz42
-:::objective
-id: obj-xxx
-title: <Objective title>
-addresses: risk-xxx, opp-xxx
-measured-by: measure-xxx
-owner: owner-xxx
-requires: capability-xxx
-:::
-\`\`\`
 `,
   },
   {
@@ -440,28 +357,17 @@ a quantifiable target. A measure that no objective references is orphaned.
 ## What to write
 
 For each measure: one prose sentence naming what is being monitored and
-what counts as success. Then a measure block. Go back to chapter 6 and fill
-in the \`measured-by\` fields on each objective.
-
-## Template
-
-\`\`\`biz42
-:::measure
-id: measure-xxx
-title: <What is measured>
-target: <e.g. "NPS > 50" or "≤ 5% churn">
-:::
-\`\`\`
+what counts as success. Then a measure block. Go back to chapter 6 and
+link each objective to the measure that verifies it.
 
 ## CLI
 
-  biz42 explain measure        # full field reference
-  biz42 validate               # W002 should clear; W004 fires if orphaned
+  biz42 explain measure        # block syntax and full field reference
+  biz42 validate               # check after filling in
 
 ## Done when
 
-  - Every objective has at least one measure in measured-by
-  - W002 warnings are gone
+  - Every objective has at least one measure
   - biz42 validate shows no E errors for chapter 7
 `,
     template: `# Measures
@@ -495,28 +401,17 @@ report. A committee is not an owner.
 ## What to write
 
 For each owner: one prose sentence identifying who they are and what they
-are responsible for. Then an owner block. Go back to chapter 6 and fill in
-the \`owner\` field on each objective.
-
-## Template
-
-\`\`\`biz42
-:::owner
-id: owner-xxx
-title: <Person name or role title>
-role: <Job title>
-:::
-\`\`\`
+are responsible for. Then an owner block. Go back to chapter 6 and assign
+each objective to its accountable owner.
 
 ## CLI
 
-  biz42 explain owner          # full field reference
-  biz42 validate               # W003 should clear; W005 fires if owner is unassigned
+  biz42 explain owner          # block syntax and full field reference
+  biz42 validate               # check after each change
 
 ## Done when
 
   - Every objective has an owner
-  - W003 warnings are gone
   - biz42 validate shows no E errors for chapter 8
 `,
     template: `# Owners
@@ -552,27 +447,18 @@ required by an objective is a strategic finding.
 ## What to write
 
 For each capability: one prose sentence describing the ability and its
-current state. Then a capability block. Go back to chapter 6 and fill in
-the \`requires\` field on each objective.
-
-## Template
-
-\`\`\`biz42
-:::capability
-id: capability-xxx
-title: <What the organisation can do>
-status: exists
-:::
-\`\`\`
+current state. Then a capability block. Go back to chapter 6 and link each
+objective to the capabilities it requires. Also link each capability to the
+products that draw on it.
 
 ## CLI
 
-  biz42 explain capability     # full field reference
-  biz42 validate               # H003/H007 fire if capability is unused
+  biz42 explain capability     # block syntax and full field reference
+  biz42 validate               # check after filling in
 
 ## Done when
 
-  - Every objective has at least one requires entry
+  - Every objective is linked to at least one capability
   - Gap capabilities are documented and acknowledged
   - biz42 validate shows no E errors for chapter 9
 `,
@@ -607,39 +493,29 @@ product is the delivery vehicle; the capability is the underlying ability.
 ## What to write
 
 For each product or service: one prose sentence describing what is delivered
-and to whom. Then a product block. Use \`enables\` to link to the capabilities
-the product requires. Use \`fulfills\` to link to the expectations it meets.
-
-## Template
-
-\`\`\`biz42
-:::product
-id: product-xxx
-title: <Product or service name>
-enables: capability-xxx
-fulfills: exp-xxx
-:::
-\`\`\`
+and to whom. Then a product block. Link each product to the stakeholder
+expectations it meets and to the capabilities it draws on.
 
 ## CLI
 
-  biz42 explain product        # full field reference
-  biz42 validate               # H004 fires if enables is empty
+  biz42 explain product        # block syntax and full field reference
+  biz42 validate               # check after filling in
 
 ## Done when
 
-  - Every product is linked to at least one capability and one expectation
+  - Every product is linked to at least one expectation
+  - Every product's capabilities are linked from chapter 9
   - biz42 validate shows no E errors for chapter 10
 `,
     template: `# Products and Services
 
-This chapter documents the products and services the organisation delivers, corresponding to ISO 9001 §8.1. A product is the delivery vehicle, not the underlying capability. Use \`enables\` to link to the capabilities each product draws on. A product that enables a capability marked \`gap\` has an unmet dependency. Run \`biz42 explain product\` to see all fields and authoring tips.
+This chapter documents the products and services the organisation delivers, corresponding to ISO 9001 §8.1. A product is the delivery vehicle, not the underlying capability. Use \`fulfills\` to link to the stakeholder expectations each product meets. The capability link runs the other direction: add this product's id to \`enables\` on the relevant capability blocks in chapter 9. Run \`biz42 explain product\` to see all fields and authoring tips.
 
 \`\`\`biz42
 :::product
 id: product-xxx
 title: <Product or service name>
-enables: capability-xxx
+fulfills: exp-xxx
 :::
 \`\`\`
 `,
@@ -662,24 +538,13 @@ not a one-off event.
 ## What to write
 
 For each evaluation practice: one prose sentence describing what is reviewed,
-how, and when. Then an evaluation block. Use \`evaluates\` to link to the
-measures reviewed.
-
-## Template
-
-\`\`\`biz42
-:::evaluation
-id: eval-xxx
-title: <Evaluation practice name>
-method: <e.g. "quarterly board review">
-evaluates: measure-xxx, measure-yyy
-:::
-\`\`\`
+how, and when. Then an evaluation block. Link each practice to the measures
+it reviews.
 
 ## CLI
 
-  biz42 explain evaluation     # full field reference
-  biz42 validate               # W012 fires if evaluates is empty
+  biz42 explain evaluation     # block syntax and full field reference
+  biz42 validate               # check after filling in
 
 ## Done when
 
@@ -719,24 +584,13 @@ improvement, it is a wish.
 ## What to write
 
 For each improvement: one prose sentence explaining what is changing and why.
-Then an improvement block. Use \`addresses\` to link to the model element
-being improved. Use \`triggered-by\` to link to the evaluation that motivated it.
-
-## Template
-
-\`\`\`biz42
-:::improvement
-id: impr-xxx
-title: <What is being improved>
-addresses: obj-xxx, risk-xxx
-triggered-by: eval-xxx
-:::
-\`\`\`
+Then an improvement block. Link it to the model element being improved and
+to the evaluation finding that triggered it.
 
 ## CLI
 
-  biz42 explain improvement    # full field reference
-  biz42 validate               # W013/H006 fire if addresses or triggered-by is empty
+  biz42 explain improvement    # block syntax and full field reference
+  biz42 validate               # check after filling in
 
 ## Done when
 
@@ -753,6 +607,59 @@ This chapter documents planned or ongoing actions to improve the business model,
 id: impr-xxx
 title: <Improvement title>
 addresses: obj-xxx, risk-xxx
+:::
+\`\`\`
+`,
+  },
+  {
+    number: 13,
+    title: "Cashflow",
+    guide: `# Chapter 13: Cashflow
+
+Cashflow maps the financial model: what the organisation charges for and what
+it pays for. This chapter is optional — it has no ISO 9001 §-anchor and the
+model validates without it. Include it when the business model discussion
+needs to cover revenue streams and cost structure explicitly.
+
+## Questions to ask
+
+  - What does the organisation charge customers for? Is it recurring or one-off?
+  - What are the main cost items — infrastructure, people, third-party services?
+  - Which product generates which revenue stream?
+  - Which capability drives which cost item?
+
+## What to write
+
+For each revenue stream or cost item: one prose sentence describing the
+cashflow and its driver. Then a cashflow block. Link each item to the
+product or capability it is tied to.
+
+## CLI
+
+  biz42 explain cashflow       # block syntax and full field reference
+  biz42 validate               # E002 fires if linked-to references a non-existent id
+
+## Done when
+
+  - Revenue streams and cost items are documented
+  - Each cashflow is linked to the product or capability it is tied to
+  - biz42 validate shows no E errors for chapter 13
+`,
+    template: `# Cashflow
+
+This chapter documents the financial model: revenue streams and cost items. It is optional and
+has no ISO 9001 §-anchor. Use \`linked-to\` to connect revenue streams to the products that generate
+them and cost items to the capabilities that drive them. Run \`biz42 explain cashflow\` to see all
+fields and authoring tips.
+
+\`\`\`biz42
+:::cashflow
+id: cashflow-xxx
+title: <Revenue stream or cost item>
+type: revenue
+category: <subscription | services | licensing | infrastructure | personnel | ...>
+linked-to: product-xxx
+recurrence: recurring
 :::
 \`\`\`
 `,
