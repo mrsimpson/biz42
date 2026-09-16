@@ -1,7 +1,7 @@
-# biz42 Agent Skill
-
-The `biz42` CLI manages a plain-text business model — a set of `.biz42.md` files
-that describe an organisation's strategy using the biz42 DSL (grounded in ISO 9001:2015).
+---
+name: biz42
+description: The `biz42` CLI manages a plain-text business model — a set of `.biz42.md` files that describe an organisation's strategy using the biz42 DSL (grounded in ISO 9001:2015). Use it whenever business modelling related tasks are required (e. g. new strategies, product, opotunities, risks arise)
+---
 
 ## CLI — top-level commands
 
@@ -21,7 +21,7 @@ biz42 build --out <dir>                      # static SPA export
 `guide` is the entry point for building a new model. Always start there:
 
 ```bash
-biz42 init template          # scaffolds all 12 chapter files
+biz42 guide                  # Explains the overall workflow
 biz42 guide chapter 1        # get authoring instructions for Scope
 biz42 guide chapter 2        # then Signals, and so on through chapter 12
 ```
