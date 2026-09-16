@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import type { Diagram, Element } from "@biz42/core";
+import { explainDiagram } from "@biz42/core";
 import { MermaidDiagram } from "./MermaidDiagram.tsx";
 import { BmcDiagram } from "./BmcDiagram.tsx";
 
@@ -30,56 +31,8 @@ function buildClickableNodes(
 // Methodology descriptions
 // ---------------------------------------------------------------------------
 
-interface MethodologyInfo {
-  name: string;
-  description: string;
-  slots?: { label: string; meaning: string }[];
-}
-
-const METHODOLOGY: Record<string, MethodologyInfo> = {
-  bmc: {
-    name: "Business Model Canvas",
-    description:
-      "The Business Model Canvas (Osterwalder & Pigneur) is a strategic management tool that describes a business model on a single page using nine building blocks: Key Partners, Key Activities, Key Resources, Value Propositions, Customer Relationships, Channels, Customer Segments, Cost Structure, and Revenue Streams. In biz42, element ids in the canvas link back to the corresponding model elements.",
-  },
-  sipoc: {
-    name: "SIPOC",
-    description:
-      "A SIPOC diagram (Six Sigma / ISO 9001 §4.4) maps a process from end to end by identifying who supplies the inputs, what those inputs are, what the process does, what it produces, and who receives the outputs. It is used to agree on scope and handoffs before diving into process detail.",
-    slots: [
-      { label: "Supplier", meaning: "Who provides the inputs (stakeholders, systems)" },
-      { label: "Input", meaning: "What enters the process (signals, expectations)" },
-      { label: "Process", meaning: "What the organisation does (objectives)" },
-      { label: "Output", meaning: "What is produced (products, services)" },
-      { label: "Customer", meaning: "Who receives the outputs (stakeholders)" },
-    ],
-  },
-  turtle: {
-    name: "Turtle Diagram",
-    description:
-      "A Turtle Diagram is an ISO 9001 process audit tool. It describes a single process by asking six questions: what resources are needed, who is responsible, how the process is carried out, for whom it is done, and how success is measured. It is named after its shape: a central process body with four 'legs' of context.",
-    slots: [
-      { label: "With what?", meaning: "Resources and capabilities required" },
-      { label: "With whom?", meaning: "People and roles accountable" },
-      { label: "How?", meaning: "Objectives and methods that define the process" },
-      { label: "For whom?", meaning: "Customers and stakeholders served" },
-      { label: "Results", meaning: "Measures that define success" },
-    ],
-  },
-  "strategy-map": {
-    name: "Strategy Map",
-    description:
-      "A Strategy Map (adapted from Kaplan & Norton's Balanced Scorecard) shows the cause-and-effect logic behind strategic choices: which risks and opportunities drive which objectives, and how each objective is measured. It makes the strategic reasoning visible and auditable.",
-    slots: [
-      { label: "Risks & Opportunities", meaning: "What triggered this objective" },
-      { label: "Objectives", meaning: "What the organisation commits to achieving" },
-      { label: "Measures", meaning: "How success is defined and tracked" },
-    ],
-  },
-};
-
 function MethodologyDescription({ notation }: { notation: string }) {
-  const info = METHODOLOGY[notation];
+  const info = explainDiagram(notation);
   if (!info) return null;
 
   return (

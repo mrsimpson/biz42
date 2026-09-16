@@ -75,14 +75,19 @@ Options:
 `;
 
     case "explain":
-      return `biz42 explain — explain block types and fields
+      return `biz42 explain — explain block types, fields, and diagram notations
 
 Usage:
   biz42 explain [<block-type>] [options]
+  biz42 explain diagram [<notation>] [options]
 
 Arguments:
   <block-type>     One of: ${BLOCK_TYPES.join(", ")}
                    Omit to list all block types
+  diagram          Explain diagram notations instead of block types
+  <notation>       One of: bmc, sipoc, turtle, strategy-map, architecture,
+                   sequence, flowchart, class, auto
+                   Omit to list all diagram notations
 
 Options:
   --format text|json   Output format (default: text)
