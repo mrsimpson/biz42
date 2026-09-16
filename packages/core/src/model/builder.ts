@@ -10,7 +10,7 @@ import type {
 import { ELEMENT_SCHEMAS } from "./schemas.ts";
 import { z } from "zod";
 import type { BlockType } from "../ast.ts";
-import type { MermaidNotation } from "@biz42/mermaid";
+import type { DiagramNotation } from "./types.ts";
 
 /**
  * Map a Zod parse failure into a human-friendly ParseError message.
@@ -38,6 +38,9 @@ function zodErrorToMessage(
     }
     if (field === "status" && blockType === "capability") {
       return `Invalid status — must be exists | planned | gap`;
+    }
+    if (field === "type" && blockType === "cashflow") {
+      return `Invalid type — must be revenue | cost`;
     }
 
     return `Invalid value for '${field}' on ${blockType}`;
@@ -90,7 +93,7 @@ export function buildWorkspace(documents: DocumentAst[]): Workspace {
           heading: currentHeading,
           prose: proseText,
         };
-        const notation = (node.notation || "auto") as MermaidNotation;
+        const notation = (node.notation || "auto") as DiagramNotation;
         diagrams.push({ id: node.id, title: node.title, notation, source: node.source, loc });
         pendingProse = [];
         continue;

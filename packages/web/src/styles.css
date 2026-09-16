@@ -28,6 +28,8 @@
   --c-product: #0f766e;
   --c-evaluation: #b45309;
   --c-improvement: #15803d;
+  --c-cashflow-revenue: #059669;
+  --c-cashflow-cost: #b45309;
 
   /* backward-compat aliases used by older inline styles */
   --color-bg: #ffffff;

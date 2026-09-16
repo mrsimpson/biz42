@@ -20,6 +20,7 @@ import { e011UnknownDiagramElement } from "./e011-unknown-diagram-element.ts";
 import { e012SipocDiagramValidation } from "./e012-sipoc-diagram-validation.ts";
 import { e013TurtleDiagramValidation } from "./e013-turtle-diagram-validation.ts";
 import { e014StrategyMapValidation } from "./e014-strategy-map-validation.ts";
+import { e015BmcDiagramValidation } from "./e015-bmc-diagram-validation.ts";
 import { h001SignalNoRiskOpportunity } from "./h001-signal-no-risk-opportunity.ts";
 import { h002ExpectationNoRiskOpportunity } from "./h002-expectation-no-risk-opportunity.ts";
 import { h003CapabilityNoProduct } from "./h003-capability-no-product.ts";
@@ -52,6 +53,7 @@ export const builtinRules: readonly Rule[] = [
   e012SipocDiagramValidation,
   e013TurtleDiagramValidation,
   e014StrategyMapValidation,
+  e015BmcDiagramValidation,
   h001SignalNoRiskOpportunity,
   h002ExpectationNoRiskOpportunity,
   h003CapabilityNoProduct,

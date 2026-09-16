@@ -1,4 +1,5 @@
 import { parseMermaid } from "@biz42/mermaid";
+import type { MermaidNotation } from "@biz42/mermaid";
 import type { Workspace } from "../model/types.ts";
 import type { Diagnostic } from "./types.ts";
 
@@ -9,8 +10,13 @@ export async function validateMermaidSyntax(workspace: Workspace): Promise<Diagn
   for (const diagram of workspace.diagrams) {
     // Empty source is caught by W008 / other structural rules
     if (!diagram.source.trim()) continue;
+    // bmc diagrams use a custom renderer — Mermaid never processes them
+    if (diagram.notation === "bmc") continue;
 
-    const result = await parseMermaid({ notation: diagram.notation, source: diagram.source });
+    const result = await parseMermaid({
+      notation: diagram.notation as MermaidNotation,
+      source: diagram.source,
+    });
     if (!result.ok) {
       diagnostics.push({
         code: "E010",

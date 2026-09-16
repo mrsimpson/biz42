@@ -18,7 +18,8 @@ export interface Edge {
     | "evaluates"
     | "triggered-by"
     | "improvement-addresses"
-    | "parent";
+    | "parent"
+    | "linked-to";
 }
 
 export interface ReferenceIndex {

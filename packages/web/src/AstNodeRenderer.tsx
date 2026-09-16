@@ -3,7 +3,7 @@ import { marked } from "marked";
 import type { AstNode, BlockNode, DiagramNode, Element, Edge } from "@biz42/core";
 import docStyles from "./DocumentView.module.css";
 import styles from "./AstNodeRenderer.module.css";
-import { ElementCard, kindColor } from "./ElementCard.tsx";
+import { ElementCard, elementColor } from "./ElementCard.tsx";
 import { DiagramView } from "./DiagramView.tsx";
 import type { Diagram } from "@biz42/core";
 
@@ -204,7 +204,7 @@ function ProseRun({
     const elementId = block.attributes["id"] ?? "";
     const el = elementsMap.get(elementId);
     if (!el) return null;
-    return kindColor(el.kind);
+    return elementColor(el);
   }, [block, elementsMap]);
 
   const hasBlock = block !== null && block.inBiz42Fence;

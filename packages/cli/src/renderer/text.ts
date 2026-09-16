@@ -81,6 +81,13 @@ export class TextGetRenderer implements GetRenderer {
         if (el.addresses.length > 0) parts.push(`    addresses: ${el.addresses.join(", ")}`);
         return parts.join("\n");
       }
+      case "cashflow": {
+        const parts = [`  ${el.id}  ${el.title}  [${el.type}]`];
+        if (el.category) parts.push(`    category: ${el.category}`);
+        if (el["linked-to"]) parts.push(`    linked-to: ${el["linked-to"]}`);
+        if (el.recurrence) parts.push(`    recurrence: ${el.recurrence}`);
+        return parts.join("\n");
+      }
     }
   }
 

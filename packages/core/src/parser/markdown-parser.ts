@@ -105,7 +105,8 @@ export function parseMarkdown(filePath: string, content: string): DocumentAst {
     }
 
     // Bare mermaid fence (not inside a biz42 fence, no pending :::diagram)
-    if (/^```mermaid\s*$/.test(line)) {
+    // Also accept ```yaml when a :::diagram with notation: bmc is pending
+    if (/^```mermaid\s*$/.test(line) || (/^```yaml\s*$/.test(line) && pendingDiagram !== null)) {
       if (pendingDiagram !== null) {
         // A :::diagram was open — start collecting as DiagramNode
         inMermaidFence = { startLine: lineNo, bare: false };

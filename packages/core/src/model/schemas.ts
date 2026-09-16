@@ -1,4 +1,4 @@
-// Zod schemas for all 12 biz42 DSL block types.
+// Zod schemas for all 13 biz42 DSL block types.
 // These are the single source of truth for field definitions, required/optional,
 // enum values, AND all guidance metadata (description, biz42Chapter, crossRefs,
 // authoringTips). Nothing is duplicated.
@@ -388,6 +388,43 @@ export const ImprovementSchema = z
     ],
   });
 
+export const CashflowSchema = z
+  .object({
+    id: z
+      .string()
+      .min(1)
+      .meta({ description: "Unique identifier (e.g. cashflow-subscription-fee)" }),
+    title: z.string().min(1).meta({ description: "Short name for the cashflow item" }),
+    type: z
+      .enum(["revenue", "cost"])
+      .meta({ description: "Type: revenue (money in) or cost (money out)" }),
+    category: z.string().optional().meta({
+      description: "Optional free-text taxonomy (e.g. subscription, salary, infrastructure)",
+    }),
+    "linked-to": z.string().optional().meta({
+      description:
+        "ID of a product (for revenue streams) or capability (for costs) this cashflow is tied to",
+    }),
+    recurrence: z
+      .enum(["one-time", "recurring", "variable"])
+      .optional()
+      .meta({ description: "Payment pattern: one-time, recurring, or variable" }),
+  })
+  .meta({
+    description: "A single revenue stream (revenue) or cost item (cost) in the business model.",
+    biz42Chapter: 13,
+    crossRefs: [
+      { field: "linked-to", targetKind: "product or capability", cardinality: "one" },
+    ] satisfies CrossRefMeta[],
+    authoringTips: [
+      "Set type: revenue or cost.",
+      "Link revenue streams to the product they come from using linked-to.",
+      "Link costs to the capability they fund using linked-to.",
+      "Use category to group related items (e.g. all 'subscription' revenue streams).",
+      "Cashflow is outside ISO 9001 scope but complements the business model canvas.",
+    ],
+  });
+
 // ---------------------------------------------------------------------------
 // Schema map — keyed by BlockType for use in builder and explain
 // ---------------------------------------------------------------------------
@@ -405,6 +442,7 @@ export const ELEMENT_SCHEMAS = {
   product: ProductSchema,
   evaluation: EvaluationSchema,
   improvement: ImprovementSchema,
+  cashflow: CashflowSchema,
 } as const satisfies Record<BlockType, z.ZodType>;
 
 // ---------------------------------------------------------------------------

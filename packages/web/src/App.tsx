@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import type { WorkspacePayload } from "./types.ts";
 import { ELEMENT_CHAPTER } from "@biz42/core";
 import type { Element, Edge, DocumentAst, Diagram, BlockType } from "@biz42/core";
@@ -76,6 +76,26 @@ function useHashRouter(documents: DocumentAst[]) {
     const { elementId } = parseHash(window.location.hash);
     return elementId;
   });
+
+  // Re-resolve the initial hash once documents are available.
+  // On first render documents may be empty (workspace not yet loaded), so
+  // docIndexFromHash returns 0. As soon as documents first populate, re-evaluate
+  // the current hash so a direct URL like /#13-cashflow.biz42.md lands on
+  // the right document rather than defaulting to document 0.
+  // The flag ensures SSE live-reload updates never override a user's manual navigation.
+  const initialHashResolved = useRef(false);
+  useEffect(() => {
+    if (documents.length === 0) return;
+    if (initialHashResolved.current) return;
+    initialHashResolved.current = true;
+    const hash = window.location.hash;
+    const { docFile } = parseHash(hash);
+    if (!docFile) return;
+    const idx = documents.findIndex((d) => basename(d.filePath) === docFile);
+    if (idx >= 0) {
+      setActiveDocIndex(idx);
+    }
+  }, [documents]);
 
   useEffect(() => {
     function onHashChange() {

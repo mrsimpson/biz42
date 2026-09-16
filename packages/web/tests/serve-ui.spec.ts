@@ -116,3 +116,24 @@ test.describe("Human / Agent view toggle", () => {
     await expect(page.getByTestId("agent-block").first()).not.toBeVisible();
   });
 });
+
+// ─── BMC diagram ──────────────────────────────────────────────────────────────
+
+test.describe("BMC diagram", () => {
+  test("renders the BMC diagram with block headings", async ({ page }) => {
+    await page.goto("/#13-cashflow.biz42.md");
+    await expect(page.getByTestId("bmc-diagram")).toBeVisible({ timeout: 8000 });
+    await expect(page.getByTestId("bmc-diagram").getByText("Revenue Streams")).toBeVisible();
+    await expect(page.getByTestId("bmc-diagram").getByText("Cost Structure")).toBeVisible();
+    await expect(page.getByTestId("bmc-diagram").getByText("Value Propositions")).toBeVisible();
+  });
+
+  test("BMC diagram links resolve to model element titles", async ({ page }) => {
+    await page.goto("/#13-cashflow.biz42.md");
+    await expect(page.getByTestId("bmc-diagram")).toBeVisible({ timeout: 8000 });
+    // Alert Service product should appear as a link in value-propositions
+    await expect(
+      page.getByTestId("bmc-diagram").getByRole("link", { name: "Alert Service" }),
+    ).toBeVisible();
+  });
+});

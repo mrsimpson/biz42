@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import type { Element, Edge } from "@biz42/core";
+import type { Element, Edge, Cashflow } from "@biz42/core";
 import styles from "./ElementCard.module.css";
 
-// ─── Kind → accent colour ─────────────────────────────────────────────────────
+// ─── Element → accent colour ──────────────────────────────────────────────────
 
-export const KIND_COLOR: Record<string, string> = {
+const KIND_COLOR: Record<string, string> = {
   scope: "var(--c-scope)",
   signal: "var(--c-signal)",
   expectation: "var(--c-expectation)",
@@ -19,8 +19,14 @@ export const KIND_COLOR: Record<string, string> = {
   improvement: "var(--c-improvement)",
 };
 
-export function kindColor(kind: string): string {
-  return KIND_COLOR[kind] ?? "var(--c-ch0)";
+/** Returns the accent colour for an element. Cashflow uses type-aware colours. */
+export function elementColor(el: Element): string {
+  if (el.kind === "cashflow") {
+    return (el as Cashflow).type === "cost"
+      ? "var(--c-cashflow-cost)"
+      : "var(--c-cashflow-revenue)";
+  }
+  return KIND_COLOR[el.kind] ?? "var(--c-ch0)";
 }
 
 // ─── ElementCard ─────────────────────────────────────────────────────────────
@@ -56,7 +62,7 @@ export function ElementCard({
     );
   }
 
-  const color = accentColor ?? kindColor(el.kind);
+  const color = accentColor ?? elementColor(el);
   const outgoing = edges.filter((e) => e.from === el.id);
   const incoming = edges.filter((e) => e.to === el.id);
 
@@ -195,6 +201,12 @@ function renderFields(el: Element): React.ReactNode {
       fields.push(["type", el.type]);
       if (el["triggered-by"]) fields.push(["triggered-by", el["triggered-by"]]);
       if (el.addresses?.length) fields.push(["addresses", el.addresses.join(", ")]);
+      break;
+    case "cashflow":
+      fields.push(["type", el.type]);
+      if (el.category) fields.push(["category", el.category]);
+      if (el["linked-to"]) fields.push(["linked-to", el["linked-to"]]);
+      if (el.recurrence) fields.push(["recurrence", el.recurrence]);
       break;
   }
 
