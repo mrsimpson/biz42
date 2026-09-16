@@ -15,6 +15,7 @@ import { w010MissingSipocInScope } from "./w010-missing-sipoc-in-scope.ts";
 import { w011ObjectiveNotAddressing } from "./w011-objective-not-addressing.ts";
 import { w012EvaluationNoEvaluates } from "./w012-evaluation-no-evaluates.ts";
 import { w013ImprovementAddressesNothing } from "./w013-improvement-addresses-nothing.ts";
+import { w014UnknownAttribute } from "./w014-unknown-attribute.ts";
 import { e011UnknownDiagramElement } from "./e011-unknown-diagram-element.ts";
 import { e012SipocDiagramValidation } from "./e012-sipoc-diagram-validation.ts";
 import { e013TurtleDiagramValidation } from "./e013-turtle-diagram-validation.ts";
@@ -46,6 +47,7 @@ export const builtinRules: readonly Rule[] = [
   w011ObjectiveNotAddressing,
   w012EvaluationNoEvaluates,
   w013ImprovementAddressesNothing,
+  w014UnknownAttribute,
   e011UnknownDiagramElement,
   e012SipocDiagramValidation,
   e013TurtleDiagramValidation,

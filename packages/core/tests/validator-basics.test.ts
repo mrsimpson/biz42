@@ -1,7 +1,9 @@
 import { expect, test, describe } from "vite-plus/test";
 import { validate } from "../src/validator/index.ts";
 import { buildIndex } from "../src/resolver/index.ts";
+import { buildWorkspace } from "../src/model/builder.ts";
 import type { Workspace, Element } from "../src/model/types.ts";
+import type { DocumentAst } from "../src/ast.ts";
 
 function makeWorkspace(elements: Element[], parseErrors: Workspace["parseErrors"] = []): Workspace {
   return { elements, parseErrors, documents: [], diagrams: [] };
@@ -385,5 +387,67 @@ describe("validator › H007 — capability not required by any objective", () =
     const idx = buildIndex(ws);
     const diags = validate(ws, idx);
     expect(diags.filter((d) => d.code === "H007")).toHaveLength(0);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Helper for builder-based tests
+// ---------------------------------------------------------------------------
+
+function makeDoc(blockType: string, attrs: Record<string, string>): DocumentAst {
+  return {
+    filePath: "test.biz42.md",
+    nodes: [
+      {
+        kind: "block",
+        blockType,
+        attributes: attrs,
+        startLine: 1,
+        endLine: 5,
+        inBiz42Fence: false,
+      },
+    ],
+  };
+}
+
+describe("validator › W014 — unknown attribute on block", () => {
+  test("emits W014 warning when a block has an unrecognised attribute", () => {
+    const ws = buildWorkspace([
+      makeDoc("risk", { id: "risk-1", title: "Supply chain", severity: "high", sevrity: "medium" }),
+    ]);
+    // Block still parses — element is present
+    expect(ws.elements).toHaveLength(1);
+    expect(ws.parseErrors).toHaveLength(0);
+    // Warning is recorded
+    expect(ws.parseWarnings).toBeDefined();
+    expect(ws.parseWarnings!.some((w) => w.message.includes("sevrity"))).toBe(true);
+
+    const idx = buildIndex(ws);
+    const diags = validate(ws, idx);
+    const w014 = diags.filter((d) => d.code === "W014");
+    expect(w014).toHaveLength(1);
+    expect(w014[0]!.severity).toBe("warning");
+    expect(w014[0]!.message).toMatch(/Unknown attribute 'sevrity' on risk/);
+  });
+
+  test("no W014 when all attributes are known", () => {
+    const ws = buildWorkspace([
+      makeDoc("risk", { id: "risk-1", title: "Supply chain", severity: "high" }),
+    ]);
+    expect(ws.elements).toHaveLength(1);
+    expect(ws.parseErrors).toHaveLength(0);
+    const idx = buildIndex(ws);
+    const diags = validate(ws, idx);
+    expect(diags.filter((d) => d.code === "W014")).toHaveLength(0);
+  });
+
+  test("emits one W014 per unknown attribute", () => {
+    const ws = buildWorkspace([
+      makeDoc("scope", { id: "scope-1", title: "Org", foo: "bar", baz: "qux" }),
+    ]);
+    expect(ws.elements).toHaveLength(1);
+    const idx = buildIndex(ws);
+    const diags = validate(ws, idx);
+    expect(diags.filter((d) => d.code === "W014")).toHaveLength(2);
   });
 });
