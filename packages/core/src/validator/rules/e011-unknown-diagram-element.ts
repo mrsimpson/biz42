@@ -32,6 +32,7 @@ const ELEMENT_PREFIXES = [
   "eval-",
   "improvement-",
   "scope-",
+  "cashflow-",
 ];
 
 function looksLikeElementId(token: string): boolean {

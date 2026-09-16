@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import type { Diagram, Element } from "@biz42/core";
 import { MermaidDiagram } from "./MermaidDiagram.tsx";
+import { BmcDiagram } from "./BmcDiagram.tsx";
 
 // ---------------------------------------------------------------------------
 // Element link resolution
@@ -36,6 +37,11 @@ interface MethodologyInfo {
 }
 
 const METHODOLOGY: Record<string, MethodologyInfo> = {
+  bmc: {
+    name: "Business Model Canvas",
+    description:
+      "The Business Model Canvas (Osterwalder & Pigneur) is a strategic management tool that describes a business model on a single page using nine building blocks: Key Partners, Key Activities, Key Resources, Value Propositions, Customer Relationships, Channels, Customer Segments, Cost Structure, and Revenue Streams. In biz42, element ids in the canvas link back to the corresponding model elements.",
+  },
   sipoc: {
     name: "SIPOC",
     description:
@@ -164,7 +170,9 @@ export function DiagramView({
     diagram.title ?? diagram.id.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
   if (agentView) {
-    // Reconstruct the :::diagram block + mermaid fence as raw source
+    // Reconstruct the :::diagram block + source fence as raw source.
+    // BMC diagrams use ```yaml; all others use ```mermaid.
+    const fenceLang = diagram.notation === "bmc" ? "yaml" : "mermaid";
     const blockLines = [
       `:::diagram`,
       `id: ${diagram.id}`,
@@ -172,7 +180,7 @@ export function DiagramView({
       `notation: ${diagram.notation}`,
       `:::`,
       ``,
-      "```mermaid",
+      "```" + fenceLang,
       diagram.source.trim(),
       "```",
     ];
@@ -207,8 +215,12 @@ export function DiagramView({
       >
         {displayTitle}
       </h3>
-      {/* Mermaid diagram */}
-      <MermaidDiagram source={diagram.source} id={diagram.id} clickableNodes={clickableNodes} />
+      {/* Diagram render — BMC uses custom renderer; all others use Mermaid */}
+      {diagram.notation === "bmc" ? (
+        <BmcDiagram diagram={diagram} elements={elements} chapterMap={chapterMap} />
+      ) : (
+        <MermaidDiagram source={diagram.source} id={diagram.id} clickableNodes={clickableNodes} />
+      )}
       {/* Methodology description — collapsed by default */}
       <MethodologyDescription notation={diagram.notation} />
     </div>

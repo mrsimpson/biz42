@@ -99,6 +99,12 @@ export function buildIndex(workspace: Workspace): ReferenceIndex {
         edges.push({ from: el.id, to: el.parent, relation: "parent" });
         addRef(el.id, el.parent);
       }
+    } else if (el.kind === "cashflow") {
+      // linked-to → product (revenue) or capability (cost)
+      if (el["linked-to"]) {
+        edges.push({ from: el.id, to: el["linked-to"], relation: "linked-to" });
+        addRef(el.id, el["linked-to"]);
+      }
     }
   }
 

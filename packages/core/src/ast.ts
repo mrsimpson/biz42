@@ -12,7 +12,8 @@ export type BlockType =
   | "capability"
   | "product"
   | "evaluation"
-  | "improvement";
+  | "improvement"
+  | "cashflow";
 
 export interface HeadingNode {
   kind: "heading";

@@ -17,6 +17,7 @@ import {
   ProductSchema,
   EvaluationSchema,
   ImprovementSchema,
+  CashflowSchema,
 } from "./schemas.ts";
 
 export interface SourceLocation {
@@ -46,6 +47,7 @@ export const ELEMENT_KIND_ORDER: readonly BlockType[] = [
   "product", // ch. 10
   "evaluation", // ch. 11
   "improvement", // ch. 12
+  "cashflow", // ch. 13
 ] as const;
 
 /** biz42 chapter each element kind belongs to — derived from schema metadata. */
@@ -73,6 +75,7 @@ export const CHAPTER_TITLE: Readonly<Record<number, string>> = {
   10: "Products and Services",
   11: "Evaluation",
   12: "Improvements",
+  13: "Cashflow",
 };
 
 // ---------------------------------------------------------------------------
@@ -139,6 +142,11 @@ export type Improvement = z.infer<typeof ImprovementSchema> & {
   loc: SourceLocation;
 };
 
+export type Cashflow = z.infer<typeof CashflowSchema> & {
+  kind: "cashflow";
+  loc: SourceLocation;
+};
+
 export type Element =
   | Scope
   | Signal
@@ -151,7 +159,8 @@ export type Element =
   | Capability
   | Product
   | Evaluation
-  | Improvement;
+  | Improvement
+  | Cashflow;
 
 export interface ParseError {
   message: string;
@@ -174,11 +183,18 @@ export interface IgnoreDirective {
   used: boolean;
 }
 
+/**
+ * All diagram notations understood by biz42.
+ * `MermaidNotation` covers Mermaid-backed diagrams; `"bmc"` is rendered by a
+ * custom React component and is NOT processed by the Mermaid parser.
+ */
+export type DiagramNotation = MermaidNotation | "bmc";
+
 /** A diagram extracted from a `:::diagram` block in a biz42 document. */
 export interface Diagram {
   id: string;
   title?: string;
-  notation: MermaidNotation;
+  notation: DiagramNotation;
   source: string;
   loc: SourceLocation;
 }

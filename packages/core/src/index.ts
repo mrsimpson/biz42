@@ -35,11 +35,13 @@ export type {
   Product,
   Evaluation,
   Improvement,
+  Cashflow,
   Workspace,
   ParseError,
   IgnoreDirective,
   SourceLocation,
   Diagram,
+  DiagramNotation,
 } from "./model/types.ts";
 
 export { ELEMENT_KIND_ORDER, ELEMENT_CHAPTER, CHAPTER_TITLE } from "./model/types.ts";
