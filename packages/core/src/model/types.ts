@@ -159,6 +159,12 @@ export interface ParseError {
   line: number;
 }
 
+export interface ParseWarning {
+  message: string;
+  file: string;
+  line: number;
+}
+
 export interface IgnoreDirective {
   ruleCode: string;
   reason?: string;
@@ -180,6 +186,8 @@ export interface Diagram {
 export interface Workspace {
   elements: Element[];
   parseErrors: ParseError[];
+  /** Warnings emitted during parsing — block still parsed successfully (e.g. unknown attributes). */
+  parseWarnings?: ParseWarning[];
   /** Raw parsed documents — used by structure-aware validation rules */
   documents: DocumentAst[];
   /** Diagrams extracted from :::diagram blocks */
