@@ -106,7 +106,7 @@ Target: ≥60% active participation per site within 3 months of site launch.
 :::objective
 id: obj-adoption-rate
 title: Adoption Rate ≥60% Per Site
-addresses: risk-adoption
+addresses: risk-adoption, opp-device-based-alerting
 measured-by: measure-adoption-rate
 owner: owner-product-lead
 :::
