@@ -42,7 +42,23 @@ requiring dedicated hardware at every workstation.
 id: signal-personal-devices
 title: Employees Are Reachable on Personal Devices
 source: internal
-surfaces: opp-device-based-alerting
+surfaces: opp-device-based-alerting, risk-adoption
+:::
+```
+
+## Unreliable Network Coverage Across Operational Sites
+
+The organization operates across railway tunnels, underground stations,
+basements, and rural track sections where network connectivity is
+intermittent or absent. Any system relying on continuous connectivity
+will fail in exactly the environments where emergencies are most likely.
+
+```biz42
+:::signal
+id: signal-connectivity-gaps
+title: Unreliable Network Coverage Across Operational Sites
+source: internal
+surfaces: risk-connectivity
 :::
 ```
 
