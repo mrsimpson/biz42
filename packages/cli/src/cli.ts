@@ -21,6 +21,9 @@ import {
   explainElement,
   formatExplainText,
   formatExplainListText,
+  explainDiagram,
+  formatExplainDiagramText,
+  formatExplainDiagramListText,
   ELEMENT_KIND_ORDER,
 } from "@biz42/core";
 import { builtinGetRenderers, rendererById } from "./renderer/index.ts";
@@ -304,11 +307,55 @@ function runExplain(args: string[]) {
   });
 
   const format = values["format"] as string;
-  const blockTypeArg = positionals[0];
+  const firstArg = positionals[0];
+
+  // Sub-command: biz42 explain diagram [<notation>]
+  if (firstArg === "diagram") {
+    const notation = positionals[1];
+    if (notation !== undefined) {
+      const result = explainDiagram(notation);
+      if (!result) {
+        console.error(
+          `Unknown diagram notation '${notation}'. Run \`biz42 explain diagram\` to list notations.`,
+        );
+        process.exit(2);
+      }
+      if (format === "json") {
+        console.log(JSON.stringify(result, null, 2));
+      } else {
+        console.log(formatExplainDiagramText(result));
+      }
+    } else {
+      if (format === "json") {
+        // emit all entries in display order
+        const all = [
+          "bmc",
+          "sipoc",
+          "turtle",
+          "strategy-map",
+          "architecture",
+          "sequence",
+          "flowchart",
+          "class",
+          "auto",
+        ]
+          .map((n) => explainDiagram(n))
+          .filter(Boolean);
+        console.log(JSON.stringify(all, null, 2));
+      } else {
+        console.log(formatExplainDiagramListText());
+      }
+    }
+    process.exit(0);
+  }
+
+  // Default: block type explain
+  const blockTypeArg = firstArg;
 
   if (blockTypeArg !== undefined && !isBlockType(blockTypeArg)) {
     console.error(
-      `Unknown block type '${blockTypeArg}'. Run \`biz42 explain\` to list block types.`,
+      `Unknown block type '${blockTypeArg}'. Run \`biz42 explain\` to list block types.\n` +
+        `To explain a diagram notation, use: biz42 explain diagram [<notation>]`,
     );
     process.exit(2);
   }

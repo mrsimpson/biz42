@@ -68,12 +68,21 @@ export { builtinRules, rulesByCode } from "./validator/rules/index.ts";
 export type { Rule, RuleMeta, RuleDocs, RuleType, Biz42Chapter } from "./validator/types.ts";
 
 // Explain command API
-export { explainElement, formatExplainText, formatExplainListText } from "./explain.ts";
+export {
+  explainElement,
+  formatExplainText,
+  formatExplainListText,
+  explainDiagram,
+  formatExplainDiagramText,
+  formatExplainDiagramListText,
+} from "./explain.ts";
 export type {
   ExplainResult,
   ExplainSummary,
   ExplainFieldResult,
   ExplainCrossRefResult,
+  ExplainDiagramResult,
+  ExplainDiagramSlot,
 } from "./explain.ts";
 
 // Schema introspection
