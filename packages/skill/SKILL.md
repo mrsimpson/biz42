@@ -23,7 +23,7 @@ biz42 build --out <dir>                      # static SPA export
 ```bash
 biz42 guide                  # Explains the overall workflow
 biz42 guide chapter 1        # get authoring instructions for Scope
-biz42 guide chapter 2        # then Signals, and so on through chapter 12
+biz42 guide chapter 2        # then Signals, and so on through chapter 13
 ```
 
 Ask the human questions for each chapter — business context cannot be derived from
@@ -52,7 +52,7 @@ requires: capability-foo
 ```
 ````
 
-## 12 Block types
+## Block types
 
 | Type          | Ch  | Purpose                                     |
 | ------------- | --- | ------------------------------------------- |
@@ -68,6 +68,7 @@ requires: capability-foo
 | `product`     | 10  | Products and services delivered             |
 | `evaluation`  | 11  | Performance evaluation practices            |
 | `improvement` | 12  | Planned improvement actions                 |
+| `cashflow`    | 13  | Revenue streams and cost items (optional)   |
 
 ## Traceability chain
 
@@ -78,42 +79,28 @@ signal ──surfaces──▶ risk/opportunity ◀──surfaces── expectat
                            ▼
                objective ──measured-by──▶ measure
                         ──owner──▶ owner
-                        ──requires──▶ capability ◀──enables── product
+                        ──requires──▶ capability ──enables──▶ product ──fulfills──▶ expectation
 improvement ──addresses──▶ objective | risk | measure
+evaluation ──evaluates──▶ measure
+cashflow ──linked-to──▶ product (revenue) | capability (cost)   [optional]
 ```
 
 ## Key field reference
 
-**signal**: `id`, `title`, `source` (external|internal|free text), `surfaces` (comma-separated risk/opportunity IDs)
+Run `biz42 explain <block-type>` for the full field reference of any block type.
+Run `biz42 rules [--chapter <n>]` to list all validation rules with explanations.
 
-**expectation**: `id`, `title`, `source` (stakeholder), `surfaces` (comma-separated risk/opportunity IDs)
-
-**objective** (hub):
-
-- `id` (required), `title` (required)
-- `addresses` — comma-separated risk or opportunity IDs
-- `measured-by` — comma-separated measure IDs
-- `owner` — single owner ID
-- `requires` — comma-separated capability IDs
-
-**risk**: `id`, `title`, `severity` (high|medium|low), `mitigation`
-
-**capability**: `id`, `title`, `status` (exists|planned|gap)
-
-**product**: `id`, `title`, `enables` (comma-separated capability IDs)
-
-**improvement**: `id`, `title`, `addresses` (comma-separated objective/risk/measure IDs)
+> **Note on `bmc` diagrams**: the Business Model Canvas diagram uses a `yaml`
+> fence — not `mermaid`. Run `biz42 explain diagram bmc` for the correct syntax.
 
 ## Authoring rules
 
+Run `biz42 rules` to see all validation rules. The most common mistakes:
+
 1. Every block **must** have a unique `id` — use kebab-case: `obj-privacy-arch`
-2. `objective` is the traceability hub — always fill `addresses`, `measured-by`, `owner`
-3. Every `risk` should be addressed by at least one `objective`
-4. Every `objective` needs at least one `measure` in `measured-by`
-5. Field names are **kebab-case** in the DSL: `measured-by`, not `measuredBy`
-6. Fill `surfaces` on every `signal` and `expectation` to link them to risks/opportunities
-7. Add a prose sentence above each block — blocks without context get H005 hints
-8. Always close every block with `:::` — a missing fence silently drops the element (E003)
+2. Always close every block with `:::` — a missing fence silently drops the element (E003)
+3. Field names are **kebab-case** in the DSL: `measured-by`, not `measuredBy`
+4. Add a prose sentence above each block — blocks without context get H005 hints
 
 ## Ongoing agent workflow
 
