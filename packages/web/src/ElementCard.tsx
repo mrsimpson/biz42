@@ -156,15 +156,15 @@ function renderFields(el: Element): React.ReactNode {
     case "scope":
       if (el.included) fields.push(["included", el.included]);
       if (el.excluded) fields.push(["excluded", el.excluded]);
-      if (el.parent) fields.push(["parent", el.parent]);
+      // parent is a cross-reference; shown in the edges section
       break;
     case "signal":
       if (el.source) fields.push(["source", el.source]);
-      if (el.surfaces?.length) fields.push(["surfaces", (el.surfaces as string[]).join(", ")]);
+      // surfaces is a cross-reference; shown in the edges section
       break;
     case "expectation":
       if (el.source) fields.push(["source", el.source]);
-      if (el.surfaces?.length) fields.push(["surfaces", (el.surfaces as string[]).join(", ")]);
+      // surfaces is a cross-reference; shown in the edges section
       break;
     case "risk":
       fields.push(["severity", el.severity]);
@@ -173,10 +173,7 @@ function renderFields(el: Element): React.ReactNode {
     case "opportunity":
       break;
     case "objective":
-      if (el.addresses?.length) fields.push(["addresses", el.addresses.join(", ")]);
-      if (el["measured-by"]?.length) fields.push(["measured-by", el["measured-by"].join(", ")]);
-      if (el.owner) fields.push(["owner", el.owner]);
-      if (el.requires?.length) fields.push(["requires", el.requires.join(", ")]);
+      // addresses, measured-by, owner, requires are cross-references; shown in the edges section
       break;
     case "measure":
       if (el.target) fields.push(["target", el.target]);
@@ -186,26 +183,23 @@ function renderFields(el: Element): React.ReactNode {
       break;
     case "capability":
       if (el.status) fields.push(["status", el.status]);
-      if (el.enables?.length) fields.push(["enables", el.enables.join(", ")]);
-      if (el.owner) fields.push(["owner", el.owner]);
+      // enables, owner are cross-references; shown in the edges section
       break;
     case "product":
-      if (el.fulfills?.length) fields.push(["fulfills", el.fulfills.join(", ")]);
-      if (el.owner) fields.push(["owner", el.owner]);
+      // fulfills, owner are cross-references; shown in the edges section
       break;
     case "evaluation":
       if (el.method) fields.push(["method", el.method]);
-      if (el.evaluates?.length) fields.push(["evaluates", el.evaluates.join(", ")]);
+      // evaluates is a cross-reference; shown in the edges section
       break;
     case "improvement":
       fields.push(["type", el.type]);
-      if (el["triggered-by"]) fields.push(["triggered-by", el["triggered-by"]]);
-      if (el.addresses?.length) fields.push(["addresses", el.addresses.join(", ")]);
+      // triggered-by, addresses are cross-references; shown in the edges section
       break;
     case "cashflow":
       fields.push(["type", el.type]);
       if (el.category) fields.push(["category", el.category]);
-      if (el["linked-to"]) fields.push(["linked-to", el["linked-to"]]);
+      // linked-to is a cross-reference; shown in the edges section
       if (el.recurrence) fields.push(["recurrence", el.recurrence]);
       break;
   }
