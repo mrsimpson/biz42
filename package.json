@@ -12,7 +12,7 @@
     "check": "pnpm run check:templates && vp check",
     "ready": "pnpm run check && pnpm run test && pnpm run build",
     "validate:docs": "node packages/cli/dist/cli.mjs --dir docs/arc42 validate --strict",
-    "validate:examples": "node packages/cli/dist/cli.mjs --dir examples/acme-emergency validate",
+    "validate:examples": "node scripts/validate-examples.mjs",
     "validate:all": "pnpm run validate:docs && pnpm run validate:examples",
     "validate:source": "node --conditions=development --experimental-strip-types --no-warnings scripts/validate-source.ts",
     "check:templates": "node --conditions=development --experimental-strip-types --no-warnings scripts/check-starter-templates.ts",

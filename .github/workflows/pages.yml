@@ -50,6 +50,7 @@ jobs:
           cp -r packages/site/dist/. site/
           node_modules/.bin/arc42 --dir docs/arc42 build --out site/docs --base /biz42/docs/
           node packages/cli/dist/cli.mjs --dir examples/acme-emergency build --out site/acme-emergency --base /biz42/acme-emergency/
+          node packages/cli/dist/cli.mjs --dir examples/assistify build --out site/assistify --base /biz42/assistify/
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

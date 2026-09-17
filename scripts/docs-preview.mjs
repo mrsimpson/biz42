@@ -63,6 +63,9 @@ run(
 run(
   `node "${cliMjs}" --dir examples/acme-emergency build --out "${join(outDir, "biz42", "acme-emergency")}" --base /biz42/acme-emergency/`,
 );
+run(
+  `node "${cliMjs}" --dir examples/assistify build --out "${join(outDir, "biz42", "assistify")}" --base /biz42/assistify/`,
+);
 
 // ── Serve ──────────────────────────────────────────────────────────────────
 
