@@ -76,6 +76,7 @@ export const ScopeSchema = z
       "Use 'included' and 'excluded' to make the boundary explicit and machine-readable.",
       "Use 'parent' to link this model's scope to a broader organisational scope in a nested model.",
       "Keep the title concise — one short name that any stakeholder can understand.",
+      "When excluding items, justify why — §4.3 requires that exclusions do not affect the ability to ensure conformity of products and services.",
       "Align with ISO 9001 §4.3: determine the scope of the quality management system.",
     ],
   });
@@ -133,6 +134,7 @@ export const ExpectationSchema = z
       "Map each expectation to a specific stakeholder (customer, regulator, employee, investor).",
       "Keep expectations distinct from objectives — expectations are inputs, objectives are responses.",
       "Use 'surfaces' to link each expectation to the risks and opportunities it reveals.",
+      "Not all expectations become QMS requirements — §4.2 asks you to determine which are relevant to the QMS. Note relevance in the prose.",
       "Aligns with ISO 9001 §4.2: understanding the needs and expectations of interested parties.",
       "An expectation not addressed by any risk or opportunity via 'surfaces' is a planning gap.",
     ],
@@ -178,6 +180,7 @@ export const OpportunitySchema = z
       "Opportunities arise from signals and expectations — link them in prose.",
       "An opportunity without an objective addressing it is a missed planning item.",
       "Keep opportunities distinct from objectives — they are identified possibilities, not commitments.",
+      "§6.1 also requires evaluating the effectiveness of actions taken — ensure the addressing objective has a linked measure.",
       "Aligns with ISO 9001 §6.1: actions to address risks and opportunities.",
     ],
   });
@@ -218,6 +221,8 @@ export const ObjectiveSchema = z
       "Every objective should address at least one risk or opportunity to ensure traceability.",
       "Assign an owner — an objective without accountability is a wish, not a commitment.",
       "Link measures explicitly so progress can be tracked.",
+      "Include a target date in the title or prose — §6.2 requires planning 'when it will be completed', and objectives without deadlines fail the 'T' in SMART.",
+      "§6.2 requires objectives to be consistent with the quality policy — state this alignment in the prose if your organisation has a documented policy.",
       "Aligns with ISO 9001 §6.2: quality objectives and planning to achieve them.",
     ],
   });
@@ -260,7 +265,7 @@ export const OwnerSchema = z
       "Owners are people or roles, not teams — accountability must be individual.",
       "An owner with no assigned objectives is unneeded in the model.",
       "Document the role to clarify accountability in organisational context.",
-      "Aligns with ISO 9001 §5.1 and §5.3: leadership and organisational roles.",
+      "Aligns with ISO 9001 §5.3: organisational roles, responsibilities, and authorities. For top-management owners, §5.1 (leadership commitment) also applies.",
     ],
   });
 
@@ -323,7 +328,7 @@ export const ProductSchema = z
       "A product with no fulfills entries has no modelled stakeholder rationale — add them.",
       "Assign an owner to make delivery accountability explicit.",
       "Products represent the delivery vehicle; capabilities represent the underlying ability.",
-      "Aligns with ISO 9001 §8.1: operational planning and control.",
+      "Aligns with ISO 9001 §8.1 (operational planning and control) and §8.2 (requirements for products and services).",
     ],
   });
 
@@ -350,7 +355,8 @@ export const EvaluationSchema = z
       "Evaluation is a practice, not a single event — describe the cadence and method.",
       "Use 'evaluates' to link this practice to the measures it reviews.",
       "Include both internal performance review and customer satisfaction evaluation.",
-      "Aligns with ISO 9001 §9: performance evaluation.",
+      "Consider separate evaluation blocks for: ongoing performance monitoring (§9.1), the internal audit programme (§9.2), and management review (§9.3).",
+      "Aligns with ISO 9001 §9.1 (monitoring, measurement, analysis and evaluation), §9.2 (internal audit), and §9.3 (management review).",
     ],
   });
 
@@ -358,9 +364,9 @@ export const ImprovementSchema = z
   .object({
     id: z.string().min(1).meta({ description: "Unique identifier" }),
     title: z.string().min(1).meta({ description: "Short name for the improvement action" }),
-    type: z.enum(["corrective", "preventive", "innovative"]).meta({
+    type: z.enum(["corrective", "proactive", "innovative"]).meta({
       description:
-        "Type of improvement: corrective (fix nonconformity), preventive (prevent failure), innovative (exploit opportunity)",
+        "Type of improvement: corrective (fix nonconformity), proactive (act before failure recurs), innovative (exploit opportunity)",
     }),
     "triggered-by": z
       .string()
@@ -380,7 +386,7 @@ export const ImprovementSchema = z
       { field: "addresses", targetKind: "objective, capability, or product", cardinality: "many" },
     ] satisfies CrossRefMeta[],
     authoringTips: [
-      "Set 'type' to corrective (fix a confirmed problem), preventive (prevent a potential one), or innovative (exploit an opportunity).",
+      "Set 'type' to corrective (fix a confirmed problem), proactive (act before failure recurs), or innovative (exploit an opportunity).",
       "Use 'triggered-by' to link this improvement to the evaluation that identified the need.",
       "Use 'addresses' to link to the objective, capability, or product being improved.",
       "Every improvement should address a specific gap identified in evaluation.",

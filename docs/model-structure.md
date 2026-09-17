@@ -144,7 +144,7 @@ A minimal, outside-in model of a business. Each section describes one model elem
 
 **What it is:** What the business changes when evaluation reveals a gap, a failure, or a better way. Includes corrective actions (fixing what went wrong) and continual improvement (making things better even when they're not broken).
 
-**Structure:** Each improvement has a `type` (`corrective`, `preventive`, or `innovative`), a description, a reference to the _Evaluation_ that triggered it (`triggered-by`), and a target (`addresses`) pointing to the _Capability_, _Product/Service_, or _Objective_ being changed.
+**Structure:** Each improvement has a `type` (`corrective`, `proactive`, or `innovative`), a description, a reference to the _Evaluation_ that triggered it (`triggered-by`), and a target (`addresses`) pointing to the _Capability_, _Product/Service_, or _Objective_ being changed.
 
 **Relates to:** Improvements may create new _Signals_ (internal), modify _Capabilities_, change _Products & Services_, or revise _Objectives_. This closes the loop back to the top of the model.
 
