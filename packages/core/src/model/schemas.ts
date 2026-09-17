@@ -156,6 +156,7 @@ export const RiskSchema = z
     biz42Chapter: 4,
     crossRefs: [] satisfies CrossRefMeta[],
     authoringTips: [
+      "Focus on risks for the organization! Don't include flaws in the product, but rather describe the impact of these flaws that e. g. impact reputation, compliance or similar.",
       "Risk severity is the combination of likelihood and impact — be explicit in the prose.",
       "Every high-severity risk should be addressed by at least one objective.",
       "Include a mitigation plan or note it as accepted/monitored.",
