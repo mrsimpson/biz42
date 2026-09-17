@@ -150,6 +150,30 @@ A minimal, outside-in model of a business. Each section describes one model elem
 
 ---
 
+## 13. Cashflow
+
+**ISO 9001 mapping:** None — this chapter has no direct ISO 9001 clause anchor.
+
+**What it is:** The financial model of the business: what the organisation charges for (revenue
+streams) and what it spends on (cost items). Cashflow is optional — the model validates without
+it. Include it when the business model discussion needs to make the financial logic explicit.
+
+**Structure:** Each cashflow item has a `type` (`revenue` or `cost`), a `category`, a
+`recurrence` (`recurring` or `one-time`), and a `linked-to` reference pointing to the product
+or capability it is tied to.
+
+**Business Model Canvas:** Chapter 13 also hosts the Business Model Canvas (BMC) diagram
+(`notation: bmc`). The BMC is a one-page visualisation that maps all nine building blocks of the
+business model onto a single canvas. Its slots reference existing biz42 ids: products for
+value-propositions, capabilities for key-resources/key-activities/channels, and cashflow items
+for cost-structure and revenue-streams. The remaining slots (key-partners, customer-segments,
+customer-relationships) are free-text.
+
+**Relates to:** Cashflow links revenue streams to _Products & Services_ and cost items to
+_Capabilities_. The BMC draws on elements from every other chapter.
+
+---
+
 ## Relationship Summary
 
 ```
@@ -178,20 +202,21 @@ Scope (bounds everything below)
 
 ## ISO 9001:2015 Coverage
 
-| Model Element     | ISO Clause | Covered |
-| ----------------- | ---------- | ------- |
-| Scope             | 4.3        | ✓       |
-| Signals           | 4.1        | ✓       |
-| Expectations      | 4.2        | ✓       |
-| Risks             | 6.1        | ✓       |
-| Opportunities     | 6.1        | ✓       |
-| Objectives        | 6.2        | ✓       |
-| Measures          | 9.1        | ✓       |
-| Owners            | 5.1, 5.3   | ✓       |
-| Capabilities      | 7.1–7.2    | ✓       |
-| Products/Services | 8.1        | ✓       |
-| Evaluation        | 9          | ✓       |
-| Improvements      | 10         | ✓       |
+| Model Element     | ISO Clause | Covered      |
+| ----------------- | ---------- | ------------ |
+| Scope             | 4.3        | ✓            |
+| Signals           | 4.1        | ✓            |
+| Expectations      | 4.2        | ✓            |
+| Risks             | 6.1        | ✓            |
+| Opportunities     | 6.1        | ✓            |
+| Objectives        | 6.2        | ✓            |
+| Measures          | 9.1        | ✓            |
+| Owners            | 5.1, 5.3   | ✓            |
+| Capabilities      | 7.1–7.2    | ✓            |
+| Products/Services | 8.1        | ✓            |
+| Evaluation        | 9          | ✓            |
+| Improvements      | 10         | ✓            |
+| Cashflow / BMC    | —          | ✓ (optional) |
 
 | Excluded                      | ISO Clause | Reason                |
 | ----------------------------- | ---------- | --------------------- |
