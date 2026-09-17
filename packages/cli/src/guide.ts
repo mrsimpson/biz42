@@ -21,7 +21,7 @@ Commands:
   get             Query elements from the workspace
   rules           List validation rules
   explain         Explain block types and fields
-  init            Initialize templates or install agent skill
+  init            Install the biz42 agent skill
   serve           Serve the SPA on localhost
   build           Build a static SPA export
   guide           Show authoring guides
@@ -95,18 +95,15 @@ Options:
 `;
 
     case "init":
-      return `biz42 init — initialize templates or install agent skill
+      return `biz42 init — install the biz42 agent skill
 
 Usage:
-  biz42 init template [--dir <path>]
   biz42 init skill [--path <dest>]
 
 Subcommands:
-  template         Create starter .biz42.md template files
   skill            Install the biz42 SKILL.md for agent use
 
 Options:
-  --dir <path>     Destination directory for templates (default: cwd)
   --path <dest>    Destination path for SKILL.md
   --help           Show this help
 `;
@@ -167,15 +164,12 @@ Forward references (risks that have no objective yet, objectives with no
 measure yet) will appear as warnings as you write them. Note them and keep
 going. Consistency is only required at the end.
 
-## Step 0 — Scaffold the workspace
+## Step 0 — Create chapter files as you go
 
-  biz42 init template --dir ./docs/biz42
-
-This creates all chapters files with starter templates. Then run:
-
-  biz42 validate
-
-You should see no errors on an empty scaffold. Note the baseline.
+Do not create all chapter files upfront. Create each \`.biz42.md\` file when you
+reach that chapter in Step 2. Use \`biz42 guide chapter <n>\` to get authoring
+instructions, then create the corresponding file with an empty block stub before
+filling it in.
 
 ## Step 0.5 — Gather existing documents
 
