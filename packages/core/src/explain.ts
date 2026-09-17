@@ -171,11 +171,59 @@ const DIAGRAM_DATA: Record<DiagramNotation, ExplainDiagramResult> = {
       "describes a business model on a single page using nine building blocks: Key Partners, " +
       "Key Activities, Key Resources, Value Propositions, Customer Relationships, Channels, " +
       "Customer Segments, Cost Structure, and Revenue Streams. In biz42, element ids in the " +
-      "canvas link back to the corresponding model elements.",
+      "canvas link back to the corresponding model elements.\n\n" +
+      "Place the diagram block and its YAML source in chapter 13 (Cashflow):\n\n" +
+      "  :::diagram\n" +
+      "  id: diagram-bmc\n" +
+      "  title: Business Model Canvas\n" +
+      "  notation: bmc\n" +
+      "  :::\n\n" +
+      "  ```yaml\n" +
+      "  key-partners:\n" +
+      '    - "<free text>"\n' +
+      "  key-resources:\n" +
+      "    - capability-xxx\n" +
+      "  key-activities:\n" +
+      "    - capability-xxx\n" +
+      "  value-propositions:\n" +
+      "    - product-xxx\n" +
+      "  customer-relationships:\n" +
+      '    - "<free text>"\n' +
+      "  channels:\n" +
+      "    - capability-xxx\n" +
+      "  customer-segments:\n" +
+      '    - "<free text>"\n' +
+      "  cost-structure:\n" +
+      "    - cashflow-xxx\n" +
+      "  revenue-streams:\n" +
+      "    - cashflow-xxx\n" +
+      "  ```\n\n" +
+      "All nine slots are optional — only include slots you have content for.",
+    slots: [
+      {
+        label: "key-partners",
+        meaning: "Free-text list of partners and suppliers (not validated)",
+      },
+      { label: "key-resources", meaning: "Capability ids — resources the business relies on" },
+      {
+        label: "key-activities",
+        meaning: "Capability ids — core activities the business performs",
+      },
+      { label: "value-propositions", meaning: "Product ids — what the business offers customers" },
+      {
+        label: "customer-relationships",
+        meaning: "Free-text list of relationship types (not validated)",
+      },
+      { label: "channels", meaning: "Capability ids — how the business reaches customers" },
+      { label: "customer-segments", meaning: "Free-text list of target segments (not validated)" },
+      { label: "cost-structure", meaning: "Cashflow ids (type: cost) — main cost drivers" },
+      { label: "revenue-streams", meaning: "Cashflow ids (type: revenue) — sources of income" },
+    ],
     authoringTips: [
-      "Use element ids as node labels so the canvas links to the model.",
+      "All nine slots are optional — only include slots you have content for.",
       "Value Propositions sit at the centre — fill those first, then radiate outward.",
-      "Keep each cell to 3–5 items; add detail in the element blocks, not here.",
+      "Six slots accept biz42 ids (validated by E015); three accept free-text strings.",
+      "Keep each slot to 3–5 items; add detail in the element blocks, not here.",
     ],
   },
   sipoc: {

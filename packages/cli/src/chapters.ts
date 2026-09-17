@@ -634,15 +634,22 @@ For each revenue stream or cost item: one prose sentence describing the
 cashflow and its driver. Then a cashflow block. Link each item to the
 product or capability it is tied to.
 
+## Business Model Canvas
+
+Add a single BMC diagram at the end of chapter 13 to visualise the full business model on one
+canvas. Run \`biz42 explain diagram bmc\` for the full syntax, slot reference, and authoring tips.
+
 ## CLI
 
   biz42 explain cashflow       # block syntax and full field reference
-  biz42 validate               # E002 fires if linked-to references a non-existent id
+  biz42 explain diagram bmc    # BMC notation, slot reference, and authoring tips
+  biz42 validate               # checks linked-to references and BMC slot ids
 
 ## Done when
 
   - Revenue streams and cost items are documented
   - Each cashflow is linked to the product or capability it is tied to
+  - A BMC diagram is present with the relevant slots filled
   - biz42 validate shows no E errors for chapter 13
 `,
     template: `# Cashflow
