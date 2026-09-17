@@ -101,17 +101,20 @@ test.describe("Human / Agent view toggle", () => {
     await page.goto("/#04-risks.biz42.md");
     await expect(page.getByTestId("prose-stripe").first()).toBeVisible({ timeout: 5000 });
 
-    await page.getByRole("button", { name: "Agent" }).click();
+    // Toggle button shows current mode; click "Human" to switch to agent view
+    await page.getByRole("button", { name: "Human" }).click();
     await expect(page.getByTestId("agent-block").first()).toBeVisible();
     await expect(page.getByTestId("prose-stripe").first()).not.toBeVisible();
   });
 
   test("switching back to human view restores stripes", async ({ page }) => {
     await page.goto("/#04-risks.biz42.md");
-    await page.getByRole("button", { name: "Agent" }).click();
+    // Switch to agent view first
+    await page.getByRole("button", { name: "Human" }).click();
     await expect(page.getByTestId("agent-block").first()).toBeVisible({ timeout: 5000 });
 
-    await page.getByRole("button", { name: "Human" }).click();
+    // Now toggle back — button now shows "Agent", click it to return to human view
+    await page.getByRole("button", { name: "Agent" }).click();
     await expect(page.getByTestId("prose-stripe").first()).toBeVisible();
     await expect(page.getByTestId("agent-block").first()).not.toBeVisible();
   });
@@ -134,6 +137,183 @@ test.describe("BMC diagram", () => {
     // Alert Service product should appear as a link in value-propositions
     await expect(
       page.getByTestId("bmc-diagram").getByRole("link", { name: "Alert Service" }),
+    ).toBeVisible();
+  });
+});
+
+// ─── Dark mode toggle ─────────────────────────────────────────────────────────
+
+test.describe("Dark mode toggle", () => {
+  test("theme toggle button is visible in sidebar header", async ({ page }) => {
+    await page.goto("/");
+    await expect(
+      page.getByRole("button", { name: /Switch to dark mode|Switch to light mode/ }),
+    ).toBeVisible({ timeout: 5000 });
+  });
+
+  test("clicking theme toggle sets data-theme attribute on html element", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.getByRole("button", { name: /Switch to dark mode/ })).toBeVisible({
+      timeout: 5000,
+    });
+
+    // Start in light mode (no dark system preference in headless), click to go dark
+    await page.getByRole("button", { name: /Switch to dark mode/ }).click();
+    const theme = await page.evaluate(() => document.documentElement.getAttribute("data-theme"));
+    expect(theme).toBe("dark");
+  });
+
+  test("theme persists in localStorage after toggle", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.getByRole("button", { name: /Switch to dark mode/ })).toBeVisible({
+      timeout: 5000,
+    });
+    await page.getByRole("button", { name: /Switch to dark mode/ }).click();
+
+    const stored = await page.evaluate(() => localStorage.getItem("theme"));
+    expect(stored).toBe("dark");
+  });
+
+  test("toggling back to light removes data-theme", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.getByRole("button", { name: /Switch to dark mode/ })).toBeVisible({
+      timeout: 5000,
+    });
+
+    // Go dark
+    await page.getByRole("button", { name: /Switch to dark mode/ }).click();
+    await expect(page.getByRole("button", { name: /Switch to light mode/ })).toBeVisible();
+
+    // Go back to light
+    await page.getByRole("button", { name: /Switch to light mode/ }).click();
+    const theme = await page.evaluate(() => document.documentElement.getAttribute("data-theme"));
+    // When matching system preference, the override is removed (null) or set to "light"
+    expect(["light", null]).toContain(theme);
+  });
+});
+
+// ─── Mobile sidebar ───────────────────────────────────────────────────────────
+
+test.describe("Mobile sidebar", () => {
+  test("hamburger menu button is visible at 375px width", async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
+    const menuBtn = page.getByRole("button", { name: "Open document navigation" });
+    await expect(menuBtn).toBeVisible({ timeout: 5000 });
+  });
+
+  test("sidebar is hidden by default on mobile", async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
+    // Sidebar nav should exist but be off-screen (translateX(-105%))
+    const nav = page.locator("nav[aria-label='Document navigation']");
+    await expect(nav).toBeAttached();
+    const box = await nav.boundingBox();
+    // Should be off-screen to the left (x + width <= 0) or have no visible box
+    if (box) {
+      expect(box.x + box.width).toBeLessThanOrEqual(10);
+    }
+  });
+
+  test("clicking hamburger opens the sidebar", async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
+    await page.getByRole("button", { name: "Open document navigation" }).click();
+
+    // Wait for CSS transition (180ms) then confirm sidebar is on-screen
+    await page.waitForTimeout(300);
+    const nav = page.locator("nav[aria-label='Document navigation']");
+    const box = await nav.boundingBox();
+    expect(box).not.toBeNull();
+    // x should be >= 0 (on-screen) after the transition
+    expect(box!.x + box!.width).toBeGreaterThan(0);
+    expect(box!.x).toBeGreaterThanOrEqual(-5); // allow 5px rounding tolerance
+  });
+
+  test("close button in sidebar closes the sidebar", async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
+    await page.getByRole("button", { name: "Open document navigation" }).click();
+
+    await page.getByRole("button", { name: "Close document navigation" }).first().click();
+    const nav = page.locator("nav[aria-label='Document navigation']");
+    const box = await nav.boundingBox();
+    if (box) {
+      expect(box.x + box.width).toBeLessThanOrEqual(10);
+    }
+  });
+
+  test("selecting a doc on mobile closes the sidebar", async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
+    await page.getByRole("button", { name: "Open document navigation" }).click();
+
+    // Pick any doc button inside the nav
+    await page.locator("nav[aria-label='Document navigation'] ul button").first().click();
+
+    // Sidebar should close
+    const nav = page.locator("nav[aria-label='Document navigation']");
+    // Wait for CSS transition (180ms)
+    await page.waitForTimeout(300);
+    const box = await nav.boundingBox();
+    if (box) {
+      expect(box.x + box.width).toBeLessThanOrEqual(10);
+    }
+  });
+});
+
+// ─── Mermaid diagram zoom ─────────────────────────────────────────────────────
+
+test.describe("Mermaid diagram zoom", () => {
+  test("mermaid diagram renders with zoom toolbar", async ({ page }) => {
+    await page.goto("/#01-scope.biz42.md");
+    const zoomIn = page.getByRole("button", { name: "Zoom in" }).first();
+    await expect(zoomIn).toBeVisible({ timeout: 10000 });
+  });
+
+  test("zoom in button increases the displayed scale percentage", async ({ page }) => {
+    await page.goto("/#01-scope.biz42.md");
+    const zoomIn = page.getByRole("button", { name: "Zoom in" }).first();
+    await expect(zoomIn).toBeVisible({ timeout: 10000 });
+
+    const zoomLabel = page.locator("figure span").filter({ hasText: /\d+%/ }).first();
+    const before = await zoomLabel.textContent();
+    await zoomIn.click();
+    const after = await zoomLabel.textContent();
+    expect(after).not.toBe(before);
+  });
+
+  test("zoom out button decreases the scale", async ({ page }) => {
+    await page.goto("/#01-scope.biz42.md");
+    const zoomIn = page.getByRole("button", { name: "Zoom in" }).first();
+    await expect(zoomIn).toBeVisible({ timeout: 10000 });
+
+    // Zoom in first so there's room to zoom out
+    await zoomIn.click();
+    const zoomLabel = page.locator("figure span").filter({ hasText: /\d+%/ }).first();
+    const before = await zoomLabel.textContent();
+
+    await page.getByRole("button", { name: "Zoom out" }).first().click();
+    const after = await zoomLabel.textContent();
+    expect(after).not.toBe(before);
+  });
+
+  test("fullscreen button opens diagram fullscreen and Escape closes it", async ({ page }) => {
+    await page.goto("/#01-scope.biz42.md");
+    const fsBtn = page.getByRole("button", { name: "Open diagram fullscreen" }).first();
+    await expect(fsBtn).toBeVisible({ timeout: 10000 });
+
+    await fsBtn.click();
+    await expect(page.getByRole("button", { name: "Close fullscreen diagram" })).toBeVisible();
+
+    await page.keyboard.press("Escape");
+    await expect(
+      page.getByRole("button", { name: "Open diagram fullscreen" }).first(),
     ).toBeVisible();
   });
 });
