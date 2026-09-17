@@ -137,6 +137,13 @@ export function formatExplainText(result: ExplainResult): string {
     }
   }
 
+  if (result.authoringTips.length > 0) {
+    lines.push("\nAuthoring tips:");
+    for (const tip of result.authoringTips) {
+      lines.push(`  • ${tip}`);
+    }
+  }
+
   return lines.join("\n");
 }
 

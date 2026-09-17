@@ -362,6 +362,13 @@ ${BLOCK_TYPES.map((t) => `  ${t}`).join("\n")}
 ${CHAPTERS.map((ch) => `  ${String(ch.number).padStart(2, "0")}  ${ch.title}`).join("\n")}
 `;
 
+const EXPLAIN_BANNER = `> This guide covers process only — what to ask and when you are done.
+> For field definitions, validation rules, and authoring tips run:
+>
+>   biz42 explain <block-type>
+
+`;
+
 export function guideText(topic: string, argument?: string): string {
   if (!topic || topic === "new") {
     return NEW_WORKSPACE_GUIDE;
@@ -377,7 +384,7 @@ export function guideText(topic: string, argument?: string): string {
     if (!chapter) {
       throw new Error(`Unknown chapter '${argument ?? ""}'. Use a number 1–13.`);
     }
-    return chapter.guide;
+    return EXPLAIN_BANNER + chapter.guide;
   }
 
   throw new Error(`Unknown guide topic '${topic}'. Try: (no topic), chapter <n>, migration`);

@@ -41,7 +41,7 @@ vague scope leads to vague everything else.
 
 ## CLI
 
-  biz42 explain scope          # block syntax and full field reference
+  biz42 explain scope          # field reference and authoring tips
   biz42 validate               # check after filling in
 
 ## Done when
@@ -140,7 +140,7 @@ it gives rise to — you can fill these in after chapters 4 and 5.
 
 ## CLI
 
-  biz42 explain signal         # block syntax and full field reference
+  biz42 explain signal         # field reference and authoring tips
   biz42 validate               # check after filling in
 
 ## Done when
@@ -187,7 +187,7 @@ this expectation creates.
 
 ## CLI
 
-  biz42 explain expectation    # block syntax and full field reference
+  biz42 explain expectation    # field reference and authoring tips
   biz42 validate               # check after filling in
 
 ## Done when
@@ -215,26 +215,25 @@ surfaces: risk-xxx, opp-xxx
     title: "Risks",
     guide: `# Chapter 4: Risks
 
-Risks are interpretations of signals or expectations. The same signal can be
-a high risk for one organisation and irrelevant to another — it depends on
-context and vulnerability.
+Risks are potential negative effects on the organisation's ability to achieve
+its objectives. Focus on organisational risks — reputation, compliance,
+capability, market position — not on product flaws in isolation.
 
 ## Questions to ask
 
-  - Which signals, if they materialise, could harm this organisation?
-  - Which unmet expectations could cause customer loss, regulatory action,
-    or reputational damage?
-  - What is the severity (product of likelihood × impact)?
+  - Which signals or expectations, if not addressed, could harm this organisation?
+  - What is the potential impact on objectives, reputation, or compliance?
+  - Is this risk accepted, monitored, or actively mitigated?
 
 ## What to write
 
-For each risk: one prose paragraph explaining the threat and why it matters.
-Then a risk block. Go back to chapters 2 and 3 and link the signals and
-expectations that give rise to this risk.
+For each risk: one prose paragraph explaining the threat and why it matters
+to the organisation. Then a risk block. Go back to chapters 2 and 3 and link
+the signals and expectations that surface this risk.
 
 ## CLI
 
-  biz42 explain risk           # block syntax and full field reference
+  biz42 explain risk           # field reference and authoring tips
   biz42 validate               # check after filling in
 
 ## Done when
@@ -261,9 +260,8 @@ mitigation: <Mitigation approach>
     title: "Opportunities",
     guide: `# Chapter 5: Opportunities
 
-Opportunities are the positive interpretation of signals and expectations.
-An opportunity is a possibility, not a commitment — commitments come in
-chapter 6.
+Opportunities are potential positive outcomes the organisation could pursue.
+They are possibilities surfaced by signals and expectations — not commitments.
 
 ## Questions to ask
 
@@ -279,7 +277,7 @@ expectations that surface it.
 
 ## CLI
 
-  biz42 explain opportunity    # block syntax and full field reference
+  biz42 explain opportunity    # field reference and authoring tips
   biz42 validate               # check after filling in
 
 ## Done when
@@ -306,8 +304,7 @@ title: <Opportunity title>
 
 Objectives are the hub of the traceability chain. Every objective must connect
 backward to a risk or opportunity and forward to a measure, an owner, and
-capabilities. An objective without a measure is unverifiable. One without an
-owner is unaccountable.
+capabilities.
 
 ## Questions to ask
 
@@ -326,7 +323,7 @@ the capabilities it requires.
 
 ## CLI
 
-  biz42 explain objective      # block syntax and full field reference
+  biz42 explain objective      # field reference and authoring tips
   biz42 validate               # check after each change
 
 ## Done when
@@ -345,12 +342,11 @@ This chapter documents specific, time-bound outcomes the organisation commits to
     guide: `# Chapter 7: Measures
 
 Measures define what "done" looks like for an objective. Every measure needs
-a quantifiable target. A measure that no objective references is orphaned.
+a quantifiable target.
 
 ## Questions to ask
 
   - How will the organisation know whether each objective has been achieved?
-  - What is being tracked — a rate, a count, a threshold, a date?
   - How often is it reviewed?
   - What is the target value and the current baseline?
 
@@ -362,7 +358,7 @@ link each objective to the measure that verifies it.
 
 ## CLI
 
-  biz42 explain measure        # block syntax and full field reference
+  biz42 explain measure        # field reference and authoring tips
   biz42 validate               # check after filling in
 
 ## Done when
@@ -406,7 +402,7 @@ each objective to its accountable owner.
 
 ## CLI
 
-  biz42 explain owner          # block syntax and full field reference
+  biz42 explain owner          # field reference and authoring tips
   biz42 validate               # check after each change
 
 ## Done when
@@ -434,8 +430,7 @@ role: <Job title or role>
 
 Capabilities are abstract organisational abilities — not tools, teams, or
 processes. Multiple objectives may require the same capability, and a single
-capability may serve multiple products. A capability marked \`gap\` that is
-required by an objective is a strategic finding.
+capability may serve multiple products.
 
 ## Questions to ask
 
@@ -453,7 +448,7 @@ products that draw on it.
 
 ## CLI
 
-  biz42 explain capability     # block syntax and full field reference
+  biz42 explain capability     # field reference and authoring tips
   biz42 validate               # check after filling in
 
 ## Done when
@@ -481,8 +476,7 @@ status: exists
     guide: `# Chapter 10: Products and Services
 
 Products and services are what the organisation delivers to its customers —
-the tangible output that meets expectations and draws on capabilities. A
-product is the delivery vehicle; the capability is the underlying ability.
+the tangible output that meets expectations and draws on capabilities.
 
 ## Questions to ask
 
@@ -498,7 +492,7 @@ expectations it meets and to the capabilities it draws on.
 
 ## CLI
 
-  biz42 explain product        # block syntax and full field reference
+  biz42 explain product        # field reference and authoring tips
   biz42 validate               # check after filling in
 
 ## Done when
@@ -526,8 +520,7 @@ fulfills: exp-xxx
     guide: `# Chapter 11: Evaluation
 
 Evaluation is the practice of reviewing measures to determine whether
-objectives are being met. It must be recurring and have a defined cadence —
-not a one-off event.
+objectives are being met.
 
 ## Questions to ask
 
@@ -543,7 +536,7 @@ it reviews.
 
 ## CLI
 
-  biz42 explain evaluation     # block syntax and full field reference
+  biz42 explain evaluation     # field reference and authoring tips
   biz42 validate               # check after filling in
 
 ## Done when
@@ -570,10 +563,8 @@ evaluates: measure-xxx
     title: "Improvements",
     guide: `# Chapter 12: Improvements
 
-Improvements close the feedback loop. They arise from evaluation findings and
-feed back into the model — modifying objectives, capabilities, products, or
-other elements. An improvement with no trigger and no target is not an
-improvement, it is a wish.
+Improvements close the feedback loop. An improvement with no trigger and no
+target is not an improvement, it is a wish.
 
 ## Questions to ask
 
@@ -589,7 +580,7 @@ to the evaluation finding that triggered it.
 
 ## CLI
 
-  biz42 explain improvement    # block syntax and full field reference
+  biz42 explain improvement    # field reference and authoring tips
   biz42 validate               # check after filling in
 
 ## Done when
@@ -641,7 +632,7 @@ canvas. Run \`biz42 explain diagram bmc\` for the full syntax, slot reference, a
 
 ## CLI
 
-  biz42 explain cashflow       # block syntax and full field reference
+  biz42 explain cashflow       # field reference and authoring tips
   biz42 explain diagram bmc    # BMC notation, slot reference, and authoring tips
   biz42 validate               # checks linked-to references and BMC slot ids
 
