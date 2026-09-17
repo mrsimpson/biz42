@@ -3,8 +3,7 @@ import { defineConfig } from "vite-plus";
 export default defineConfig({
   staged: {
     "*": "vp check --fix",
-    "examples/**/*.biz42.md":
-      "node packages/cli/dist/cli.mjs --dir examples/acme-emergency validate --strict",
+    "examples/**/*.biz42.md": "node scripts/validate-examples.mjs",
   },
   fmt: {},
   lint: {
