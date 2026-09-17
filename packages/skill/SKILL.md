@@ -6,7 +6,6 @@ description: The `biz42` CLI manages a plain-text business model — a set of `.
 ## CLI — top-level commands
 
 ```bash
-biz42 init template [--dir <path>]           # create starter chapter files
 biz42 guide [chapter <n>]                    # authoring guidance per chapter
 biz42 validate [--dir <path>] [--strict]     # validate workspace consistency
 biz42 get [<id>] [--type <type>] [--format text|json|markdown]

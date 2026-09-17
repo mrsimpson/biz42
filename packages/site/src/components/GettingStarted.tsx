@@ -32,9 +32,6 @@ export function GettingStarted() {
               derived from the repo.
             </p>
             <div className="gs__snippet">
-              <code>npx @biz42/cli init template</code>
-            </div>
-            <div className="gs__snippet">
               <code>npx @biz42/cli guide chapter 1</code>
             </div>
           </div>
