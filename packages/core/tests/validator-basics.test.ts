@@ -2,11 +2,15 @@ import { expect, test, describe } from "vite-plus/test";
 import { validate } from "../src/validator/index.ts";
 import { buildIndex } from "../src/resolver/index.ts";
 import { buildWorkspace } from "../src/model/builder.ts";
-import type { Workspace, Element } from "../src/model/types.ts";
+import type { Workspace, Element, IgnoreDirective } from "../src/model/types.ts";
 import type { DocumentAst } from "../src/ast.ts";
 
-function makeWorkspace(elements: Element[], parseErrors: Workspace["parseErrors"] = []): Workspace {
-  return { elements, parseErrors, documents: [], diagrams: [] };
+function makeWorkspace(
+  elements: Element[],
+  parseErrors: Workspace["parseErrors"] = [],
+  ignoreDirectives: IgnoreDirective[] = [],
+): Workspace {
+  return { elements, parseErrors, documents: [], diagrams: [], ignoreDirectives };
 }
 
 function loc(line = 1) {
@@ -449,5 +453,105 @@ describe("validator › W014 — unknown attribute on block", () => {
     const idx = buildIndex(ws);
     const diags = validate(ws, idx);
     expect(diags.filter((d) => d.code === "W014")).toHaveLength(2);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Ignore directive tests
+// ---------------------------------------------------------------------------
+
+describe("validator › ignore directives", () => {
+  test("W-code directive suppresses a matching warning", () => {
+    const ws = makeWorkspace(
+      [
+        {
+          kind: "risk",
+          id: "risk-1",
+          title: "Orphan risk",
+          severity: "low",
+          loc: { file: "test.biz42.md", line: 10 },
+        },
+      ],
+      [],
+      [{ ruleCode: "W001", file: "test.biz42.md", line: 5, used: false }],
+    );
+    // Add objective so W001 fires for the risk... actually W001 = unaddressed risk, no objective present
+    // directive at line 5, diagnostic will be at line 10 — directive.line <= diagnostic.line ✓
+    const idx = buildIndex(ws);
+    const diags = validate(ws, idx);
+    expect(diags.filter((d) => d.code === "W001")).toHaveLength(0);
+    expect(diags.filter((d) => d.code === "W019")).toHaveLength(0);
+  });
+
+  test("H-code directive suppresses a matching hint", () => {
+    const ws = makeWorkspace(
+      [
+        {
+          kind: "risk",
+          id: "risk-1",
+          title: "Orphan risk",
+          severity: "low",
+          loc: { file: "test.biz42.md", line: 10 },
+        },
+        {
+          kind: "objective",
+          id: "obj-1",
+          title: "Address it",
+          addresses: ["risk-1"],
+          "measured-by": [],
+          requires: [],
+          loc: { file: "test.biz42.md", line: 15 },
+        },
+      ],
+      [],
+      [{ ruleCode: "H005", file: "test.biz42.md", line: 1, used: false }],
+    );
+    const idx = buildIndex(ws);
+    const diags = validate(ws, idx);
+    expect(diags.filter((d) => d.code === "H005")).toHaveLength(0);
+    expect(diags.filter((d) => d.code === "W019")).toHaveLength(0);
+  });
+
+  test("unused directive emits W019 (stale ignore)", () => {
+    const ws = makeWorkspace(
+      [],
+      [],
+      [{ ruleCode: "W001", file: "test.biz42.md", line: 5, used: false }],
+    );
+    const idx = buildIndex(ws);
+    const diags = validate(ws, idx);
+    expect(diags.filter((d) => d.code === "W019")).toHaveLength(1);
+    expect(diags[0]!.message).toMatch(/W001/);
+  });
+
+  test("E-code directive emits W020 and does not suppress the error", () => {
+    const ws = makeWorkspace(
+      [
+        {
+          kind: "scope",
+          id: "scope-dup",
+          title: "Dup A",
+          loc: { file: "test.biz42.md", line: 10 },
+        },
+        {
+          kind: "scope",
+          id: "scope-dup",
+          title: "Dup B",
+          loc: { file: "test.biz42.md", line: 20 },
+        },
+      ],
+      [],
+      [{ ruleCode: "E001", file: "test.biz42.md", line: 1, used: false }],
+    );
+    const idx = buildIndex(ws);
+    const diags = validate(ws, idx);
+    // W020 must be emitted
+    const w020 = diags.find((d) => d.code === "W020");
+    expect(w020).toBeDefined();
+    expect(w020!.message).toMatch(/E001/);
+    // E001 must NOT be suppressed
+    expect(diags.filter((d) => d.code === "E001")).toHaveLength(1);
+    // No W019 for the same directive
+    expect(diags.filter((d) => d.code === "W019")).toHaveLength(0);
   });
 });

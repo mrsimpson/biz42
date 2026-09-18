@@ -58,6 +58,7 @@ Arguments:
 
 Options:
   --type <type>    Filter by block type: ${BLOCK_TYPES.join(", ")}
+                   Use --type ignore to list all ignore directives
   --format text|json|markdown   Output format (default: text)
   --help           Show this help
 `;
@@ -80,6 +81,7 @@ Options:
 Usage:
   biz42 explain [<block-type>] [options]
   biz42 explain diagram [<notation>] [options]
+  biz42 explain ignore [options]
 
 Arguments:
   <block-type>     One of: ${BLOCK_TYPES.join(", ")}
@@ -88,6 +90,7 @@ Arguments:
   <notation>       One of: bmc, sipoc, turtle, strategy-map, architecture,
                    sequence, flowchart, class, auto
                    Omit to list all diagram notations
+  ignore           Explain the :::ignore directive syntax and constraints
 
 Options:
   --format text|json   Output format (default: text)
@@ -281,9 +284,15 @@ the same \`\`\`biz42 fence, giving a reason:
   :::
   \`\`\`
 
+Only W (warning) and H (hint) codes can be ignored. Attempting to ignore an
+E (error) code emits W020 — errors are structural and must be fixed.
+
 An unused ignore directive produces W019 — so if the underlying issue is later
 fixed, the suppress will remind you to remove it. After suppressing, record the
 decision in \`business-evidence.md\` with the rule code, element id, and reason.
+
+Use \`biz42 explain ignore\` for directive syntax details, and
+\`biz42 get --type ignore\` to list all ignore directives in the workspace.
 
 Only then proceed to:
 

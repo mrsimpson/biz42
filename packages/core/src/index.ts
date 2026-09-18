@@ -75,6 +75,8 @@ export {
   explainDiagram,
   formatExplainDiagramText,
   formatExplainDiagramListText,
+  explainIgnore,
+  formatExplainIgnoreText,
 } from "./explain.ts";
 export type {
   ExplainResult,
@@ -83,6 +85,7 @@ export type {
   ExplainCrossRefResult,
   ExplainDiagramResult,
   ExplainDiagramSlot,
+  ExplainIgnoreResult,
 } from "./explain.ts";
 
 // Schema introspection
