@@ -21,7 +21,6 @@ Commands:
   get             Query elements from the workspace
   rules           List validation rules
   explain         Explain block types and fields
-  init            Install the biz42 agent skill
   serve           Serve the SPA on localhost
   build           Build a static SPA export
   guide           Show authoring guides
@@ -94,20 +93,6 @@ Arguments:
 
 Options:
   --format text|json   Output format (default: text)
-  --help           Show this help
-`;
-
-    case "init":
-      return `biz42 init — install the biz42 agent skill
-
-Usage:
-  biz42 init skill [--path <dest>]
-
-Subcommands:
-  skill            Install the biz42 SKILL.md for agent use
-
-Options:
-  --path <dest>    Destination path for SKILL.md
   --help           Show this help
 `;
 
