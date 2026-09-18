@@ -24,6 +24,8 @@ import {
   explainDiagram,
   formatExplainDiagramText,
   formatExplainDiagramListText,
+  explainIgnore,
+  formatExplainIgnoreText,
   ELEMENT_KIND_ORDER,
 } from "@biz42/core";
 import { builtinGetRenderers, rendererById } from "./renderer/index.ts";
@@ -190,6 +192,40 @@ async function runGet(dir: string, args: string[]) {
   const typeFlag = values["type"] as string | undefined;
   const format = values["format"] as string;
 
+  // Special case: --type ignore lists ignore directives (not a block type)
+  if (typeFlag === "ignore") {
+    if (id) {
+      console.error(
+        `biz42 get --type ignore does not support a positional <id>. Omit the id to list all directives.`,
+      );
+      process.exit(2);
+    }
+    if (format !== "text" && format !== "json") {
+      console.error(`--format '${format}' is not supported for --type ignore. Use text or json.`);
+      process.exit(2);
+    }
+    try {
+      const workspace = await loadWorkspace(dir);
+      const directives = workspace.ignoreDirectives ?? [];
+      if (format === "json") {
+        console.log(JSON.stringify(directives, null, 2));
+      } else {
+        if (directives.length === 0) {
+          console.log("No ignore directives found.");
+        } else {
+          for (const d of directives) {
+            const reason = d.reason ? `  ${d.reason}` : "";
+            console.log(`ignore  ${d.file}:${d.line}  ${d.ruleCode}${reason}`);
+          }
+        }
+      }
+      process.exit(0);
+    } catch (err) {
+      console.error(`Error: ${String(err)}`);
+      process.exit(1);
+    }
+  }
+
   if (typeFlag && !isBlockType(typeFlag)) {
     console.error(`Invalid --type '${typeFlag}'. Must be one of: ${BLOCK_TYPES.join(", ")}`);
     process.exit(2);
@@ -307,6 +343,17 @@ function runExplain(args: string[]) {
 
   const format = values["format"] as string;
   const firstArg = positionals[0];
+
+  // Sub-command: biz42 explain ignore
+  if (firstArg === "ignore") {
+    const result = explainIgnore();
+    if (format === "json") {
+      console.log(JSON.stringify(result, null, 2));
+    } else {
+      console.log(formatExplainIgnoreText(result));
+    }
+    process.exit(0);
+  }
 
   // Sub-command: biz42 explain diagram [<notation>]
   if (firstArg === "diagram") {

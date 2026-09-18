@@ -1,17 +1,43 @@
 import type { Workspace } from "../model/types.ts";
 import type { ReferenceIndex } from "../resolver/types.ts";
 import type { Diagnostic, ValidationContext } from "./types.ts";
-import { builtinRules } from "./rules/index.ts";
+import { builtinRules, rulesByCode } from "./rules/index.ts";
 import { suppressInvalidMermaidDiagnostics, validateMermaidSyntax } from "./mermaid-syntax.ts";
 
 const STALE_IGNORE_CODE = "W019";
+const ERROR_IGNORE_CODE = "W020";
+
+/** Returns true if the rule code targets an error-severity rule (cannot be suppressed). */
+function isErrorSeverityCode(ruleCode: string): boolean {
+  const upper = ruleCode.toUpperCase();
+  const rule = rulesByCode[upper];
+  if (rule) return rule.meta.severity === "error";
+  // Fallback: use the prefix heuristic for unknown/future codes
+  return upper[0] === "E";
+}
 
 function applyIgnoreDirectives(workspace: Workspace, diagnostics: Diagnostic[]): Diagnostic[] {
   const directives = workspace.ignoreDirectives ?? [];
   for (const directive of directives) directive.used = false;
+
+  // Partition directives: rejected (target E-severity) vs. allowed (W/H targets)
+  const rejected = directives.filter((d) => isErrorSeverityCode(d.ruleCode));
+  const allowed = directives.filter((d) => !isErrorSeverityCode(d.ruleCode));
+
+  // Emit W020 for each rejected directive
+  const rejectedDiags: Diagnostic[] = rejected.map(
+    (d): Diagnostic => ({
+      code: ERROR_IGNORE_CODE,
+      severity: "warning",
+      message: `Cannot suppress error-severity rule '${d.ruleCode}'; only warnings (W) and hints (H) can be ignored`,
+      file: d.file,
+      line: d.line,
+    }),
+  );
+
   const suppressed = new Set<Diagnostic>();
 
-  for (const directive of [...directives].sort((a, b) => a.line - b.line)) {
+  for (const directive of [...allowed].sort((a, b) => a.line - b.line)) {
     const diagnostic = diagnostics
       .filter(
         (candidate) =>
@@ -29,7 +55,7 @@ function applyIgnoreDirectives(workspace: Workspace, diagnostics: Diagnostic[]):
 
   const kept = diagnostics.filter((d) => !suppressed.has(d));
 
-  const stale = directives
+  const stale = allowed
     .filter((d) => !d.used)
     .map(
       (d): Diagnostic => ({
@@ -40,7 +66,7 @@ function applyIgnoreDirectives(workspace: Workspace, diagnostics: Diagnostic[]):
         line: d.line,
       }),
     );
-  return [...kept, ...stale];
+  return [...kept, ...stale, ...rejectedDiags];
 }
 
 export function validate(
