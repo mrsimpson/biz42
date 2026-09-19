@@ -311,7 +311,7 @@ A thin entry point over the core library and workspace adapters. Parses argument
 `util.parseArgs` (no third-party parser), resolves the workspace directory (`--dir` flag →
 `$BIZ42_DIR` → cwd), and coordinates the selected workspace adapter with core processing. Implements
 commands: `validate`, `get`, `rules`, `serve`, `build`, `init`, and `explain`. At build time, the CLI copies the compiled `@biz42/web`
-SPA assets into its own `dist/web/` directory so they can be served statically.
+SPA assets into its own `dist/web/` directory (multi-file) and `dist/web-single/` directory (single self-contained HTML file) so they can be served statically or shared as a single file.
 
 ```arc42
 :::building-block
@@ -465,6 +465,8 @@ protocol: HTTP (localhost) — static assets + JSON API
 The web renderer is built with `biz42 build` and its static output (`dist/`) is co-deployed with
 the project site under the `/docs/` sub-path on GitHub Pages. The project site links to this output
 — it does not embed or rebuild it. The interface boundary is the build artifact directory.
+`biz42 build --single-file` produces a self-contained `index.html` (all JS/CSS inlined) suitable
+for `file://` sharing without CORS errors.
 
 ```arc42
 :::interface
