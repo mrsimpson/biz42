@@ -15,4 +15,7 @@ export default defineConfig({
       "/api": "http://localhost:3142",
     },
   },
+  fmt: {
+    ignorePatterns: ["dist/**", "dist-single/**"],
+  },
 });

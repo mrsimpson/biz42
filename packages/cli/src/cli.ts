@@ -645,12 +645,14 @@ async function runBuild(dir: string, args: string[]) {
     options: {
       out: { type: "string" },
       base: { type: "string", default: "./" },
+      "single-file": { type: "boolean", default: false },
     },
     strict: false,
   });
 
   const outDir = values["out"] as string | undefined;
   const base = (values["base"] as string) || "./";
+  const singleFile = values["single-file"] as boolean;
 
   if (!outDir) {
     console.error("biz42 build: --out <dir> is required");
@@ -658,7 +660,7 @@ async function runBuild(dir: string, args: string[]) {
     process.exit(2);
   }
 
-  const webDir = join(__dirname, "web");
+  const webDir = join(__dirname, singleFile ? "web-single" : "web");
   if (!existsSync(webDir)) {
     console.error(`Web assets not found at ${webDir}. Run 'pnpm build:web' first.`);
     process.exit(1);
@@ -684,27 +686,41 @@ async function runBuild(dir: string, args: string[]) {
 
   let html = readFileSync(indexPath, "utf8");
 
-  if (base !== "./" && base !== "/") {
+  if (!singleFile && base !== "./" && base !== "/") {
     html = html.replace(/src="\/assets\//g, `src="${base}assets/`);
     html = html.replace(/href="\/assets\//g, `href="${base}assets/`);
     html = html.replace(/ href="\/assets\//g, ` href="${base}assets/`);
   }
 
   const injection = `<script>window.__WORKSPACE__=${workspaceJson};</script>`;
-  html = html.replace("</head>", `${injection}\n</head>`);
+  // Use the last occurrence of </head> — in single-file mode the inlined JS bundle
+  // may contain literal "</head>" strings (e.g. in SVG/HTML template fragments)
+  // that would fool a simple .replace() into injecting inside the script block.
+  const headCloseIdx = html.lastIndexOf("</head>");
+  if (headCloseIdx === -1) {
+    console.error("index.html has no </head> tag");
+    process.exit(1);
+  }
+  html =
+    html.slice(0, headCloseIdx) +
+    `${injection}\n</head>` +
+    html.slice(headCloseIdx + "</head>".length);
 
   writeFileSync(indexPath, html, "utf8");
 
-  const countFiles = (d: string): number => {
-    let n = 0;
-    for (const entry of readdirSync(d, { withFileTypes: true })) {
-      n += entry.isDirectory() ? countFiles(join(d, entry.name)) : 1;
-    }
-    return n;
-  };
-
-  const fileCount = countFiles(outDir);
-  console.log(`biz42 build  →  ${outDir}  (${fileCount} files)`);
+  if (singleFile) {
+    console.log(`biz42 build  →  ${outDir}  (single file)`);
+  } else {
+    const countFiles = (d: string): number => {
+      let n = 0;
+      for (const entry of readdirSync(d, { withFileTypes: true })) {
+        n += entry.isDirectory() ? countFiles(join(d, entry.name)) : 1;
+      }
+      return n;
+    };
+    const fileCount = countFiles(outDir);
+    console.log(`biz42 build  →  ${outDir}  (${fileCount} files)`);
+  }
   process.exit(0);
 }
 
