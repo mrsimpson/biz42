@@ -2,8 +2,8 @@
 
 ## Political Pressure After Workplace Incidents
 
-Several high-profile workplace incidents in the DACH transportation sector have
-drawn media and political scrutiny. Political and public pressure is pushing large
+Several high-profile workplace incidents in the DACH transportation
+sector have drawn media and political scrutiny. Political and public pressure is pushing large
 employers toward demonstrable, systematic alerting capabilities.
 
 ```biz42
