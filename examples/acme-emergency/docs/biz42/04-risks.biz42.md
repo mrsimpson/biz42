@@ -56,7 +56,7 @@ lower-cost tier or add location-based alerting before ACME Emergency launches.
 :::risk
 id: risk-incumbent-response
 title: Incumbent Response From Enterprise Notification Vendor
-severity: medium
+severity: high
 mitigation: Fast rollout; differentiate on proximity routing and cost
 :::
 ```
