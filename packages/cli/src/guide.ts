@@ -22,6 +22,7 @@ Commands:
   rules           List validation rules
   explain         Explain block types and fields
   init            Install the biz42 agent skill
+  diff            Report business model changes that need review
   serve           Serve the SPA on localhost
   build           Build a static SPA export
   guide           Show authoring guides
@@ -111,16 +112,60 @@ Options:
   --help           Show this help
 `;
 
+    case "diff":
+      return `biz42 diff — report business model changes
+
+Usage:
+  biz42 [--dir <path>] diff [<reference> | <base>..<head> | <base>...<head>] [options]
+
+Arguments:
+  <reference>           Git revision used as the comparison base
+  <base>..<head>        Compare two commits
+  <base>...<head>       Compare <head> with the merge base of both (the changes of a branch)
+
+Options:
+  --staged, --cached    Compare the index with HEAD, or with <reference>
+  --format text|json    Output format (default: text). json adds the semantic change set
+  --help                Show this help
+
+Without a flag, the command compares the working tree with the index. With <reference>,
+it compares the working tree with that revision. A commit range cannot be combined with
+--staged. Business model changes are compared semantically: reformatted blocks and
+reflowed prose are not changes. A block changed without the prose of its section (or the
+other way round) is a consistency finding and exits 1; set BIZ42_CONSISTENT to the
+displayed base commit after reviewing them. Git, parsing, and other operational errors
+exit 1.
+
+Examples:
+  biz42 diff                         # working tree versus index
+  biz42 diff main                    # working tree versus main
+  biz42 diff --staged                # index versus HEAD
+  biz42 diff origin/main...HEAD      # changes of the current branch, as in a pull request
+  biz42 diff main...HEAD --format json  # findings and changed elements for tooling and agents
+`;
+
     case "serve":
       return `biz42 serve — serve the biz42 SPA on localhost
 
 Usage:
   biz42 [--dir <path>] serve [options]
+  biz42 [--dir <path>] serve --diff [<reference> | <base>..<head> | <base>...<head>] [--staged]
 
 Options:
   --port <n>       Port to listen on (default: 3142)
   --open           Open the browser automatically
+  --diff           Visualize one business model difference; takes the same comparison
+                   arguments as \`biz42 diff\` (default: working tree versus index)
+  --staged         With --diff: compare the index with HEAD, or with <reference>
   --help           Show this help
+
+The server watches the workspace and refreshes the browser when *.biz42.md files
+change. With --diff it also follows the Git index and HEAD.
+
+Examples:
+  biz42 serve --open
+  biz42 serve --diff                 # uncommitted changes, live
+  biz42 serve --diff main...HEAD     # the changes of the current branch
 `;
 
     case "build":
@@ -128,11 +173,19 @@ Options:
 
 Usage:
   biz42 [--dir <path>] build --out <dir> [options]
+  biz42 [--dir <path>] build --out <dir> --diff [<reference> | <base>..<head> | <base>...<head>]
 
 Options:
   --out <dir>      Output directory (required)
   --base <path>    Base path for asset URLs (default: ./)
+  --diff           Include one business model difference, frozen at build time; takes
+                   the same comparison arguments as \`biz42 diff\`
+  --staged         With --diff: compare the index with HEAD, or with <reference>
   --help           Show this help
+
+Examples:
+  biz42 build --out site
+  biz42 build --out review --diff origin/main...HEAD   # review site for a pull request
 `;
 
     case "guide":

@@ -15,6 +15,11 @@ import type {
   WorkspacePayload,
 } from "@biz42/core";
 
+export { loadDiffSnapshots, EMPTY_TREE } from "./diff-snapshots.ts";
+export type { DiffSnapshots, DiffSpec, Snapshot } from "./diff-snapshots.ts";
+export { loadDiffPayload } from "./diff-payload.ts";
+export type { LoadedDiff } from "./diff-payload.ts";
+
 export async function discoverFiles(dir: string): Promise<string[]> {
   const files: string[] = [];
   async function walk(current: string): Promise<void> {
