@@ -43,6 +43,24 @@ export function LiveSection() {
               Open →
             </span>
           </a>
+          <a
+            href="./acme-evolution/"
+            className="live-card"
+            aria-label="View the ACME business development plan as a change"
+          >
+            <div className="live-card__icon" aria-hidden="true">
+              <LayersIcon />
+            </div>
+            <h3 className="live-card__title">ACME — A Business Development Plan</h3>
+            <p className="live-card__desc">
+              The acme example reaching for outside customers, one decision per commit — shown as a
+              change to the model, with its history. Built with{" "}
+              <code>biz42 build --diff v1.0 --with-history</code>.
+            </p>
+            <span className="live-card__arrow" aria-hidden="true">
+              Open →
+            </span>
+          </a>
         </div>
       </div>
     </section>

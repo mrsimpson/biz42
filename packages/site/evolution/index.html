@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>A business development plan becomes a pull request — biz42</title>
+    <meta
+      name="description"
+      content="biz42 records every business development decision in the model, with its reasoning, and shows what a plan changes before anyone approves it."
+    />
+    <script>
+      // Apply theme before React hydrates to avoid flash of wrong theme
+      (function () {
+        var stored = localStorage.getItem("theme");
+        if (stored === "dark" || stored === "light") {
+          document.documentElement.setAttribute("data-theme", stored);
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/evolution.tsx"></script>
+  </body>
+</html>

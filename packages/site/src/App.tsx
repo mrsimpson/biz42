@@ -2,6 +2,7 @@ import { Nav } from "./components/Nav";
 import { Hero } from "./components/Hero";
 import { GettingStarted } from "./components/GettingStarted";
 import { FeatureStrip } from "./components/FeatureStrip";
+import { EvolutionSection } from "./components/EvolutionSection";
 import { ModelSection } from "./components/ModelSection";
 import { IntroSection } from "./components/IntroSection";
 import { Arc42Section } from "./components/Arc42Section";
@@ -16,6 +17,7 @@ export function App() {
         <Hero />
         <GettingStarted />
         <FeatureStrip />
+        <EvolutionSection />
         <ModelSection />
         <IntroSection />
         <Arc42Section />
