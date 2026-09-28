@@ -5,6 +5,9 @@
   "description": "SPA for browsing biz42 business model workspaces.",
   "license": "MIT",
   "type": "module",
+  "exports": {
+    "./history-format": "./src/history-format.ts"
+  },
   "scripts": {
     "build": "tsc --noEmit && vp build",
     "build:single": "tsc --noEmit && vp build --config vite.config.single.ts",

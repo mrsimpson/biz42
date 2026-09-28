@@ -443,7 +443,9 @@ Reads workspace data from the core library via an HTTP API (when served by the C
 baked-in JSON file (when published as a static site). Presents prose and DSL blocks together:
 prose is shown as formatted text; biz42 element blocks are revealed by clicking a coloured
 stripe; Mermaid diagrams are rendered inline. An Agent view toggle shows raw DSL fences for
-tooling consumers. Designed to work equally as a `localhost` server and as a GitHub Pages
+tooling consumers. A difference is shown as a summary and inline in its chapters; the
+history of the business model is a chain of commits, each with its change, and each commit can
+be browsed as a whole. Designed to work equally as a `localhost` server and as a GitHub Pages
 static deployment.
 
 ```arc42
@@ -473,7 +475,10 @@ protocol: HTTP / browser
 
 The CLI hosts the web renderer as a local HTTP server. On `biz42 serve`, it builds the workspace
 payload via the core library, exposes it at `/api/workspace`, and serves the web renderer's static
-assets. With `--diff`, it also exposes the difference to visualize at `/api/diff`.
+assets. With `--diff`, it also exposes the difference to visualize at `/api/diff`. Inside a Git
+repository it serves the business model history under `/api/history/` in the web renderer's
+history format: the pearl index, the change of each commit computed on request, and each commit's
+documents so the browser can parse and show an earlier version as a whole.
 
 ```arc42
 :::interface

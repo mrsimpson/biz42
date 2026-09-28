@@ -18,6 +18,9 @@ import type {
 export { loadDiffSnapshots, EMPTY_TREE } from "./diff-snapshots.ts";
 export type { DiffSnapshots, DiffSpec, Snapshot } from "./diff-snapshots.ts";
 export { loadDiffPayload } from "./diff-payload.ts";
+export { listBusinessModelHistory, loadCommitChange } from "./history.ts";
+export type { BusinessModelCommit, BusinessModelHistory, CommitChange } from "./history.ts";
+export { readBusinessModelBlob, readCommitFiles } from "./snapshot.ts";
 export type { LoadedDiff } from "./diff-payload.ts";
 
 export async function discoverFiles(dir: string): Promise<string[]> {

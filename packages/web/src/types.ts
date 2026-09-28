@@ -13,5 +13,7 @@ declare global {
     __WORKSPACE__?: WorkspacePayload;
     /** The difference injected by `biz42 build --diff`. */
     __DIFF__?: DiffPayload;
+    /** Where `biz42 build --with-history` put the history (or the history itself). */
+    __HISTORY__?: import("./useHistory.ts").HistorySource;
   }
 }

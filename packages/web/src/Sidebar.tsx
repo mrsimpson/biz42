@@ -27,6 +27,14 @@ interface SidebarProps {
     /** Changed documents by file name. */
     documents: Map<string, DiffDocument>;
   };
+  /** Present when a business model history is available (serve, build --with-history). */
+  history?: {
+    active: boolean;
+    onSelect: () => void;
+    onSelectDocuments: () => void;
+    /** The pearl chain, shown instead of the documents while active. */
+    panel: React.ReactNode;
+  };
   viewMode: "human" | "agent";
   onToggleViewMode: () => void;
   theme: "dark" | "light";
@@ -40,6 +48,7 @@ export function Sidebar({
   activeDocIndex,
   onSelectDoc,
   changes,
+  history,
   viewMode,
   onToggleViewMode,
   theme,
@@ -83,7 +92,34 @@ export function Sidebar({
         </button>
       </div>
 
-      {changes && (
+      {history && (
+        <div className={styles.tabs} role="tablist" aria-label="Sidebar view">
+          <button
+            type="button"
+            role="tab"
+            data-testid="sidebar-tab-documents"
+            aria-selected={!history.active}
+            className={[styles.tab, !history.active ? styles.tabActive : ""].join(" ")}
+            onClick={history.onSelectDocuments}
+          >
+            Documents
+          </button>
+          <button
+            type="button"
+            role="tab"
+            data-testid="sidebar-tab-history"
+            aria-selected={history.active}
+            className={[styles.tab, history.active ? styles.tabActive : ""].join(" ")}
+            onClick={history.onSelect}
+          >
+            History
+          </button>
+        </div>
+      )}
+
+      {history?.active && history.panel}
+
+      {!history?.active && changes && (
         <a
           data-testid="sidebar-changes-link"
           href="#changes"
@@ -101,35 +137,38 @@ export function Sidebar({
         </a>
       )}
 
-      <ul className={styles.docs} role="list">
-        {documents.map((doc, i) => {
-          const isActive = i === activeDocIndex && !changes?.active;
-          const docChanges = changes?.documents.get(basename(doc.filePath));
-          const base = basename(doc.filePath);
-          const numMatch = /^(\d+)-/.exec(base);
-          const num = numMatch ? numMatch[1] : null;
-          const title = docTitle(doc);
-          return (
-            <li key={doc.filePath} className={styles.doc}>
-              <button
-                aria-current={isActive ? "page" : undefined}
-                className={[styles.docBtn, isActive ? styles.docBtnActive : ""]
-                  .filter(Boolean)
-                  .join(" ")}
-                onClick={() => onSelectDoc(i)}
-              >
-                {num && <span className={styles.docNum}>{parseInt(num, 10)}</span>}
-                <span className={styles.docLabel}>{title}</span>
-                {docChanges && (
-                  <span className={styles.docChanges} data-testid="doc-change-badge">
-                    <ChangeCounts {...docChanges} />
-                  </span>
-                )}
-              </button>
-            </li>
-          );
-        })}
-      </ul>
+      {!history?.active && (
+        <ul className={styles.docs} role="list">
+          {documents.map((doc, i) => {
+            const isActive = i === activeDocIndex && !changes?.active;
+            const docChanges = changes?.documents.get(basename(doc.filePath));
+            const base = basename(doc.filePath);
+            const numMatch = /^(\d+)-/.exec(base);
+            const num = numMatch ? numMatch[1] : null;
+            const title = docTitle(doc);
+            return (
+              <li key={doc.filePath} className={styles.doc}>
+                <button
+                  data-testid="sidebar-doc-link"
+                  aria-current={isActive ? "page" : undefined}
+                  className={[styles.docBtn, isActive ? styles.docBtnActive : ""]
+                    .filter(Boolean)
+                    .join(" ")}
+                  onClick={() => onSelectDoc(i)}
+                >
+                  {num && <span className={styles.docNum}>{parseInt(num, 10)}</span>}
+                  <span className={styles.docLabel}>{title}</span>
+                  {docChanges && (
+                    <span className={styles.docChanges} data-testid="doc-change-badge">
+                      <ChangeCounts {...docChanges} />
+                    </span>
+                  )}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </nav>
   );
 }
