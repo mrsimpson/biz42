@@ -25,6 +25,14 @@ Or use the CLI directly:
 npx @biz42/cli --help
 ```
 
+### Reviewing changes
+
+`biz42 diff` compares two versions of a workspace semantically — changed elements, relations,
+diagrams and prose, not Markdown lines — and flags blocks whose explaining prose did not change
+with them. `biz42 serve --diff main...HEAD` shows the same change in the browser: a summary, then
+every changed chapter with its changes marked in place. Pull requests get the same view as a
+self-contained review page from the _Business model review_ workflow.
+
 ## Getting started (as a contributor)
 
 ```bash

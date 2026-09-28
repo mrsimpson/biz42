@@ -77,6 +77,7 @@ graph TD
         bb-resolver["Resolver"]
         bb-validator["Validator"]
         bb-mermaid["Mermaid Syntax"]
+        bb-diff["Business Model Diff"]
     end
     bb-workspace-fs["Filesystem Workspace Adapter"]
 
@@ -85,6 +86,7 @@ graph TD
     bb-validator -->|"if-reference-index"| bb-resolver
     bb-validator -->|"if-workspace-paths"| bb-workspace-fs
     bb-validator -->|"if-mermaid-syntax"| bb-mermaid
+    bb-diff -->|"if-workspace-diff"| bb-workspace-fs
 ```
 
 ### Core Library API
@@ -241,6 +243,27 @@ protocol: In-process TypeScript function call
 :::
 ```
 
+### Business Model Diff
+
+Compares two workspace snapshots semantically rather than line by line: elements and diagrams
+match by id, relations by source, kind and target, and prose by the section it lives in, so a
+reflowed paragraph or reordered attributes are not changes. It derives consistency findings (a
+block and the prose of its section should change together) and a render-ready view of every
+changed section with both versions. It is pure: it never reads Git or the filesystem, and the same
+view serves `biz42 diff`, the live `serve --diff`, a static `build --diff` and the pull request
+review page. The algorithm is shared with arc42-language's architecture diff.
+
+```arc42
+:::building-block
+id: bb-diff
+title: Business Model Diff
+technology: TypeScript
+parent: bb-core
+implements: concept-pipeline
+requires: if-workspace-diff
+:::
+```
+
 ## Filesystem Workspace Adapter
 
 Provides the filesystem-backed workspace boundary used by the CLI. It discovers architecture
@@ -292,9 +315,10 @@ protocol: In-process TypeScript function call
 
 ### Workspace Diff Contract
 
-The filesystem workspace adapter acquires the git diff — base and current documents, changed
-file hunks, and known paths — and passes them to the Architecture Diff building block for
-analysis. This is a filesystem concern; the diff analysis itself is pure and source-independent.
+The filesystem workspace adapter acquires both sides of a change from Git — the business model
+documents of two snapshots (commit, index or working tree), with repository-relative paths — and
+passes them to the Business Model Diff building block for analysis. This is a filesystem concern;
+the diff analysis itself is pure and source-independent.
 
 ```arc42
 :::interface
@@ -310,7 +334,7 @@ protocol: In-process TypeScript function call
 A thin entry point over the core library and workspace adapters. Parses arguments with Node.js
 `util.parseArgs` (no third-party parser), resolves the workspace directory (`--dir` flag →
 `$BIZ42_DIR` → cwd), and coordinates the selected workspace adapter with core processing. Implements
-commands: `validate`, `get`, `rules`, `serve`, `build`, `init`, and `explain`. At build time, the CLI copies the compiled `@biz42/web`
+commands: `validate`, `get`, `rules`, `diff`, `serve`, `build`, `init`, and `explain`. At build time, the CLI copies the compiled `@biz42/web`
 SPA assets into its own `dist/web/` directory so they can be served statically.
 
 ```arc42
@@ -449,7 +473,7 @@ protocol: HTTP / browser
 
 The CLI hosts the web renderer as a local HTTP server. On `biz42 serve`, it builds the workspace
 payload via the core library, exposes it at `/api/workspace`, and serves the web renderer's static
-assets.
+assets. With `--diff`, it also exposes the difference to visualize at `/api/diff`.
 
 ```arc42
 :::interface
