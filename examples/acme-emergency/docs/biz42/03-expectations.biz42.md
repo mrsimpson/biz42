@@ -87,3 +87,17 @@ source: IoT/BMS system operators
 surfaces: opp-sensor-bridge
 :::
 ```
+
+## Peer Operators — A Hosted Service With a Service Level
+
+The operators who asked do not want to run software. They expect a hosted
+service, their data kept apart from every other customer's, and a service
+level they can put in front of their own works council and safety officers.
+
+```biz42
+:::expectation
+id: exp-operators-hosted-service
+title: Peer Operators — Hosted, Separated, With a Service Level
+source: regional transport operators
+:::
+```
