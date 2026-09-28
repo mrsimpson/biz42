@@ -19,6 +19,32 @@ export type {
   WorkspacePayload,
 } from "./biz42.ts";
 
+// Semantic diff of two workspace snapshots
+export { diffWorkspaces } from "./workspace-diff.ts";
+export { lintBusinessModelDiff } from "./diff.ts";
+export { buildDiffView } from "./diff-view.ts";
+export type { DiffFinding, DiffResult } from "./diff.ts";
+export type {
+  DiffDocument,
+  DiffPayload,
+  DiffSegment,
+  DiffView,
+  OutlineEntry,
+  SectionContent,
+} from "./diff-view.ts";
+export type {
+  AttributeChange,
+  BusinessModelDiff,
+  ChangeStatus,
+  DiagramChange,
+  DocumentChangeSummary,
+  EdgeChange,
+  ElementChange,
+  Location,
+  ProseSectionChange,
+  SectionRef,
+} from "./workspace-diff.ts";
+
 export type { Diagnostic, Severity, ValidationContext } from "./validator/types.ts";
 
 export type {
