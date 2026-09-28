@@ -12,6 +12,7 @@ catalog:
   semantic-release: 25.0.9
   typescript: ^5
   vite: npm:@voidzero-dev/vite-plus-core@latest
+  vite-plugin-singlefile: 2.3.3
   vite-plus: 0.1.24
   vitest: npm:@voidzero-dev/vite-plus-test@latest
 

@@ -73,6 +73,14 @@ export function createDiffRepository(): string {
   return root;
 }
 
+/** A repository whose last commit holds the edits of createDiffRepository (a branch to review). */
+export function createCommittedDiffRepository(): string {
+  const root = createDiffRepository();
+  git(root, "add", "-A");
+  git(root, "commit", "-qm", "rework opportunities");
+  return root;
+}
+
 /** Serve a directory of static files, like a static host serving a `biz42 build` output. */
 export async function serveStatic(
   root: string,

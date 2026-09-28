@@ -13,7 +13,13 @@ export default defineConfig({
     {
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
-      testMatch: ["**/serve-ui.spec.ts", "**/diff-cli.spec.ts", "**/diff-ui.spec.ts"],
+      testMatch: [
+        "**/serve-ui.spec.ts",
+        "**/diff-cli.spec.ts",
+        "**/diff-ui.spec.ts",
+        "**/diff-single-file.spec.ts",
+        "**/diff-review-script.spec.ts",
+      ],
     },
   ],
 });
