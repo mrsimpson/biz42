@@ -81,6 +81,23 @@ test.describe("biz42 diff", () => {
     ]);
   });
 
+  test("warns about documents Git does not track yet", () => {
+    const root = createDiffRepository();
+    try {
+      writeFileSync(join(root, "14-partners.biz42.md"), "# Partners\n\nNot added yet.\n");
+      const result = spawnSync("node", [cliPath, "--dir", root, "diff"], { encoding: "utf8" });
+      expect(result.stderr).toContain(
+        "warning 14-partners.biz42.md  untracked — not part of the comparison until you git add it",
+      );
+      const staged = spawnSync("node", [cliPath, "--dir", root, "diff", "--staged"], {
+        encoding: "utf8",
+      });
+      expect(staged.stderr).not.toContain("untracked");
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
   test("shows help", () => {
     expect(runCli("diff", "--help")).toContain("biz42 diff — report business model changes");
   });

@@ -20,6 +20,7 @@ export function loadDiffPayload(dir: string, spec: DiffSpec): LoadedDiff {
     payload: {
       base: { label: snapshots.base.label, commit: snapshots.baseCommit },
       head: { label: snapshots.head.label },
+      ...(snapshots.untracked.length > 0 ? { untracked: snapshots.untracked } : {}),
       findings: result.findings,
       view: buildDiffView(snapshots.base.payload, snapshots.head.payload, result.model),
     },

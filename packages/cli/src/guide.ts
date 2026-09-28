@@ -133,8 +133,9 @@ it compares the working tree with that revision. A commit range cannot be combin
 --staged. Business model changes are compared semantically: reformatted blocks and
 reflowed prose are not changes. A block changed without the prose of its section (or the
 other way round) is a consistency finding and exits 1; set BIZ42_CONSISTENT to the
-displayed base commit after reviewing them. Git, parsing, and other operational errors
-exit 1.
+displayed base commit after reviewing them. Documents Git does not track yet are not part
+of a comparison with the working tree; they are listed as a warning. Git, parsing, and
+other operational errors exit 1.
 
 Examples:
   biz42 diff                         # working tree versus index
