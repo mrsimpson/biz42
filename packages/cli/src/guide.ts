@@ -161,7 +161,10 @@ Options:
   --help           Show this help
 
 The server watches the workspace and refreshes the browser when *.biz42.md files
-change. With --diff it also follows the Git index and HEAD.
+change, and follows the Git index and HEAD. Inside a Git repository the browser also
+offers the business model history: every commit that touched the business model
+documents, computed lazily as it scrolls into view. Each commit can be browsed as a
+whole: its documents are read from Git and parsed in the browser.
 
 Examples:
   biz42 serve --open
@@ -182,13 +185,18 @@ Options:
   --diff           Include one business model difference, frozen at build time; takes
                    the same comparison arguments as \`biz42 diff\`
   --staged         With --diff: compare the index with HEAD, or with <reference>
-  --single-file    Write one self-contained <out>/index.html — web app, workspace and
-                   difference inlined — that also works opened from disk
+  --with-history   Include the business model history (every commit that touched the
+                   business model documents, plus uncommitted changes) in <out>/history/,
+                   with each commit's documents to browse it as a whole; requires a Git
+                   repository
+  --single-file    Write one self-contained <out>/index.html — web app, workspace,
+                   difference and history inlined — that also works opened from disk
   --help           Show this help
 
 Examples:
   biz42 build --out site
   biz42 build --out review --diff origin/main...HEAD   # review site for a pull request
+  biz42 build --out site --with-history                # the model with its change history
   biz42 build --out review --diff main...HEAD --single-file   # one HTML file to attach or mail
 `;
 

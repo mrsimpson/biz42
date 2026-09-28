@@ -7,7 +7,7 @@ export default defineConfig({
     clean: ["dist/cli.mjs"],
     deps: {
       onlyBundle: false,
-      alwaysBundle: ["@biz42/core", "@biz42/workspace-fs"],
+      alwaysBundle: ["@biz42/core", "@biz42/web", "@biz42/workspace-fs"],
     },
     copy: [
       {

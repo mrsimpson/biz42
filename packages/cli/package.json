@@ -46,6 +46,7 @@
   },
   "devDependencies": {
     "@biz42/core": "workspace:*",
+    "@biz42/web": "workspace:*",
     "@biz42/workspace-fs": "workspace:*",
     "@types/node": "catalog:",
     "typescript": "catalog:",

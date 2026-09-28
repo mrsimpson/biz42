@@ -31,12 +31,31 @@ import {
 import { builtinGetRenderers, rendererById } from "./renderer/index.ts";
 import type { BlockType, Diagnostic } from "@biz42/core";
 import {
+  HISTORY_INDEX_FILE,
+  historyChunkFile,
+  historyChunkOf,
+  snapshotBlobOf,
+  snapshotTreeOf,
+  toJsonLines,
+} from "@biz42/web/history-format";
+import type { HistoryEntry } from "@biz42/web/history-format";
+import {
   getElements,
+  listBusinessModelHistory,
   loadDiffPayload,
   loadWorkspace,
+  readBusinessModelBlob,
   validateWorkspace,
 } from "@biz42/workspace-fs";
-import type { DiffSpec } from "@biz42/workspace-fs";
+import type { BusinessModelCommit, BusinessModelHistory, DiffSpec } from "@biz42/workspace-fs";
+import {
+  chunkCommits,
+  historyCommitIds,
+  historyPearls,
+  loadHistoryEntry,
+  snapshotFiles,
+  snapshotTree,
+} from "./history.ts";
 import { commandHelp, rootHelp, guideText } from "./guide.ts";
 
 // Directory of the running CLI file — used to locate bundled assets
@@ -715,13 +734,90 @@ async function runServe(dir: string, args: string[]) {
   };
 
   watchPath(dir, { recursive: true }, (changed) => !changed || changed.endsWith(".biz42.md"));
-  // With --diff, the Git index and HEAD define the comparison: follow them too.
-  if (diffSpec) {
-    const gitDir = execFileSync("git", ["-C", dir, "rev-parse", "--absolute-git-dir"], {
+  // Follow the Git index and HEAD: with --diff they define the comparison, and
+  // the history gains pearls on commit. Outside a repository there is nothing
+  // to follow (--diff has already failed to load in that case).
+  let gitDir: string | undefined;
+  try {
+    gitDir = execFileSync("git", ["-C", dir, "rev-parse", "--absolute-git-dir"], {
       encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"],
     }).trim();
+  } catch {
+    gitDir = undefined;
+  }
+  if (gitDir) {
     watchPath(gitDir, { recursive: false }, (changed) => changed === "index" || changed === "HEAD");
   }
+
+  // History entries of commits never change; the working-tree entry is always recomputed.
+  const historyEntries = new Map<string, HistoryEntry>();
+  const historyEntry = (commit: BusinessModelCommit) => {
+    if (commit.commit === null) return loadHistoryEntry(dir, commit);
+    let entry = historyEntries.get(commit.commit);
+    if (!entry) {
+      entry = loadHistoryEntry(dir, commit);
+      historyEntries.set(commit.commit, entry);
+    }
+    return entry;
+  };
+
+  const serveHistory = (url: string, res: import("node:http").ServerResponse) => {
+    const json = { "Content-Type": "application/json; charset=utf-8" };
+    const jsonLines = { "Content-Type": "application/x-ndjson; charset=utf-8" };
+    let history: BusinessModelHistory;
+    try {
+      history = listBusinessModelHistory(dir);
+    } catch (err) {
+      // Not a Git repository (or Git fails): the web shows the reason.
+      res.writeHead(422, json);
+      res.end(JSON.stringify({ error: err instanceof Error ? err.message : String(err) }));
+      return;
+    }
+    const pearls = historyPearls(history);
+    const file = url.slice("/api/history/".length);
+    const notFound = (error: string) => {
+      res.writeHead(404, json);
+      res.end(JSON.stringify({ error }));
+    };
+    // Snapshots: read from git on request; only commits and blobs of this history.
+    const treeCommit = snapshotTreeOf(file);
+    if (treeCommit !== undefined) {
+      if (!historyCommitIds(history).includes(treeCommit)) {
+        notFound(`No commit ${treeCommit} in the business model history`);
+        return;
+      }
+      res.writeHead(200, json);
+      res.end(JSON.stringify(snapshotTree(dir, treeCommit)));
+      return;
+    }
+    const blobId = snapshotBlobOf(file);
+    if (blobId !== undefined) {
+      let content: string;
+      try {
+        content = readBusinessModelBlob(dir, historyCommitIds(history), blobId);
+      } catch (err) {
+        notFound(err instanceof Error ? err.message : String(err));
+        return;
+      }
+      res.writeHead(200, { "Content-Type": "text/plain; charset=utf-8" });
+      res.end(content);
+      return;
+    }
+    if (file === HISTORY_INDEX_FILE) {
+      res.writeHead(200, jsonLines);
+      res.end(toJsonLines(pearls));
+      return;
+    }
+    const chunk = historyChunkOf(file);
+    const commits = chunk === undefined ? [] : chunkCommits(history, pearls, chunk);
+    if (commits.length === 0) {
+      notFound(`No history file ${url}`);
+      return;
+    }
+    res.writeHead(200, jsonLines);
+    res.end(toJsonLines(commits.map(historyEntry)));
+  };
 
   const server = createServer((req, res) => {
     const url = req.url ?? "/";
@@ -729,6 +825,16 @@ async function runServe(dir: string, args: string[]) {
     if (url === "/api/workspace" || url === "/api/workspace/") {
       res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
       res.end(workspaceJson);
+      return;
+    }
+
+    if (url.startsWith("/api/history/")) {
+      try {
+        serveHistory(url.split("?")[0]!, res);
+      } catch (err) {
+        res.writeHead(500, { "Content-Type": "application/json; charset=utf-8" });
+        res.end(JSON.stringify({ error: String(err) }));
+      }
       return;
     }
 
@@ -825,6 +931,7 @@ async function runBuild(dir: string, args: string[]) {
       base: { type: "string", default: "./" },
       diff: { type: "boolean", default: false },
       staged: { type: "boolean", default: false },
+      "with-history": { type: "boolean", default: false },
       "single-file": { type: "boolean", default: false },
     },
     strict: false,
@@ -867,8 +974,43 @@ async function runBuild(dir: string, args: string[]) {
     process.exit(1);
   }
 
+  // Compute the history before writing anything: outside a Git repository
+  // --with-history fails without leaving a partial site behind.
+  let history: BusinessModelHistory | undefined;
+  if (values["with-history"]) {
+    try {
+      history = listBusinessModelHistory(dir);
+    } catch (err) {
+      console.error(
+        `biz42 build --with-history: ${err instanceof Error ? err.message : String(err)}`,
+      );
+      process.exit(1);
+    }
+  }
+  // The history files in the Web Renderer's history format
+  const historyFiles: Record<string, string> = {};
+  if (history) {
+    const pearls = historyPearls(history);
+    historyFiles[HISTORY_INDEX_FILE] = toJsonLines(pearls);
+    for (const chunk of new Set(pearls.map((pearl) => pearl.chunk))) {
+      historyFiles[historyChunkFile(chunk)] = toJsonLines(
+        chunkCommits(history, pearls, chunk).map((commit) => loadHistoryEntry(dir, commit)),
+      );
+    }
+    Object.assign(historyFiles, snapshotFiles(dir, history));
+  }
+
   mkdirSync(outDir, { recursive: true });
   cpSync(webDir, outDir, { recursive: true });
+
+  // Next to the page — or, with --single-file, inside it (below).
+  if (history && !singleFile) {
+    const historyDir = join(outDir, "history");
+    for (const [name, content] of Object.entries(historyFiles)) {
+      mkdirSync(dirname(join(historyDir, name)), { recursive: true });
+      writeFileSync(join(historyDir, name), content, "utf8");
+    }
+  }
 
   const indexPath = join(outDir, "index.html");
   if (!existsSync(indexPath)) {
@@ -888,7 +1030,14 @@ async function runBuild(dir: string, args: string[]) {
   const inlineJson = (json: string) => json.replaceAll("<", "\\u003c");
   const injection =
     `<script>window.__WORKSPACE__=${inlineJson(workspaceJson)};</script>` +
-    (diffJson !== undefined ? `\n<script>window.__DIFF__=${inlineJson(diffJson)};</script>` : "");
+    (diffJson !== undefined ? `\n<script>window.__DIFF__=${inlineJson(diffJson)};</script>` : "") +
+    // The web app loads the history files relative to the page, or reads the same
+    // files from the page itself with --single-file.
+    (history
+      ? `\n<script>window.__HISTORY__=${inlineJson(
+          JSON.stringify(singleFile ? { files: historyFiles } : { base: "history/" }),
+        )};</script>`
+      : "");
   // Insert right after the charset declaration: browsers only honour it within the
   // first 1024 bytes. The first match is always the real tag, since the page's own
   // markup precedes any inlined JavaScript (--single-file), which may well contain

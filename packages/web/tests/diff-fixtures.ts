@@ -10,6 +10,7 @@ import { createServer } from "node:http";
 import { tmpdir } from "node:os";
 import { dirname, extname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import * as story from "../../../scripts/acme-evolution.ts";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const exampleDir = resolve(__dirname, "../../../examples/assistify");
@@ -137,20 +138,34 @@ async function stopServer(server: ChildProcess): Promise<void> {
   }
 }
 
-/** Start `biz42 serve --diff [...args]` for a repository and wait until it answers. */
-export async function startDiffServer(
+/** Start `biz42 serve [...args]` for a directory and wait until it answers. */
+export async function startServer(
   root: string,
   port: number,
   ...args: string[]
 ): Promise<{ url: string; stop: () => Promise<void> }> {
   const url = `http://localhost:${port}`;
-  const server = spawn(
-    "node",
-    [cliPath, "--dir", root, "serve", "--diff", ...args, "--port", String(port)],
-    { stdio: "ignore" },
-  );
+  const server = spawn("node", [cliPath, "--dir", root, "serve", ...args, "--port", String(port)], {
+    stdio: "ignore",
+  });
   await waitForServer(`${url}/api/workspace`);
   return { url, stop: () => stopServer(server) };
+}
+
+/** Start `biz42 serve --diff [...args]` for a repository and wait until it answers. */
+export function startDiffServer(
+  root: string,
+  port: number,
+  ...args: string[]
+): Promise<{ url: string; stop: () => Promise<void> }> {
+  return startServer(root, port, "--diff", ...args);
+}
+
+/** A repository telling the ACME business development story (scripts/acme-evolution.ts). */
+export function createStoryRepository(): string {
+  const root = join(mkdtempSync(join(tmpdir(), "biz42-e2e-story-")), "acme");
+  story.createEvolutionRepository(root);
+  return root;
 }
 
 type WorkerFixtures = { diffRepository: string; diffServerURL: string };

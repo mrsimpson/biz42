@@ -19,6 +19,8 @@ export default defineConfig({
         "**/diff-ui.spec.ts",
         "**/diff-single-file.spec.ts",
         "**/diff-review-script.spec.ts",
+        "**/history-cli.spec.ts",
+        "**/history-ui.spec.ts",
       ],
     },
   ],
