@@ -51,6 +51,12 @@ export interface DiffSnapshots {
    * base is an index that differs from HEAD, because no commit describes it.
    */
   acceptanceBase?: string;
+  /**
+   * Business model documents of the workspace that Git does not track yet. They
+   * exist in the working tree but are not part of the comparison until added.
+   * Empty unless the head is the working tree.
+   */
+  untracked: string[];
 }
 
 interface SnapshotSource {
@@ -208,11 +214,18 @@ function loadSnapshot(source: SnapshotSource, inWorkspace: (path: string) => boo
 export function loadDiffSnapshots(dir: string, spec: DiffSpec = {}): DiffSnapshots {
   const { root, inWorkspace } = workspaceLocation(dir);
   const { base, head, baseCommit, acceptanceBase } = comparison(root, spec);
+  const untracked =
+    head.label === "working tree"
+      ? nulSeparated(git(root, ["ls-files", "-z", "--others", "--exclude-standard"]))
+          .filter((path) => path.endsWith(".biz42.md") && inWorkspace(path))
+          .sort((a, b) => a.localeCompare(b))
+      : [];
   return {
     root,
     base: loadSnapshot(base, inWorkspace),
     head: loadSnapshot(head, inWorkspace),
     baseCommit,
     acceptanceBase,
+    untracked,
   };
 }

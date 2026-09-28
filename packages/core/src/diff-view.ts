@@ -95,6 +95,11 @@ export interface DiffView {
 export interface DiffPayload {
   base: { label: string; commit: string };
   head: { label: string };
+  /**
+   * Documents of the workspace that Git does not track yet: present in the
+   * working tree, but not part of the comparison until added.
+   */
+  untracked?: string[];
   /** Lint findings, in the order `biz42 diff` prints them. */
   findings: DiffFinding[];
   view: DiffView;

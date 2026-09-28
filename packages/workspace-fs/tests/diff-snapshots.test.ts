@@ -209,6 +209,30 @@ describe("loadDiffSnapshots — workspace content", () => {
   });
 });
 
+describe("loadDiffSnapshots — untracked documents", () => {
+  test("lists documents Git does not track yet when the head is the working tree", () => {
+    const root = repository({ [FILE]: risks("Customers may leave.") });
+    write(root, "business/05-opportunities.biz42.md", "# Opportunities\n");
+    write(root, "business/notes.md", "# Notes\n");
+    write(root, "elsewhere/01-scope.biz42.md", "# Scope\n");
+
+    const snapshots = loadDiffSnapshots(join(root, "business"));
+    expect(snapshots.untracked).toEqual(["business/05-opportunities.biz42.md"]);
+    expect(snapshots.head.payload.documents.map((document) => document.filePath)).toEqual([FILE]);
+    expect(loadDiffPayload(join(root, "business"), {}).payload.untracked).toEqual([
+      "business/05-opportunities.biz42.md",
+    ]);
+  });
+
+  test("leaves them out when the head is the index or a commit", () => {
+    const root = repository({ [FILE]: risks("Customers may leave.") });
+    write(root, "business/05-opportunities.biz42.md", "# Opportunities\n");
+    expect(loadDiffSnapshots(root, { staged: true }).untracked).toEqual([]);
+    expect(loadDiffSnapshots(root, { reference: "HEAD..HEAD" }).untracked).toEqual([]);
+    expect(loadDiffPayload(root, { staged: true }).payload.untracked).toBeUndefined();
+  });
+});
+
 describe("loadDiffPayload", () => {
   test("lints the change and builds its render-ready view", () => {
     const root = repository({ [FILE]: risks("Customers may leave.") });
