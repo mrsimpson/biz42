@@ -10,24 +10,9 @@ Business goals today live in strategy decks, OKR spreadsheets, risk registers, a
 
 biz42 is a 12-section plain-text model that any organizational unit can fill out. It follows an outside-in sequence: you start with the world the business operates in and work inward to what it does.
 
-```
-Scope (bounds everything below)
-  │
-  ├─ Signals ──────────┐
-  │                     ├──→ Risks ──────────┐
-  ├─ Expectations ─────┘     Opportunities ──┼──→ Objectives ──→ Measures
-                                             │        │
-                                             │     Owners
-                                             │        │
-                                             │   Capabilities
-                                             │        │
-                                             └──→ Products &
-                                                  Services
+![The biz42 meta-model: element types as boxes, reference fields as arrows](metamodel.svg)
 
-                                               Evaluation
-                                                    │
-                                               Improvements ──→ (back to top)
-```
+Each arrow is a field in a block, pointing to the element it references. The [model page](https://mrsimpson.github.io/biz42/model/) shows the same diagram with every element in detail.
 
 Each section maps to ISO 9001:2015 — the most widely adopted management system standard in the world. The vocabulary is familiar to business readers without a framework introduction.
 
@@ -51,15 +36,25 @@ Each section maps to ISO 9001:2015 — the most widely adopted management system
 Each model element is a `:::block` fence in a Markdown file — human-readable prose first, structured metadata as its machine-readable summary. The blocks reference each other by id.
 
 ```markdown
-A risk surfaced by the shift toward AI-assisted development.
+Agents implement features faster than we decide which ones matter —
+features that serve no objective make the next useful one harder to build.
 
 :::risk
 id: risk-feature-misalignment
 title: Features built without business justification
-surfaces-from: sig-ai-adoption
-addressed-by: obj-alignment-chain
+severity: high
+:::
+
+:::objective
+id: obj-alignment-chain
+title: Every feature traces to an objective
+addresses: risk-feature-misalignment
+measured-by: measure-traced-features
+owner: owner-product-lead
 :::
 ```
+
+References point one way: the objective names the risk it `addresses`; the risk itself holds no link back.
 
 The colored badge next to a paragraph in the viewer can be swapped for a compact, machine-readable version. Those elements are linked to each other and validated by the CLI.
 
@@ -102,14 +97,29 @@ The traceability chain: Expectation → Product → arc42 quality goal → quali
 
 The alignment chain for agents:
 
-```
-biz42                        arc42                         Issue tracker
-─────                        ─────                         ─────────────
-Expectation ──┐
-Opportunity ──┼─→ Product ──→ Requirement (1.1) ──→ Feature/Story
-Objective ────┘                    ↑                       ↑
-Measure                      Quality Goal (1.2)      Acceptance criteria
-Capability                   Quality Scenario (10)
+```mermaid
+flowchart LR
+    subgraph biz42
+        expectation["Expectation"]
+        opportunity["Opportunity"]
+        objective["Objective"]
+        product["Product"]
+    end
+    subgraph arc42
+        requirement["Requirement (1.1)"]
+        goal["Quality Goal (1.2)"]
+        scenario["Quality Scenario (10)"]
+    end
+    subgraph tracker["Issue tracker"]
+        story["Feature / Story"]
+        criteria["Acceptance criteria"]
+    end
+
+    expectation & opportunity & objective --> product
+    product --> requirement --> story
+    goal --> requirement
+    scenario --> goal
+    criteria --> story
 ```
 
 This chain lets agents determine _not_ to build a feature when the business justification is missing — or to flag that additional business alignment is needed before taking it on.

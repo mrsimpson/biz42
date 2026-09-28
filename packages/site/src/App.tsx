@@ -1,12 +1,12 @@
 import { Nav } from "./components/Nav";
 import { Hero } from "./components/Hero";
-import { GettingStarted } from "./components/GettingStarted";
+import { WhySection } from "./components/WhySection";
 import { FeatureStrip } from "./components/FeatureStrip";
-import { EvolutionSection } from "./components/EvolutionSection";
 import { ModelSection } from "./components/ModelSection";
-import { IntroSection } from "./components/IntroSection";
-import { Arc42Section } from "./components/Arc42Section";
+import { GettingStarted } from "./components/GettingStarted";
+import { EvolutionSection } from "./components/EvolutionSection";
 import { LiveSection } from "./components/LiveSection";
+import { Arc42Section } from "./components/Arc42Section";
 import { Footer } from "./components/Footer";
 
 export function App() {
@@ -15,13 +15,13 @@ export function App() {
       <Nav />
       <main>
         <Hero />
-        <GettingStarted />
+        <WhySection />
         <FeatureStrip />
-        <EvolutionSection />
         <ModelSection />
-        <IntroSection />
-        <Arc42Section />
+        <GettingStarted />
+        <EvolutionSection />
         <LiveSection />
+        <Arc42Section />
       </main>
       <Footer />
     </>

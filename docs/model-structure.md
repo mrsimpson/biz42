@@ -2,6 +2,10 @@
 
 A minimal, outside-in model of a business. Each section describes one model element with its ISO 9001:2015 mapping, a structural description, and its relationships to other elements.
 
+![The biz42 meta-model: element types as boxes, reference fields as arrows](metamodel.svg)
+
+Each arrow is a field in a block, pointing to the element it references.
+
 **Out of scope:** Processes (ISO clause 4.4, 8.x detail — implementation detail beneath capabilities), awareness and communication practices (clause 7.3, 7.4), documented information management (clause 7.5), change planning (clause 6.3), design/development procedures (clause 8.3), external provider management (clause 8.4), nonconforming output handling (clause 8.7). These are operational concerns, not business model elements.
 
 ---

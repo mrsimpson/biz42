@@ -37,14 +37,16 @@ export function Hero() {
   return (
     <section className="hero" aria-label="Introduction">
       <div className="container hero__inner">
-        <p className="hero__eyebrow">Business Model · Alignment · ISO 9001</p>
+        <p className="hero__eyebrow">Business model · Plain text · ISO 9001</p>
         <h1 className="hero__headline">
-          Business goals that
+          Agents build fast.
           <br />
-          <em>agents can read.</em>
+          <em>Do they build what matters?</em>
         </h1>
         <p className="hero__sub">
-          Plain-text. Outside-in. Traceable from business goal to product to feature.
+          biz42 writes down why a business does what it does — from market signals to objectives to
+          products — as plain-text Markdown that people and coding agents read, validate and change
+          by pull request.
         </p>
         <div className="hero__install" role="group" aria-label="Install skill command">
           <span className="hero__install-prompt">$</span>
@@ -58,19 +60,19 @@ export function Hero() {
             {copied ? <CheckIcon /> : <CopyIcon />}
           </button>
         </div>
+        <p className="hero__agent">
+          <strong>Are you an AI agent?</strong> Run <code>npx @biz42/cli guide</code> — it walks you
+          and your human through the model, chapter by chapter.
+        </p>
         <div className="hero__ctas">
-          <a href="./docs/" className="btn btn--primary">
-            View architecture docs →
+          <a href="#why" className="btn btn--primary">
+            Why biz42 →
           </a>
-          <a href="./acme-emergency/" className="btn btn--outline">
-            See acme example →
+          <a href="./model/" className="btn btn--outline">
+            Explore the model →
           </a>
         </div>
-        <a
-          href="#getting-started"
-          className="hero__scroll-hint"
-          aria-label="Scroll to getting started"
-        >
+        <a href="#why" className="hero__scroll-hint" aria-label="Scroll to why biz42">
           <ChevronDownIcon />
         </a>
       </div>

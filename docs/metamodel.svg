@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="480" class="metamodel__svg" viewBox="0 0 960 480" role="img" aria-labelledby="metamodel-title metamodel-desc"><style>svg { --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+
+  --bg: #ffffff;
+  --bg-card: #f7f7f8;
+  --bg-code: #f1f1f3;
+  --border: #e4e4e7;
+  --text: #18181b;
+  --text-muted: #71717a;
+  --text-link: #2563eb;
+  --accent: #3b82f6;
+
+  /* Element palette */
+  --c-ch0: #94a3b8;
+  --c-ch1: #f97316;
+  --c-ch2: #8b5cf6;
+  --c-ch3: #06b6d4;
+  --c-ch4: #3b82f6;
+  --c-ch5: #10b981;
+  --c-ch6: #84cc16;
+  --c-ch7: #f59e0b;
+  --c-ch8: #ef4444;
+  --c-ch9: #14b8a6;
+  --c-ch10: #e11d48;
+  --c-ch11: #6366f1;
+
+  /* Element types — the same colours as the biz42 viewer (packages/web) */
+  --c-scope: #7c3aed;
+  --c-signal: #0891b2;
+  --c-expectation: #0e7490;
+  --c-risk: #dc2626;
+  --c-opportunity: #16a34a;
+  --c-objective: #2563eb;
+  --c-measure: #9333ea;
+  --c-owner: #78350f;
+  --c-capability: #1d4ed8;
+  --c-product: #0f766e;
+  --c-evaluation: #b45309;
+  --c-improvement: #15803d;
+
+  /* Site-specific */
+  --max-w: 800px;
+  --nav-h: 56px;
+  --section-gap: 6rem;
+  --radius: 6px; font-family: var(--font-sans); background: var(--bg); }
+@media (prefers-color-scheme: dark) { svg { --bg: #09090b;
+  --bg-card: #111113;
+  --bg-code: #18181b;
+  --border: #27272a;
+  --text: #fafafa;
+  --text-muted: #a1a1aa;
+  --text-link: #60a5fa;
+  --accent: #60a5fa; } }
+
+.metamodel__scope {
+  fill: none;
+  stroke: var(--c-scope);
+  stroke-width: 1.5;
+  stroke-dasharray: 6 5;
+  opacity: 0.7;
+}
+.metamodel__box {
+  fill: var(--bg-card);
+  stroke: var(--border);
+  stroke-width: 1;
+}
+.metamodel__node:hover .metamodel__box,
+.metamodel__node:focus-visible .metamodel__box {
+  stroke: var(--accent);
+  stroke-width: 1.5;
+}
+.metamodel__node:hover .metamodel__name {
+  fill: var(--accent);
+}
+.metamodel__num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  fill: var(--text-muted);
+}
+.metamodel__name {
+  font-size: 14px;
+  font-weight: 700;
+  fill: var(--text);
+}
+.metamodel__note {
+  font-size: 12px;
+  fill: var(--text-muted);
+}
+.metamodel__edge {
+  fill: none;
+  stroke: var(--text-muted);
+  stroke-width: 1.25;
+  opacity: 0.75;
+}
+.metamodel__head {
+  fill: var(--text-muted);
+}
+.metamodel__label {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  fill: var(--text-muted);
+  paint-order: stroke;
+  stroke: var(--bg);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+.gs__steps {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+.gs__steps li + li {
+  margin-top: 0.75rem;
+}
+.gs__steps .gs__snippet {
+  margin-top: 0;
+}
+.gs__steps .gs__card-desc {
+  margin: 0.35rem 0 0;
+}
+.how__example {
+  margin: 0 0 1.5rem;
+  max-width: 720px;
+  overflow-x: auto;
+  line-height: 1.55;
+}
+</style><rect width="960" height="480" style="fill:var(--bg)"/><title id="metamodel-title">The biz42 meta-model</title><desc id="metamodel-desc">Within the scope, signals and expectations surface risks and opportunities. Objectives address them, are measured by measures, have an owner and require capabilities. Capabilities enable products, which fulfill expectations. Evaluation evaluates measures; improvements are triggered by evaluation and address objectives, capabilities or products.</desc><defs><marker id="metamodel-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,1 L9,5 L0,9 z" class="metamodel__head"></path></marker></defs><a href="https://mrsimpson.github.io/biz42/model/#scope" class="metamodel__node"><rect x="8" y="8" width="944" height="464" rx="10" class="metamodel__scope"></rect><text x="25" y="57" class="metamodel__num">01</text><text x="25" y="76" class="metamodel__name">Scope</text><text x="77" y="76" class="metamodel__note">bounds every element</text></a><g><path d="M165,146 L220,146" class="metamodel__edge" marker-end="url(#metamodel-arrow)"></path><text x="192" y="124" text-anchor="middle" class="metamodel__label">surfaces</text></g><g><path d="M165,162 L220,246" class="metamodel__edge" marker-end="url(#metamodel-arrow)"></path></g><g><path d="M165,246 L220,162" class="metamodel__edge" marker-end="url(#metamodel-arrow)"></path></g><g><path d="M165,262 L220,262" class="metamodel__edge" marker-end="url(#metamodel-arrow)"></path></g><g><path d="M415,146 L360,146" class="metamodel__edge" marker-end="url(#metamodel-arrow)"></path><text x="387" y="124" text-anchor="middle" class="metamodel__label">addresses</text></g><g><path d="M415,162 L360,254" class="metamodel__edge" marker-end="url(#metamodel-arrow)"></path></g><g><path d="M555,154 L610,154" class="metamodel__edge" marker-end="url(#metamodel-arrow)"></path><text x="582" y="147" text-anchor="middle" class="metamodel__label">requires</text></g><g><path d="M750,154 L805,154" class="metamodel__edge" marker-end="url(#metamodel-arrow)"></path><text x="777" y="147" text-anchor="middle" class="metamodel__label">enables</text></g><g><path d="M485,130 L485,88" class="metamodel__edge" marker-end="url(#metamodel-arrow)"></path><text x="492" y="114" text-anchor="start" class="metamodel__label">owner</text></g><g><path d="M680,130 L680,88" class="metamodel__edge" marker-end="url(#metamodel-arrow)"></path></g><g><path d="M875,130 L875,88" class="metamodel__edge" marker-end="url(#metamodel-arrow)"></path></g><g><path d="M485,178 L485,230" class="metamodel__edge" marker-end="url(#metamodel-arrow)"></path><text x="492" y="212" text-anchor="start" class="metamodel__label">measured-by</text></g><g><path d="M875,178 L875,320 L95,320 L95,278" class="metamodel__edge" marker-end="url(#metamodel-arrow)"></path><text x="740" y="313" text-anchor="middle" class="metamodel__label">fulfills</text></g><g><path d="M485,360 L485,278" class="metamodel__edge" marker-end="url(#metamodel-arrow)"></path><text x="492" y="348" text-anchor="start" class="metamodel__label">evaluates</text></g><g><path d="M165,384 L415,384" class="metamodel__edge" marker-end="url(#metamodel-arrow)"></path><text x="290" y="377" text-anchor="middle" class="metamodel__label">triggered-by</text></g><g><path d="M95,408 L95,450 L680,450 L680,178" class="metamodel__edge" marker-end="url(#metamodel-arrow)"></path><text x="390" y="443" text-anchor="middle" class="metamodel__label">addresses — closes the loop</text></g><a href="https://mrsimpson.github.io/biz42/model/#signal" class="metamodel__node"><rect x="25" y="130" width="140" height="48" rx="6" class="metamodel__box"></rect><rect x="25" y="130" width="4" height="48" style="fill:var(--c-signal)"></rect><text x="39" y="148" class="metamodel__num">02</text><text x="39" y="166" class="metamodel__name">Signals</text></a><a href="https://mrsimpson.github.io/biz42/model/#expectation" class="metamodel__node"><rect x="25" y="230" width="140" height="48" rx="6" class="metamodel__box"></rect><rect x="25" y="230" width="4" height="48" style="fill:var(--c-expectation)"></rect><text x="39" y="248" class="metamodel__num">03</text><text x="39" y="266" class="metamodel__name">Expectations</text></a><a href="https://mrsimpson.github.io/biz42/model/#risk" class="metamodel__node"><rect x="220" y="130" width="140" height="48" rx="6" class="metamodel__box"></rect><rect x="220" y="130" width="4" height="48" style="fill:var(--c-risk)"></rect><text x="234" y="148" class="metamodel__num">04</text><text x="234" y="166" class="metamodel__name">Risks</text></a><a href="https://mrsimpson.github.io/biz42/model/#opportunity" class="metamodel__node"><rect x="220" y="230" width="140" height="48" rx="6" class="metamodel__box"></rect><rect x="220" y="230" width="4" height="48" style="fill:var(--c-opportunity)"></rect><text x="234" y="248" class="metamodel__num">05</text><text x="234" y="266" class="metamodel__name">Opportunities</text></a><a href="https://mrsimpson.github.io/biz42/model/#objective" class="metamodel__node"><rect x="415" y="130" width="140" height="48" rx="6" class="metamodel__box"></rect><rect x="415" y="130" width="4" height="48" style="fill:var(--c-objective)"></rect><text x="429" y="148" class="metamodel__num">06</text><text x="429" y="166" class="metamodel__name">Objectives</text></a><a href="https://mrsimpson.github.io/biz42/model/#measure" class="metamodel__node"><rect x="415" y="230" width="140" height="48" rx="6" class="metamodel__box"></rect><rect x="415" y="230" width="4" height="48" style="fill:var(--c-measure)"></rect><text x="429" y="248" class="metamodel__num">07</text><text x="429" y="266" class="metamodel__name">Measures</text></a><a href="https://mrsimpson.github.io/biz42/model/#owner" class="metamodel__node"><rect x="415" y="40" width="530" height="48" rx="6" class="metamodel__box"></rect><rect x="415" y="40" width="4" height="48" style="fill:var(--c-owner)"></rect><text x="429" y="58" class="metamodel__num">08</text><text x="429" y="76" class="metamodel__name">Owners</text></a><a href="https://mrsimpson.github.io/biz42/model/#capability" class="metamodel__node"><rect x="610" y="130" width="140" height="48" rx="6" class="metamodel__box"></rect><rect x="610" y="130" width="4" height="48" style="fill:var(--c-capability)"></rect><text x="624" y="148" class="metamodel__num">09</text><text x="624" y="166" class="metamodel__name">Capabilities</text></a><a href="https://mrsimpson.github.io/biz42/model/#product" class="metamodel__node"><rect x="805" y="130" width="140" height="48" rx="6" class="metamodel__box"></rect><rect x="805" y="130" width="4" height="48" style="fill:var(--c-product)"></rect><text x="819" y="148" class="metamodel__num">10</text><text x="819" y="166" class="metamodel__name">Products</text></a><a href="https://mrsimpson.github.io/biz42/model/#improvement" class="metamodel__node"><rect x="25" y="360" width="140" height="48" rx="6" class="metamodel__box"></rect><rect x="25" y="360" width="4" height="48" style="fill:var(--c-improvement)"></rect><text x="39" y="378" class="metamodel__num">12</text><text x="39" y="396" class="metamodel__name">Improvements</text></a><a href="https://mrsimpson.github.io/biz42/model/#evaluation" class="metamodel__node"><rect x="415" y="360" width="140" height="48" rx="6" class="metamodel__box"></rect><rect x="415" y="360" width="4" height="48" style="fill:var(--c-evaluation)"></rect><text x="429" y="378" class="metamodel__num">11</text><text x="429" y="396" class="metamodel__name">Evaluation</text></a></svg>
