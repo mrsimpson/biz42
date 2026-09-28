@@ -123,3 +123,20 @@ enables: product-alert-service
 owner: owner-tech-lead
 :::
 ```
+
+## Multi-Tenant Operations
+
+The ability to run ACME for several organisations at once: each tenant's
+people, sites and alert data kept apart, onboarding without code changes, and
+operations that meet a contractual service level. Today we run one instance
+for one organisation, so this is a gap.
+
+```biz42
+:::capability
+id: capability-multi-tenant-operations
+title: Multi-Tenant Operations
+status: gap
+enables: product-operator-service
+owner: owner-tech-lead
+:::
+```

@@ -30,3 +30,17 @@ fulfills: exp-sensor-integration
 owner: owner-tech-lead
 :::
 ```
+
+## ACME for Operators
+
+The alert service, hosted for other transport operators: their own tenant,
+their own works council agreement, and a service level they can rely on.
+
+```biz42
+:::product
+id: product-operator-service
+title: ACME for Operators — Hosted Alert Service
+fulfills: exp-operators-hosted-service
+owner: owner-business-development
+:::
+```

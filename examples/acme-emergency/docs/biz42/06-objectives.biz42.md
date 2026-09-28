@@ -199,7 +199,8 @@ requires: capability-sensor-ingestion
 
 Win three regional transport operators as paying pilot customers of a hosted
 ACME service, without taking people off the internal rollout. A pilot counts
-when the operator's works council has approved it and staff are live.
+when the operator's works council has approved it and staff are live. Pilots require running ACME for
+several organisations at once — something we do not do today.
 
 Target: 3 paying operator pilots live.
 Deadline: month 15.
@@ -211,5 +212,6 @@ title: Three Paying Operator Pilots Live
 addresses: opp-operator-offering
 measured-by: measure-operator-pilots
 owner: owner-business-development
+requires: capability-multi-tenant-operations
 :::
 ```
