@@ -32,6 +32,11 @@
   --c-cashflow-revenue: #059669;
   --c-cashflow-cost: #b45309;
 
+  /* Business model diff status */
+  --diff-added: #16a34a;
+  --diff-modified: #d97706;
+  --diff-removed: #dc2626;
+
   /* backward-compat aliases used by older inline styles */
   --color-bg: #ffffff;
   --color-surface: #f8f8f8;
