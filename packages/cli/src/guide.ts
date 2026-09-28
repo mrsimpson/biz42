@@ -181,11 +181,14 @@ Options:
   --diff           Include one business model difference, frozen at build time; takes
                    the same comparison arguments as \`biz42 diff\`
   --staged         With --diff: compare the index with HEAD, or with <reference>
+  --single-file    Write one self-contained <out>/index.html — web app, workspace and
+                   difference inlined — that also works opened from disk
   --help           Show this help
 
 Examples:
   biz42 build --out site
   biz42 build --out review --diff origin/main...HEAD   # review site for a pull request
+  biz42 build --out review --diff main...HEAD --single-file   # one HTML file to attach or mail
 `;
 
     case "guide":

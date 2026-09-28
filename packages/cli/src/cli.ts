@@ -811,12 +811,14 @@ async function runBuild(dir: string, args: string[]) {
       base: { type: "string", default: "./" },
       diff: { type: "boolean", default: false },
       staged: { type: "boolean", default: false },
+      "single-file": { type: "boolean", default: false },
     },
     strict: false,
   });
 
   const outDir = values["out"] as string | undefined;
   const base = (values["base"] as string) || "./";
+  const singleFile = values["single-file"] === true;
 
   if (!outDir) {
     console.error("biz42 build: --out <dir> is required");
@@ -824,9 +826,12 @@ async function runBuild(dir: string, args: string[]) {
     process.exit(2);
   }
 
-  const webDir = join(__dirname, "web");
-  if (!existsSync(webDir)) {
-    console.error(`Web assets not found at ${webDir}. Run 'pnpm build:web' first.`);
+  // --single-file uses the web app bundled into one self-contained index.html.
+  const webDir = join(__dirname, singleFile ? "web-single" : "web");
+  if (!existsSync(join(webDir, "index.html"))) {
+    console.error(
+      `Web assets not found at ${webDir}. Run 'pnpm ${singleFile ? "build:web:single" : "build:web"}' first.`,
+    );
     process.exit(1);
   }
 
@@ -869,8 +874,17 @@ async function runBuild(dir: string, args: string[]) {
   const injection =
     `<script>window.__WORKSPACE__=${inlineJson(workspaceJson)};</script>` +
     (diffJson !== undefined ? `\n<script>window.__DIFF__=${inlineJson(diffJson)};</script>` : "");
-  // A replacer function keeps "$&" and friends in the injected data literal.
-  html = html.replace("</head>", () => `${injection}\n</head>`);
+  // Insert right after the charset declaration: browsers only honour it within the
+  // first 1024 bytes. The first match is always the real tag, since the page's own
+  // markup precedes any inlined JavaScript (--single-file), which may well contain
+  // "</head>". Slicing instead of String.replace keeps "$&" and friends literal.
+  const charset = /<meta charset="[^"]*"\s*\/?>/i.exec(html);
+  if (!charset) {
+    console.error(`No <meta charset> element found in ${indexPath}`);
+    process.exit(1);
+  }
+  const insertAt = charset.index + charset[0].length;
+  html = `${html.slice(0, insertAt)}\n${injection}${html.slice(insertAt)}`;
 
   writeFileSync(indexPath, html, "utf8");
 
