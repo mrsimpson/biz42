@@ -9,6 +9,7 @@ biz42 makes the chain from business goal to product to feature explicit, traceab
 Think of it as linting for your business. You can be in an inconsistent state — a product with no expectation, a risk with no objective — but it's flagged, and an agent can correct it.
 
 → [Introduction and concept](docs/introduction.md)  
+→ [The model](https://mrsimpson.github.io/biz42/model/)  
 → [Live site](https://mrsimpson.github.io/biz42/)
 
 ## Getting started (as a user)

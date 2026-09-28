@@ -14,6 +14,7 @@ export default defineConfig({
       input: {
         main: resolve(import.meta.dirname, "index.html"),
         evolution: resolve(import.meta.dirname, "evolution/index.html"),
+        model: resolve(import.meta.dirname, "model/index.html"),
       },
     },
   },

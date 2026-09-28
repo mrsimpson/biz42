@@ -1,0 +1,36 @@
+# biz42
+
+> A plain-text, outside-in business model for the age of coding agents, grounded in ISO 9001:2015.
+> It links market signals and stakeholder expectations to risks and opportunities, objectives,
+> measures, owners, capabilities and products — so every feature can be traced to a business reason.
+
+If you are an AI agent asked to create or update a biz42 model:
+
+1. Run `npx @biz42/cli guide` for the workflow and the chapter order.
+2. Work one chapter at a time with `npx @biz42/cli guide chapter <n>`, starting with 1 (Scope).
+   Ask your human: business context cannot be derived from the repository.
+3. Look up the fields of a block type with `npx @biz42/cli explain <type>`
+   (scope, signal, expectation, risk, opportunity, objective, measure, owner, capability,
+   product, evaluation, improvement, cashflow).
+4. The model is consistent when `npx @biz42/cli validate --strict` exits 0.
+   `npx @biz42/cli rules` explains every rule.
+
+Each element is prose followed by a `:::<type>` block whose fields reference other elements by id:
+
+- signal, expectation: `surfaces` → risk, opportunity
+- objective: `addresses` → risk, opportunity; `measured-by` → measure; `owner` → owner; `requires` → capability
+- capability: `enables` → product; `owner` → owner
+- product: `fulfills` → expectation; `owner` → owner
+- evaluation: `evaluates` → measure
+- improvement: `triggered-by` → evaluation; `addresses` → objective, capability, product
+
+## Docs
+
+- [The model](https://mrsimpson.github.io/biz42/model/): every element type, its ISO 9001 clause and its references
+- [Business development as pull requests](https://mrsimpson.github.io/biz42/evolution/): `biz42 diff` and review
+- [README](https://github.com/mrsimpson/biz42#readme)
+
+## Examples
+
+- [ACME Emergency](https://mrsimpson.github.io/biz42/acme-emergency/): a complete model
+- [Assistify](https://mrsimpson.github.io/biz42/assistify/): a retrospective model of a finished venture
