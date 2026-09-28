@@ -75,6 +75,9 @@ importers:
       '@biz42/core':
         specifier: workspace:*
         version: link:../core
+      '@biz42/web':
+        specifier: workspace:*
+        version: link:../web
       '@biz42/workspace-fs':
         specifier: workspace:*
         version: link:../workspace-fs
