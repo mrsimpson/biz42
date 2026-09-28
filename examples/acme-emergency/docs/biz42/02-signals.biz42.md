@@ -110,12 +110,13 @@ surfaces: risk-works-council
 Since the first sites went live, three regional transport operators have asked
 whether they could use ACME for their own staff. They face the same regulations
 and the same "who is closest?" problem, and none of them can justify building
-it alone.
+it alone. Three independent requests within a quarter are a market, not a favour.
 
 ```biz42
 :::signal
 id: signal-peer-operator-requests
 title: Peer Operators Ask to Use the Service
 source: external
+surfaces: opp-operator-offering
 :::
 ```

@@ -78,3 +78,17 @@ id: opp-device-based-alerting
 title: Device-Based Alerting Channel
 :::
 ```
+
+## Offer ACME to Peer Operators
+
+Regional transport operators share our regulation, our kind of sites and our
+problem. Offering ACME as a hosted service turns what we build for ourselves
+into a second source of funding — and the first step of the spin-out the scope
+already anticipates.
+
+```biz42
+:::opportunity
+id: opp-operator-offering
+title: Offer ACME as a Hosted Service to Peer Operators
+:::
+```

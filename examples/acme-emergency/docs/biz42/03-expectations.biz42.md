@@ -93,11 +93,13 @@ surfaces: opp-sensor-bridge
 The operators who asked do not want to run software. They expect a hosted
 service, their data kept apart from every other customer's, and a service
 level they can put in front of their own works council and safety officers.
+Meeting that is a business of its own — and it competes with our own rollout.
 
 ```biz42
 :::expectation
 id: exp-operators-hosted-service
 title: Peer Operators — Hosted, Separated, With a Service Level
 source: regional transport operators
+surfaces: opp-operator-offering, risk-focus-dilution
 :::
 ```

@@ -88,3 +88,17 @@ severity: high
 mitigation: Phased site rollout with hard deadlines; dedicated project lead
 :::
 ```
+
+## Focus Dilution
+
+Every hour spent on outside customers is an hour not spent on our own rollout,
+which has a fixed 12-month window and a political deadline behind it.
+
+```biz42
+:::risk
+id: risk-focus-dilution
+title: External Customers Dilute Focus on the Internal Rollout
+severity: high
+mitigation: Pilots only after the rollout milestones; a separate owner for the offering
+:::
+```
