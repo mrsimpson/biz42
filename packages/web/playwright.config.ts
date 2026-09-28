@@ -23,5 +23,12 @@ export default defineConfig({
         "**/history-ui.spec.ts",
       ],
     },
+    {
+      // Screenshots for the site, headless. Run explicitly: pnpm demo:evolution
+      name: "demo",
+      use: { ...devices["Desktop Chrome"] },
+      testMatch: ["**/demo-evolution.spec.ts"],
+      timeout: 120000,
+    },
   ],
 });

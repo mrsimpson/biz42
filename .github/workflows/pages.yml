@@ -51,6 +51,9 @@ jobs:
           node_modules/.bin/arc42 --dir docs/arc42 build --out site/docs --base /biz42/docs/
           node packages/cli/dist/cli.mjs --dir examples/acme-emergency build --out site/acme-emergency --base /biz42/acme-emergency/
           node packages/cli/dist/cli.mjs --dir examples/assistify build --out site/assistify --base /biz42/assistify/
+          # The ACME business development plan: the story as a live diff with history
+          node --experimental-strip-types --no-warnings scripts/acme-evolution.ts repo "$RUNNER_TEMP/acme-evolution"
+          node packages/cli/dist/cli.mjs --dir "$RUNNER_TEMP/acme-evolution" build --out site/acme-evolution --base /biz42/acme-evolution/ --diff v1.0 --with-history
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

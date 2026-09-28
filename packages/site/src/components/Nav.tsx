@@ -1,29 +1,33 @@
 import { useTheme } from "../useTheme";
 
-export function Nav() {
+/** `home` is the path to the landing page from the current page ("" on the landing page). */
+export function Nav({ home = "" }: { home?: string }) {
   const { theme, toggle } = useTheme();
   const isDark = theme === "dark";
 
   return (
     <nav className="nav" aria-label="Main navigation">
       <div className="nav__inner">
-        <a href="#" className="nav__logo" aria-label="biz42 home">
+        <a href={home || "#"} className="nav__logo" aria-label="biz42 home">
           biz42
         </a>
         <div className="nav__links">
-          <a href="#getting-started" className="nav__link">
+          <a href={`${home}#getting-started`} className="nav__link">
             Get started
           </a>
-          <a href="#features" className="nav__link">
+          <a href={`${home}#features`} className="nav__link">
             Features
           </a>
-          <a href="#model" className="nav__link">
+          <a href={`${home}#model`} className="nav__link">
             The Model
           </a>
-          <a href="#introduction" className="nav__link">
+          <a href={`${home}#introduction`} className="nav__link">
             Why biz42
           </a>
-          <a href="#examples" className="nav__link">
+          <a href={`${home}evolution/`} className="nav__link">
+            Evolution
+          </a>
+          <a href={`${home}#examples`} className="nav__link">
             Examples
           </a>
           <a href="https://github.com/mrsimpson/biz42#readme" target="_blank" className="nav__link">

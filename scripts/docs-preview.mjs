@@ -5,7 +5,7 @@
 // Steps:
 //   1. pnpm run build        (builds CLI + web assets)
 //   2. pnpm run build:site   (builds packages/site with base=/biz42/)
-//   3. biz42 build for docs/ and examples/acme-emergency
+//   3. biz42 build for docs/, the examples and the ACME business development plan
 //   4. serves with npx serve
 
 import { execSync, spawn } from "node:child_process";
@@ -66,6 +66,13 @@ run(
 run(
   `node "${cliMjs}" --dir examples/assistify build --out "${join(outDir, "biz42", "assistify")}" --base /biz42/assistify/`,
 );
+// The ACME business development plan: the story as a live diff with history.
+const story = join(outDir, ".acme-evolution");
+run(`node --experimental-strip-types --no-warnings scripts/acme-evolution.ts repo "${story}"`);
+run(
+  `node "${cliMjs}" --dir "${story}" build --out "${join(outDir, "biz42", "acme-evolution")}" --base /biz42/acme-evolution/ --diff v1.0 --with-history`,
+);
+rmSync(story, { recursive: true, force: true });
 
 // ── Serve ──────────────────────────────────────────────────────────────────
 

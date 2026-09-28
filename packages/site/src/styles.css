@@ -157,6 +157,7 @@ code {
   font-size: 0.875rem;
   color: var(--text-muted);
   font-weight: 500;
+  white-space: nowrap;
 }
 .nav__link:hover {
   color: var(--text);
@@ -648,5 +649,141 @@ code {
 
   .nav__links {
     display: none;
+  }
+}
+
+/* ─── Evolution page ───────────────────────────────────────────────────────── */
+
+.evo-hero {
+  min-height: 0;
+  padding: 5rem 0 3.5rem;
+}
+
+.evo-hero__sub {
+  max-width: 640px;
+}
+
+/* Text sections keep the container's left edge, with a readable line length. */
+.evo-lead > * {
+  max-width: 720px;
+}
+
+.evo-plan {
+  list-style: none;
+  counter-reset: step;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.evo-plan li {
+  counter-increment: step;
+  position: relative;
+  padding: 1.1rem 1.1rem 1rem 3rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+}
+
+.evo-plan li::before {
+  content: counter(step);
+  position: absolute;
+  left: 1.1rem;
+  top: 1.05rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.evo-plan h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.evo-plan p {
+  margin: 0 0 0.6rem;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+.evo-plan code {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+/* Screenshots need more room than text: image rows are wider than the container. */
+.container.evo-row,
+.container.evo-teaser {
+  max-width: 1120px;
+}
+
+.evo-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.evo-row--flip .evo-row__text {
+  order: 2;
+}
+
+.evo-row__desc {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin: 0 0 0.75rem;
+}
+
+.evo-row__image {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+}
+
+.evo-row__zoom {
+  display: block;
+  cursor: zoom-in;
+}
+
+.evo-footnote {
+  margin: 1.25rem 0 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* Landing page teaser */
+.evo-teaser {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.evo-teaser__questions {
+  margin: 0 0 1.25rem;
+  padding-left: 1.1rem;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--text-muted);
+}
+
+@media (max-width: 800px) {
+  .evo-row,
+  .evo-teaser {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .evo-row--flip .evo-row__text {
+    order: 0;
   }
 }
