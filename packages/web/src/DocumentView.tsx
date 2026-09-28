@@ -8,10 +8,12 @@ import type {
   Element,
   Edge,
   Diagram,
+  DiffDocument,
 } from "@biz42/core";
 import styles from "./DocumentView.module.css";
 import { AstNodeRenderer } from "./AstNodeRenderer.tsx";
 import type { ProseRunNode } from "./AstNodeRenderer.tsx";
+import { ChapterDiff } from "./ChapterDiff.tsx";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -107,9 +109,37 @@ interface DocumentViewProps {
   chapterMap: Map<string, number>;
   targetElementId?: string | null;
   onTargetConsumed?: () => void;
+  /** The changes of a visualized difference to this document: shown inline. */
+  diffDocument?: DiffDocument;
 }
 
-export function DocumentView({
+/**
+ * The document — with its changes inline when a visualized difference touches
+ * it. A separate component per mode keeps each one's hooks stable.
+ */
+export function DocumentView(props: DocumentViewProps) {
+  const { diffDocument } = props;
+  if (diffDocument) {
+    return (
+      <ChapterDiff
+        diff={diffDocument}
+        context={{
+          document: props.doc,
+          elementsMap: props.elementsMap,
+          elementDocMap: props.elementDocMap,
+          edges: props.edges,
+          diagrams: props.diagrams,
+        }}
+        viewMode={props.viewMode}
+        targetElementId={props.targetElementId ?? null}
+        onTargetConsumed={props.onTargetConsumed}
+      />
+    );
+  }
+  return <PlainDocumentView {...props} />;
+}
+
+function PlainDocumentView({
   doc,
   viewMode,
   elementsMap,

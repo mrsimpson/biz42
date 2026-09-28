@@ -126,3 +126,15 @@
     display: block;
   }
 }
+
+/* Business model diff: "Changes" entry above the documents */
+.changesLink {
+  justify-content: space-between;
+  margin: 0.5rem 0 0.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.docChanges {
+  flex-shrink: 0;
+  padding-left: 0.5rem;
+}

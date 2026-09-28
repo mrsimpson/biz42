@@ -12,6 +12,8 @@ import type { Diagram } from "@biz42/core";
 export interface ProseRunNode {
   kind: "prose-run";
   text: string;
+  /** Pre-rendered HTML of the text (e.g. with changed words marked); rendered from `text` when absent. */
+  renderedHtml?: string;
   block: BlockNode | null;
 }
 
@@ -70,6 +72,7 @@ export function AstNodeRenderer({
       return (
         <ProseRun
           text={runNode.text}
+          renderedHtml={runNode.renderedHtml}
           block={runNode.block}
           viewMode={viewMode}
           elementsMap={elementsMap}
@@ -157,6 +160,7 @@ export function AstNodeRenderer({
 
 interface ProseRunProps {
   text: string;
+  renderedHtml?: string;
   block: BlockNode | null;
   viewMode: "human" | "agent";
   elementsMap: Map<string, Element>;
@@ -168,6 +172,7 @@ interface ProseRunProps {
 
 function ProseRun({
   text,
+  renderedHtml,
   block,
   viewMode,
   elementsMap,
@@ -213,7 +218,7 @@ function ProseRun({
   if (!hasBlock || viewMode === "agent") {
     return (
       <div className={styles.proseRun}>
-        {text && <ProseBlock text={text} />}
+        {(text || renderedHtml) && <ProseBlock text={text} html={renderedHtml} />}
         {hasBlock && viewMode === "agent" && <AgentBlock source={reconstructBlockSource(block!)} />}
       </div>
     );
@@ -252,7 +257,7 @@ function ProseRun({
       />
       <div className={styles.content}>
         <div data-testid="prose-view" className={styles.proseView}>
-          {text && <ProseBlock text={text} />}
+          {(text || renderedHtml) && <ProseBlock text={text} html={renderedHtml} />}
         </div>
       </div>
     </div>
@@ -261,15 +266,18 @@ function ProseRun({
 
 // ─── ProseBlock — renders markdown via marked ─────────────────────────────────
 
-function ProseBlock({ text }: { text: string }) {
-  const html = useMemo(() => {
-    try {
-      return marked.parse(text, { async: false }) as string;
-    } catch {
-      return `<p>${text}</p>`;
-    }
-  }, [text]);
-  return <div className={docStyles.proseBlock} dangerouslySetInnerHTML={{ __html: html }} />;
+/** Render Markdown prose to HTML. */
+export function renderProse(text: string): string {
+  try {
+    return marked.parse(text, { async: false }) as string;
+  } catch {
+    return `<p>${text}</p>`;
+  }
+}
+
+function ProseBlock({ text, html }: { text: string; html?: string }) {
+  const rendered = useMemo(() => html ?? renderProse(text), [text, html]);
+  return <div className={docStyles.proseBlock} dangerouslySetInnerHTML={{ __html: rendered }} />;
 }
 
 // ─── AgentBlock — dark code block ────────────────────────────────────────────

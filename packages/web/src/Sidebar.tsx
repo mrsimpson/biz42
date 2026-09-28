@@ -1,5 +1,6 @@
 import React from "react";
-import type { DocumentAst, AstNode } from "@biz42/core";
+import type { DocumentAst, AstNode, DiffDocument } from "@biz42/core";
+import { ChangeCounts } from "./DiffSegment.tsx";
 import styles from "./Sidebar.module.css";
 
 function basename(filePath: string): string {
@@ -19,6 +20,13 @@ interface SidebarProps {
   documents: DocumentAst[];
   activeDocIndex: number;
   onSelectDoc: (index: number) => void;
+  /** Present when a difference is visualized (serve/build --diff). */
+  changes?: {
+    active: boolean;
+    onSelect: () => void;
+    /** Changed documents by file name. */
+    documents: Map<string, DiffDocument>;
+  };
   viewMode: "human" | "agent";
   onToggleViewMode: () => void;
   theme: "dark" | "light";
@@ -31,6 +39,7 @@ export function Sidebar({
   documents,
   activeDocIndex,
   onSelectDoc,
+  changes,
   viewMode,
   onToggleViewMode,
   theme,
@@ -74,9 +83,28 @@ export function Sidebar({
         </button>
       </div>
 
+      {changes && (
+        <a
+          data-testid="sidebar-changes-link"
+          href="#changes"
+          aria-current={changes.active ? "page" : undefined}
+          className={[styles.docBtn, styles.changesLink, changes.active ? styles.docBtnActive : ""]
+            .filter(Boolean)
+            .join(" ")}
+          onClick={(e) => {
+            e.preventDefault();
+            changes.onSelect();
+          }}
+        >
+          <span className={styles.docLabel}>Changes</span>
+          <ChangeCounts {...totalCounts([...changes.documents.values()])} />
+        </a>
+      )}
+
       <ul className={styles.docs} role="list">
         {documents.map((doc, i) => {
-          const isActive = i === activeDocIndex;
+          const isActive = i === activeDocIndex && !changes?.active;
+          const docChanges = changes?.documents.get(basename(doc.filePath));
           const base = basename(doc.filePath);
           const numMatch = /^(\d+)-/.exec(base);
           const num = numMatch ? numMatch[1] : null;
@@ -92,11 +120,27 @@ export function Sidebar({
               >
                 {num && <span className={styles.docNum}>{parseInt(num, 10)}</span>}
                 <span className={styles.docLabel}>{title}</span>
+                {docChanges && (
+                  <span className={styles.docChanges} data-testid="doc-change-badge">
+                    <ChangeCounts {...docChanges} />
+                  </span>
+                )}
               </button>
             </li>
           );
         })}
       </ul>
     </nav>
+  );
+}
+
+function totalCounts(documents: DiffDocument[]) {
+  return documents.reduce(
+    (total, d) => ({
+      added: total.added + d.added,
+      modified: total.modified + d.modified,
+      removed: total.removed + d.removed,
+    }),
+    { added: 0, modified: 0, removed: 0 },
   );
 }
