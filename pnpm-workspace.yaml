@@ -2,6 +2,7 @@ packages:
   - packages/*
 
 catalog:
+  "@cli42/lib": github:mrsimpson/cli42#185a24cf9e1dfe79e9ea64fb0b68fcc5cda7c7d9
   "@doctc/arc42": 0.21.1
   "@semantic-release/changelog": 7.0.0
   "@semantic-release/exec": 7.1.0
@@ -27,3 +28,6 @@ peerDependencyRules:
   allowedVersions:
     vite: "*"
     vitest: "*"
+onlyBuiltDependencies:
+  # Git-hosted: builds its dist/ on install (prepare) until it is published to npm.
+  - "@cli42/lib"

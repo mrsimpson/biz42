@@ -1,33 +1,14 @@
-import { execFileSync } from "node:child_process";
-import { realpathSync } from "node:fs";
-import { relative, resolve } from "node:path";
-
+import { changeCounts, isSemanticChange } from "@cli42/lib/diff";
+import { commitDiffSpec, errorMessage, listDocumentHistory } from "@cli42/lib/git";
+import type { DocumentCommit, DocumentHistory } from "@cli42/lib/git";
 import type { DiffPayload } from "@biz42/core";
 
 import { loadDiffPayload } from "./diff-payload.ts";
-import type { DiffSpec } from "./diff-snapshots.ts";
-import { git } from "./git-diff.ts";
 
 /** A commit that touched business model documents, or the uncommitted changes. */
-export interface BusinessModelCommit {
-  /** Commit id; null for uncommitted changes in the working tree. */
-  commit: string | null;
-  /** First parent; null for a root commit. For the working tree: HEAD. */
-  parent: string | null;
-  author: string;
-  /** ISO 8601 author date; for the working tree, when it was read. */
-  date: string;
-  subject: string;
-  /** Raw commit message body; empty when there is none. */
-  body: string;
-}
+export type BusinessModelCommit = DocumentCommit;
 
-export interface BusinessModelHistory {
-  /** Repository root. */
-  root: string;
-  /** Newest first; the uncommitted changes lead when there are any. */
-  commits: BusinessModelCommit[];
-}
+export type BusinessModelHistory = DocumentHistory;
 
 /** The business model change of one commit against its first parent. */
 export interface CommitChange {
@@ -43,68 +24,13 @@ export interface CommitChange {
   error?: string;
 }
 
-const FIELD = "\u001f";
-const RECORD = "\u001e";
-
-/** Pathspecs selecting the business model documents of the workspace. */
-function businessModelPathspecs(root: string, dir: string): string[] {
-  const workspace = relative(root, realpathSync(resolve(dir))).replaceAll("\\", "/");
-  const prefix = workspace === "" ? "" : `${workspace}/`;
-  return [`:(glob)${prefix}**/*.biz42.md`];
-}
-
-function hasUncommittedChanges(root: string, pathspecs: string[]): boolean {
-  try {
-    execFileSync("git", ["-C", root, "diff", "HEAD", "--quiet", "--", ...pathspecs]);
-    return false;
-  } catch (error) {
-    // `git diff --quiet` exits 1 for differences; anything else is a failure.
-    if ((error as { status?: number }).status === 1) return true;
-    throw error;
-  }
-}
-
 /**
  * List the first-parent commits that touched business model documents of the
  * workspace in `dir`, newest first, led by the uncommitted changes when there
  * are any. Throws outside a Git repository.
  */
 export function listBusinessModelHistory(dir: string): BusinessModelHistory {
-  const root = git(resolve(dir), ["rev-parse", "--show-toplevel"]).trim();
-  const pathspecs = businessModelPathspecs(root, dir);
-  const log = git(root, [
-    "log",
-    "--first-parent",
-    `--format=%H${FIELD}%P${FIELD}%an${FIELD}%aI${FIELD}%s${FIELD}%b${RECORD}`,
-    "--",
-    ...pathspecs,
-  ]);
-  const commits: BusinessModelCommit[] = log
-    .split(RECORD)
-    .map((record) => record.replace(/^\n/, ""))
-    .filter((record) => record.length > 0)
-    .map((record) => {
-      const [commit, parents, author, date, subject, body] = record.split(FIELD);
-      return {
-        commit: commit!,
-        parent: parents?.split(" ")[0] || null,
-        author: author ?? "",
-        date: date ?? "",
-        subject: subject ?? "",
-        body: (body ?? "").trim(),
-      };
-    });
-  if (!hasUncommittedChanges(root, pathspecs)) return { root, commits };
-  const head = git(root, ["rev-parse", "HEAD"]).trim();
-  const uncommitted: BusinessModelCommit = {
-    commit: null,
-    parent: head,
-    author: "",
-    date: new Date().toISOString(),
-    subject: "Uncommitted changes",
-    body: "",
-  };
-  return { root, commits: [uncommitted, ...commits] };
+  return listDocumentHistory(dir, [".biz42.md"]);
 }
 
 /**
@@ -116,27 +42,13 @@ export function loadCommitChange(
   dir: string,
   commit: Pick<BusinessModelCommit, "commit">,
 ): CommitChange {
-  // The working tree is compared with HEAD, staged and unstaged changes alike.
-  const spec: DiffSpec = commit.commit ? { commit: commit.commit } : { reference: "HEAD" };
   try {
-    const { payload, result } = loadDiffPayload(dir, spec);
+    const { payload, result } = loadDiffPayload(dir, commitDiffSpec(commit));
     const model = result.model;
-    const counts = model.documents.reduce(
-      (total, document) => ({
-        added: total.added + document.added,
-        modified: total.modified + document.modified,
-        removed: total.removed + document.removed,
-      }),
-      { added: 0, modified: 0, removed: 0 },
-    );
     return {
       commit: commit.commit,
-      semantic:
-        model.elements.length > 0 ||
-        model.diagrams.length > 0 ||
-        model.edges.length > 0 ||
-        model.proseSections.length > 0,
-      ...counts,
+      semantic: isSemanticChange(model),
+      ...changeCounts(model),
       diff: payload,
     };
   } catch (error) {
@@ -146,7 +58,7 @@ export function loadCommitChange(
       added: 0,
       modified: 0,
       removed: 0,
-      error: error instanceof Error ? error.message : String(error),
+      error: errorMessage(error),
     };
   }
 }

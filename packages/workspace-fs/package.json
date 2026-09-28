@@ -21,7 +21,8 @@
     "check": "vp check"
   },
   "dependencies": {
-    "@biz42/core": "workspace:*"
+    "@biz42/core": "workspace:*",
+    "@cli42/lib": "catalog:"
   },
   "devDependencies": {
     "@types/node": "catalog:",
