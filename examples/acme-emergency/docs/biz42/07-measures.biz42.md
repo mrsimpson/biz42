@@ -109,3 +109,19 @@ title: Sensor Integrations — Production-Deployed Sensor Types
 target: ≥2 sensor types integrated by month 10
 :::
 ```
+
+## Operator Pilots
+
+Number of regional transport operators with a signed pilot agreement, works
+council approval and staff live on the hosted service.
+
+Method: contract register and tenant activity.
+Success: 3 operators live.
+
+```biz42
+:::measure
+id: measure-operator-pilots
+title: Operator Pilots Live
+target: 3 operators live by month 15
+:::
+```

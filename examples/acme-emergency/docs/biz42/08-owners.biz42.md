@@ -39,3 +39,18 @@ title: Project Lead
 role: Programme Manager
 :::
 ```
+
+## Head of Business Development
+
+A new role. Accountable for the operator offering: finding and signing pilot
+customers, their contracts and service levels, and the case for spinning ACME
+out. Kept apart from the project and product leads so that the internal
+rollout keeps its people.
+
+```biz42
+:::owner
+id: owner-business-development
+title: Head of Business Development
+role: Head of Business Development
+:::
+```

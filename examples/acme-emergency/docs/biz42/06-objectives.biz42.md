@@ -21,6 +21,8 @@ flowchart LR
         risk-rollout-timeline(["Rollout Risk"])
         opp-location-routing(["Location Routing Opp."])
         opp-sensor-bridge(["Sensor Bridge Opp."])
+        opp-operator-offering(["Operator Offering Opp."])
+        risk-focus-dilution(["Focus Risk"])
     end
     subgraph objectives["Objectives"]
         obj-privacy-architecture["Privacy Architecture"]
@@ -29,6 +31,7 @@ flowchart LR
         obj-time-to-deployment["Rollout"]
         obj-location-routing["Location Routing"]
         obj-sensor-bridge["Sensor Bridge"]
+        obj-operator-pilots["Operator Pilots"]
     end
     subgraph measures["Measures"]
         measure-works-council-approval["WC Approval"]
@@ -37,6 +40,7 @@ flowchart LR
         measure-site-coverage["Site Coverage"]
         measure-routing-accuracy["Routing Accuracy"]
         measure-sensor-integrations["Sensor Integrations"]
+        measure-operator-pilots["Operator Pilots"]
     end
 
     risk-works-council --> obj-privacy-architecture
@@ -45,6 +49,8 @@ flowchart LR
     risk-rollout-timeline --> obj-time-to-deployment
     opp-location-routing --> obj-location-routing
     opp-sensor-bridge --> obj-sensor-bridge
+    opp-operator-offering --> obj-operator-pilots
+    risk-focus-dilution --> obj-time-to-deployment
 
     obj-privacy-architecture --> measure-works-council-approval
     obj-adoption-rate --> measure-adoption-rate
@@ -52,6 +58,7 @@ flowchart LR
     obj-time-to-deployment --> measure-site-coverage
     obj-location-routing --> measure-routing-accuracy
     obj-sensor-bridge --> measure-sensor-integrations
+    obj-operator-pilots --> measure-operator-pilots
 ```
 
 ## Privacy Architecture Approved by Works Council
@@ -79,7 +86,7 @@ requires: capability-location-routing
 
 Deploy the alert service company-wide across all static sites (offices,
 stations, workshops, depots) within 12 months. The 12-month window is a
-constraint, not a wish.
+constraint, not a wish — and it takes precedence over any outside customer.
 
 Target: service live on ≥90% of static sites.
 Deadline: 12 months from project start.
@@ -88,7 +95,7 @@ Deadline: 12 months from project start.
 :::objective
 id: obj-time-to-deployment
 title: Time to Deployment — Company-Wide Rollout in 12 Months
-addresses: risk-rollout-timeline, risk-incumbent-response, risk-reputational, opp-internal-mandate, opp-cost-effective-alerting
+addresses: risk-rollout-timeline, risk-incumbent-response, risk-reputational, risk-focus-dilution, opp-internal-mandate, opp-cost-effective-alerting
 measured-by: measure-site-coverage
 owner: owner-project-lead
 requires: capability-alert-delivery, capability-platform-integration
@@ -185,5 +192,24 @@ addresses: opp-sensor-bridge
 measured-by: measure-sensor-integrations
 owner: owner-tech-lead
 requires: capability-sensor-ingestion
+:::
+```
+
+## Operator Pilots
+
+Win three regional transport operators as paying pilot customers of a hosted
+ACME service, without taking people off the internal rollout. A pilot counts
+when the operator's works council has approved it and staff are live.
+
+Target: 3 paying operator pilots live.
+Deadline: month 15.
+
+```biz42
+:::objective
+id: obj-operator-pilots
+title: Three Paying Operator Pilots Live
+addresses: opp-operator-offering
+measured-by: measure-operator-pilots
+owner: owner-business-development
 :::
 ```
