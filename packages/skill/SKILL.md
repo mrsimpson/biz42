@@ -11,7 +11,9 @@ biz42 validate [--dir <path>] [--strict]     # validate workspace consistency
 biz42 get [<id>] [--type <type>] [--format text|json|markdown]
 biz42 explain [<block-type>]                 # field reference and tips
 biz42 rules [--chapter <n>]                  # list all validation rules
+biz42 diff [<ref> | <base>...<head>] [--staged]  # semantic change set + consistency check
 biz42 serve [--port 3142] [--open]           # open SPA viewer in browser
+biz42 serve --diff [<ref>]                   # show a change inline in its chapters
 biz42 build --out <dir>                      # static SPA export
 ```
 
@@ -107,5 +109,11 @@ Run `biz42 rules` to see all validation rules. The most common mistakes:
 2. `biz42 get --type objective` — see existing objectives
 3. `biz42 get <id>` — inspect a specific element and its references
 4. `biz42 explain <block-type>` — look up fields and tips
-5. Edit `.biz42.md` files — add/update blocks and prose
+5. Edit `.biz42.md` files — add/update blocks and prose. Every model change needs a
+   matching prose change in the same section: the prose explains _why_ (why this
+   opportunity exists, why the severity dropped, why a new capability is needed)
 6. `biz42 validate` — verify consistency
+7. `biz42 diff` — every changed block must come with changed prose, and the other way
+   round; `git add` new chapter files, untracked ones are not part of the comparison
+8. Show the human the change with `biz42 serve --diff` — a business development plan
+   is reviewed like a pull request
