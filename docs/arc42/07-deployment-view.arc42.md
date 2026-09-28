@@ -37,7 +37,7 @@ There is no separate deploy step — the packages are consumed directly from the
 id: node-npm-package
 title: npm-distributed Toolchain Packages
 type: server
-hosts: bb-cli, bb-core, bb-parser, bb-builder, bb-resolver, bb-validator, bb-renderer, bb-mermaid, bb-workspace-fs, bb-web-renderer
+hosts: bb-cli, bb-core, bb-parser, bb-builder, bb-resolver, bb-validator, bb-diff, bb-renderer, bb-mermaid, bb-workspace-fs, bb-web-renderer
 :::
 ```
 

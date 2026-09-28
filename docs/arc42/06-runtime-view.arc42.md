@@ -169,6 +169,58 @@ The web renderer is a static SPA served from the CLI's distribution directory. T
 re-parse on every browser request — the workspace payload is loaded once at server startup and
 cached in memory for the lifetime of the process.
 
+## Reviewer inspects a business model change via biz42 serve --diff
+
+This scenario describes how a reviewer sees what a change does to the business model rather than
+to its Markdown lines. The CLI asks the filesystem workspace adapter for both sides of the change
+(by default the Git index and the working tree), the Business Model Diff compares them
+semantically, and the web renderer shows a summary of findings and changed elements, then every
+changed chapter with its changes marked in place. The `if-workspace-diff` interface is exercised
+in this scenario; `biz42 diff` and the pull request review page run the same flow without the
+browser.
+
+```arc42
+:::runtime-scenario
+id: scenario-review-change
+title: Reviewer inspects a business model change via biz42 serve --diff
+trigger: Reviewer runs biz42 serve --diff main...HEAD from the terminal
+involves: bb-cli, bb-workspace-fs, bb-diff, bb-web-renderer
+:::
+```
+
+```arc42
+:::diagram
+id: review-change-sequence
+scenario: scenario-review-change
+notation: mermaid-sequence
+aliases: bb_cli=bb-cli, bb_fs=bb-workspace-fs, bb_diff=bb-diff, bb_web=bb-web-renderer
+:::
+```
+
+```mermaid
+sequenceDiagram
+    actor actor_reviewer as Reviewer
+    participant bb_cli as CLI
+    participant bb_fs as Filesystem Workspace Adapter
+    participant bb_diff as Business Model Diff
+    participant bb_web as Web Renderer
+
+    actor_reviewer->>bb_cli: biz42 serve --diff main...HEAD
+    bb_cli->>bb_fs: loadDiffPayload(dir, spec)
+    bb_fs->>bb_fs: Read both snapshots from Git
+    bb_fs->>bb_diff: lint and build the view of base → head
+    bb_diff-->>bb_fs: Findings and changed sections
+    bb_fs-->>bb_cli: DiffPayload and head workspace
+    actor_reviewer->>bb_web: Open browser
+    bb_web->>bb_cli: GET /api/workspace, GET /api/diff
+    bb_cli-->>bb_web: Head WorkspacePayload, DiffPayload (JSON)
+    bb_web-->>actor_reviewer: Changes summary, chapters with changes inline
+```
+
+While the server runs, it follows the documents and the Git index and HEAD, recomputes the
+difference and tells the browser to reload. A difference that cannot be computed (for example a
+duplicate id) is shown as an error instead of a stale view.
+
 ## Site build with Mermaid validation and verdict loading
 
 This scenario describes the two build-time flows specific to the Project Site and the Mermaid
