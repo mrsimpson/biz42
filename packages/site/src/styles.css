@@ -649,57 +649,48 @@ code {
   margin: 0 0 0.75rem;
 }
 
-/* Software versus an organisation, one row per property. */
-.why__table {
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
+.why__title {
+  margin-bottom: 1.25rem;
 }
 
-.why__row {
-  display: grid;
-  grid-template-columns: 13rem 1fr 1fr;
-  gap: 1.5rem;
-  padding: 1.1rem 1.5rem;
-  border-top: 1px solid var(--border);
-  align-items: baseline;
+.why__turn {
+  display: block;
+  color: var(--accent);
 }
 
-.why__row--head {
-  border-top: none;
-  background: var(--bg-card);
-  padding-top: 0.7rem;
-  padding-bottom: 0.7rem;
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-muted);
+/* The lead and what goes wrong without the three properties read as one argument. */
+.how__lead.why__lead {
+  margin-bottom: 1rem;
 }
 
-.why__row p {
-  margin: 0;
-  font-size: 0.9rem;
-  line-height: 1.55;
+.how__lead.why__stakes {
   color: var(--text);
 }
 
-.why__row p.why__gap {
-  color: var(--text-muted);
+/* One card per property: software, the organisation today, then biz42's answer. */
+.why__cards {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
 }
 
-.why__property {
+.why__prop {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+}
+
+.why__prop-title {
   display: flex;
   gap: 0.6rem;
   align-items: baseline;
-  font-weight: 700;
-  font-size: 0.95rem;
-  color: var(--text);
-  text-decoration: none;
-}
-.why__property:hover {
-  color: var(--accent);
-  text-decoration: none;
+  margin: 0 0 1rem;
+  font-size: 1rem;
 }
 
 .why__num {
@@ -708,11 +699,66 @@ code {
   color: var(--accent);
 }
 
-.why__answer {
-  margin: 1.5rem 0 0;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--text);
+.why__compare {
+  margin: 0 0 1.25rem;
+}
+
+.why__compare dt,
+.why__fix-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.why__compare dd {
+  margin: 0.2rem 0 0.9rem;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.why__compare dd:last-child {
+  margin-bottom: 0;
+}
+
+.why__compare dd.why__gap {
+  color: var(--text-muted);
+}
+
+/* Pushed to the bottom, so the answers line up across the cards. */
+.why__fix {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 2px solid var(--accent);
+}
+
+.why__fix-label {
+  color: var(--accent);
+}
+
+.why__fix p {
+  margin: 0.2rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  font-weight: 500;
+}
+
+.why__fix code {
+  font-size: 0.85em;
+  background: var(--bg-code);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+}
+
+/* Leads to the section that shows the property in depth. */
+.why__more {
+  display: block;
+  width: fit-content;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--accent);
 }
 
 /* ─── How it works ────────────────────────────────────────────────────────────── */
@@ -766,6 +812,7 @@ code {
 @media (max-width: 640px) {
   .model__grid,
   .why__grid,
+  .why__cards,
   .model-refs {
     grid-template-columns: 1fr;
   }
@@ -779,21 +826,6 @@ code {
 
   .hero__headline {
     font-size: clamp(2rem, 10vw, 2.5rem);
-  }
-
-  .why__row {
-    grid-template-columns: 1fr;
-    gap: 0.5rem;
-  }
-
-  .why__row--head {
-    display: none;
-  }
-
-  .why__row p::before {
-    content: attr(data-label) " — ";
-    font-weight: 600;
-    color: var(--text-muted);
   }
 
   .hero__headline--question {
@@ -1113,4 +1145,11 @@ code {
   font-size: 0.95rem;
   line-height: 1.8;
   color: var(--text-muted);
+}
+
+/* Three cards need room; below that, one per row. */
+@media (max-width: 860px) {
+  .why__cards {
+    grid-template-columns: 1fr;
+  }
 }
