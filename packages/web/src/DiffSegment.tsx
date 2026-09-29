@@ -105,7 +105,7 @@ export function NodesRender({
         const node: ProseRunNode = {
           kind: "prose-run",
           text: group.text,
-          renderedHtml: proseHtml?.[run++],
+          renderedHtml: proseHtml?.[run++] ?? group.renderedHtml,
           block: group.block,
         };
         return (
@@ -127,10 +127,12 @@ export function NodesRender({
   );
 }
 
-/** Rendered HTML of each prose run of the nodes, in order. */
+/** Rendered HTML of each prose run of the nodes, in order (rendered on the server). */
 function proseRunsHtml(nodes: AstNode[]): string[] {
   return groupNodes(nodes).flatMap((group) =>
-    group.kind === "prose-run" ? [group.text ? renderProse(group.text) : ""] : [],
+    group.kind === "prose-run"
+      ? [group.renderedHtml ?? (group.text ? renderProse(group.text) : "")]
+      : [],
   );
 }
 

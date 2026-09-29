@@ -32,29 +32,39 @@ import { ChapterDiff } from "./ChapterDiff.tsx";
  *     expands/collapses the element card below.
  */
 type RenderGroup =
-  | { kind: "prose-run"; text: string; block: BlockNode | null }
+  | { kind: "prose-run"; text: string; renderedHtml?: string; block: BlockNode | null }
   | { kind: "other"; node: AstNode };
 
 export function groupNodes(nodes: AstNode[]): RenderGroup[] {
   const groups: RenderGroup[] = [];
   let proseLines: string[] = [];
+  let proseRendered: string[] = [];
   let i = 0;
 
   function flushProse(attachedBlock: BlockNode | null) {
     if (proseLines.length === 0 && !attachedBlock) return;
+    // Use the server-rendered HTML when every prose node of the run has it
+    const renderedHtml =
+      proseRendered.length === proseLines.length && proseRendered.length > 0
+        ? proseRendered.join("")
+        : undefined;
     groups.push({
       kind: "prose-run",
       text: proseLines.join("\n"),
+      ...(renderedHtml !== undefined ? { renderedHtml } : {}),
       block: attachedBlock,
     });
     proseLines = [];
+    proseRendered = [];
   }
 
   while (i < nodes.length) {
     const node = nodes[i]!;
 
     if (node.kind === "prose") {
-      proseLines.push((node as ProseNode).text);
+      const proseNode = node as ProseNode;
+      proseLines.push(proseNode.text);
+      if (proseNode.renderedHtml !== undefined) proseRendered.push(proseNode.renderedHtml);
       i++;
 
       // Check if the next non-ignore node is a biz42 block — if so, attach it
@@ -186,6 +196,7 @@ function PlainDocumentView({
         const proseRunNode: ProseRunNode = {
           kind: "prose-run",
           text: group.text,
+          renderedHtml: group.renderedHtml,
           block: group.block,
         };
         return (

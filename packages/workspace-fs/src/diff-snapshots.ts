@@ -1,4 +1,4 @@
-import { loadWorkspaceFromDocuments, parseBusinessDocument } from "@biz42/core";
+import { loadWorkspaceFromFiles } from "@biz42/core";
 import type { WorkspacePayload } from "@biz42/core";
 import { resolveComparison, untrackedDocuments, workspaceLocation } from "@cli42/lib/git";
 import type { DiffSpec, SnapshotSource } from "@cli42/lib/git";
@@ -35,24 +35,27 @@ export interface DiffSnapshots {
   untracked: string[];
 }
 
-function loadSnapshot(source: SnapshotSource, inWorkspace: (path: string) => boolean): Snapshot {
+async function loadSnapshot(
+  source: SnapshotSource,
+  inWorkspace: (path: string) => boolean,
+): Promise<Snapshot> {
   const files = source
     .paths()
     .filter((path) => isBusinessModelDocument(path) && inWorkspace(path))
     .sort((a, b) => a.localeCompare(b));
-  const payload = loadWorkspaceFromDocuments(
-    files.map((path) => parseBusinessDocument(path, source.read(path))),
+  const payload = await loadWorkspaceFromFiles(
+    files.map((path) => ({ path, content: source.read(path) })),
   );
   return { label: source.label, payload };
 }
 
 /**
  * Load the base and head snapshots of the workspace in `dir` as full workspace
- * payloads. Document paths are repository-relative on both sides, so sections
- * can be matched across snapshots. Git failures (no repository, unknown
- * reference, unreadable blob) are raised, never skipped.
+ * payloads with rendered prose. Document paths are repository-relative on both
+ * sides, so sections can be matched across snapshots. Git failures (no
+ * repository, unknown reference, unreadable blob) are raised, never skipped.
  */
-export function loadDiffSnapshots(dir: string, spec: DiffSpec = {}): DiffSnapshots {
+export async function loadDiffSnapshots(dir: string, spec: DiffSpec = {}): Promise<DiffSnapshots> {
   const { root, inWorkspace } = workspaceLocation(dir);
   const comparison = resolveComparison(root, spec);
   const untracked = untrackedDocuments(
@@ -62,8 +65,8 @@ export function loadDiffSnapshots(dir: string, spec: DiffSpec = {}): DiffSnapsho
   );
   return {
     root,
-    base: loadSnapshot(comparison.base, inWorkspace),
-    head: loadSnapshot(comparison.head, inWorkspace),
+    base: await loadSnapshot(comparison.base, inWorkspace),
+    head: await loadSnapshot(comparison.head, inWorkspace),
     baseCommit: comparison.baseCommit,
     acceptanceBase: comparison.acceptanceBase,
     untracked,

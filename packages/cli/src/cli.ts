@@ -141,7 +141,7 @@ async function main() {
   } else if (command === "init") {
     runInit(commandArgs);
   } else if (command === "diff") {
-    runDiff(dir, commandArgs);
+    await runDiff(dir, commandArgs);
   } else if (command === "serve") {
     await runServe(dir, commandArgs);
   } else if (command === "build") {
@@ -550,7 +550,7 @@ function warnUntracked(untracked: readonly string[]) {
   }
 }
 
-function runDiff(dir: string, args: string[]) {
+async function runDiff(dir: string, args: string[]) {
   const { positionals, values } = parseArgs({
     args,
     allowPositionals: true,
@@ -571,7 +571,7 @@ function runDiff(dir: string, args: string[]) {
   }
 
   try {
-    const { snapshots, result } = loadDiffPayload(dir, {
+    const { snapshots, result } = await loadDiffPayload(dir, {
       reference: positionals[0],
       staged: Boolean(values.staged || values.cached),
     });
@@ -677,7 +677,7 @@ async function runServe(dir: string, args: string[]) {
       workspaceJson = JSON.stringify(await loadWorkspace(dir));
       return;
     }
-    const diff = loadDiffPayload(dir, diffSpec);
+    const diff = await loadDiffPayload(dir, diffSpec);
     workspaceJson = JSON.stringify(diff.snapshots.head.payload);
     diffJson = JSON.stringify(diff.payload);
     diffError = undefined;
@@ -751,7 +751,7 @@ async function runServe(dir: string, args: string[]) {
   }
 
   // History entries of commits never change; the working-tree entry is always recomputed.
-  const historyEntries = new Map<string, HistoryEntry>();
+  const historyEntries = new Map<string, Promise<HistoryEntry>>();
   const historyEntry = (commit: BusinessModelCommit) => {
     if (commit.commit === null) return loadHistoryEntry(dir, commit);
     let entry = historyEntries.get(commit.commit);
@@ -762,7 +762,7 @@ async function runServe(dir: string, args: string[]) {
     return entry;
   };
 
-  const serveHistory = (url: string, res: import("node:http").ServerResponse) => {
+  const serveHistory = async (url: string, res: import("node:http").ServerResponse) => {
     const json = { "Content-Type": "application/json; charset=utf-8" };
     const jsonLines = { "Content-Type": "application/x-ndjson; charset=utf-8" };
     let history: BusinessModelHistory;
@@ -815,8 +815,10 @@ async function runServe(dir: string, args: string[]) {
       notFound(`No history file ${url}`);
       return;
     }
+    const entries: HistoryEntry[] = [];
+    for (const commit of commits) entries.push(await historyEntry(commit));
     res.writeHead(200, jsonLines);
-    res.end(toJsonLines(commits.map(historyEntry)));
+    res.end(toJsonLines(entries));
   };
 
   const server = createServer((req, res) => {
@@ -829,12 +831,10 @@ async function runServe(dir: string, args: string[]) {
     }
 
     if (url.startsWith("/api/history/")) {
-      try {
-        serveHistory(url.split("?")[0]!, res);
-      } catch (err) {
+      serveHistory(url.split("?")[0]!, res).catch((err: unknown) => {
         res.writeHead(500, { "Content-Type": "application/json; charset=utf-8" });
         res.end(JSON.stringify({ error: String(err) }));
-      }
+      });
       return;
     }
 
@@ -962,7 +962,7 @@ async function runBuild(dir: string, args: string[]) {
   let diffJson: string | undefined;
   try {
     if (diffSpec) {
-      const diff = loadDiffPayload(dir, diffSpec);
+      const diff = await loadDiffPayload(dir, diffSpec);
       warnUntracked(diff.snapshots.untracked);
       workspaceJson = JSON.stringify(diff.snapshots.head.payload);
       diffJson = JSON.stringify(diff.payload);
@@ -993,9 +993,11 @@ async function runBuild(dir: string, args: string[]) {
     const pearls = historyPearls(history);
     historyFiles[HISTORY_INDEX_FILE] = toJsonLines(pearls);
     for (const chunk of new Set(pearls.map((pearl) => pearl.chunk))) {
-      historyFiles[historyChunkFile(chunk)] = toJsonLines(
-        chunkCommits(history, pearls, chunk).map((commit) => loadHistoryEntry(dir, commit)),
-      );
+      const entries: HistoryEntry[] = [];
+      for (const commit of chunkCommits(history, pearls, chunk)) {
+        entries.push(await loadHistoryEntry(dir, commit));
+      }
+      historyFiles[historyChunkFile(chunk)] = toJsonLines(entries);
     }
     Object.assign(historyFiles, snapshotFiles(dir, history));
   }

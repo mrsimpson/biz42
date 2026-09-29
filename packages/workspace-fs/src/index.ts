@@ -3,7 +3,7 @@ import { dirname, resolve } from "node:path";
 import {
   getElementsFromDocuments,
   loadWorkspaceFromDocuments,
-  parseBusinessDocument,
+  parseBusinessDocumentAsync,
   validateDocumentsAsync,
   warmMermaid,
 } from "@biz42/core";
@@ -43,7 +43,7 @@ export async function discoverFiles(dir: string): Promise<string[]> {
 export async function readWorkspaceDocuments(dir: string): Promise<DocumentAst[]> {
   const files = await discoverFiles(dir);
   return Promise.all(
-    files.map(async (file) => parseBusinessDocument(file, await readFile(file, "utf8"))),
+    files.map(async (file) => parseBusinessDocumentAsync(file, await readFile(file, "utf8"))),
   );
 }
 

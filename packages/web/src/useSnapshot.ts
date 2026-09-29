@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { loadWorkspaceFromDocuments, parseBusinessDocument } from "@biz42/core";
+import { loadWorkspaceFromFiles } from "@biz42/core";
 import { snapshotBlobFile, snapshotTreeFile } from "./history-format.ts";
 import type { SnapshotTree } from "./history-format.ts";
 import type { WorkspacePayload } from "./types.ts";
@@ -35,26 +35,24 @@ function cached<T>(
 
 /**
  * Build the workspace of one commit in the browser: its document list, its
- * documents, then the Core Library's parser and model builder.
+ * documents, then the Core Library's "files in, model out" (prose rendered).
  */
 export function loadSnapshot(source: HistorySource, commit: string): Promise<WorkspacePayload> {
   return cached(snapshotCache, source, commit, async () => {
     const tree = JSON.parse(
       await readHistoryFile(source, snapshotTreeFile(commit)),
     ) as SnapshotTree;
-    const documents = await Promise.all(
+    const files = await Promise.all(
       Object.entries(tree.files)
         .sort(([a], [b]) => a.localeCompare(b))
-        .map(async ([path, id]) =>
-          parseBusinessDocument(
-            path,
-            await cached(blobCache, source, id, () =>
-              readHistoryFile(source, snapshotBlobFile(id)),
-            ),
+        .map(async ([path, id]) => ({
+          path,
+          content: await cached(blobCache, source, id, () =>
+            readHistoryFile(source, snapshotBlobFile(id)),
           ),
-        ),
+        })),
     );
-    return loadWorkspaceFromDocuments(documents);
+    return loadWorkspaceFromFiles(files);
   });
 }
 
