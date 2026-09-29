@@ -2,6 +2,7 @@
 
 export {
   validateDocuments,
+  validateDocumentsAsync,
   getElementsFromDocuments,
   parseBusinessDocument,
   loadWorkspaceFromDocuments,
@@ -74,6 +75,7 @@ export { ELEMENT_KIND_ORDER, ELEMENT_CHAPTER, CHAPTER_TITLE } from "./model/type
 
 // Re-export validateAsync for consumers who want mermaid syntax validation
 export { validateAsync } from "./validator/index.ts";
+export { warmMermaid } from "@cli42/lib/mermaid";
 
 export type { ReferenceIndex, Edge } from "./resolver/types.ts";
 

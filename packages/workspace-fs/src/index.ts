@@ -4,7 +4,8 @@ import {
   getElementsFromDocuments,
   loadWorkspaceFromDocuments,
   parseBusinessDocument,
-  validateDocuments,
+  validateDocumentsAsync,
+  warmMermaid,
 } from "@biz42/core";
 import type {
   DocumentAst,
@@ -69,8 +70,9 @@ export async function validateWorkspace(
   dir: string,
   _context?: ValidationContext,
 ): Promise<ValidateResult> {
+  warmMermaid();
   const documents = await readWorkspaceDocuments(dir);
-  return validateDocuments(documents);
+  return validateDocumentsAsync(documents);
 }
 
 export async function getElements(opts: {

@@ -220,7 +220,8 @@ A Node-compatible syntax check for Mermaid diagrams around the upstream `mermaid
 shared with arc42 through `@cli42/lib/mermaid`. `@biz42/core` only declares which Mermaid grammar
 checks each biz42 notation (SIPOC, turtle and strategy maps are flowcharts); Mermaid itself stays a
 runtime dependency loaded on demand, so the browser-oriented Mermaid runtime is not bundled into
-`@biz42/core`. The Validator uses it for E010 (invalid Mermaid syntax).
+`@biz42/core`. The Validator reports a syntax error under the rule of the diagram's kind (E012
+SIPOC, E013 turtle, E014 strategy map) or E010 for plain Mermaid diagrams.
 
 ```arc42
 :::building-block
