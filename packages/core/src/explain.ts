@@ -154,11 +154,13 @@ const DIAGRAM_DATA: Record<DiagramNotation, ExplainDiagramResult> = {
       "Customer Segments, Cost Structure, and Revenue Streams. In biz42, element ids in the " +
       "canvas link back to the corresponding model elements.\n\n" +
       "Place the diagram block and its YAML source in chapter 13 (Cashflow):\n\n" +
+      "  ```biz42\n" +
       "  :::diagram\n" +
       "  id: diagram-bmc\n" +
       "  title: Business Model Canvas\n" +
       "  notation: bmc\n" +
-      "  :::\n\n" +
+      "  :::\n" +
+      "  ```\n\n" +
       "  ```yaml\n" +
       "  key-partners:\n" +
       '    - "<free text>"\n' +

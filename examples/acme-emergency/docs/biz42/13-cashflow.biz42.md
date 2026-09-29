@@ -99,11 +99,13 @@ recurrence: recurring
 The Business Model Canvas maps the acme-emergency business model across its nine
 building blocks.
 
+```biz42
 :::diagram
 id: diagram-bmc
 title: Business Model Canvas
 notation: bmc
 :::
+```
 
 ```yaml
 key-partners:

@@ -6,11 +6,13 @@ The strategy map below shows why each objective exists (the risk or opportunity
 it addresses) and how success is measured. Arrows read as cause-and-effect:
 a risk or opportunity drives an objective, which is tracked by a measure.
 
+```biz42
 :::diagram
 id: diagram-strategy-map
 title: Strategy Map — Objectives and Their Causes
 notation: strategy-map
 :::
+```
 
 ```mermaid
 flowchart LR
