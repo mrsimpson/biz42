@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
 import type { HistoryEntry, HistoryPearl } from "./history-format.ts";
-import { renderProse } from "./AstNodeRenderer.tsx";
 import { ChangesView } from "./ChangesView.tsx";
 import type { ChangeLink } from "./ChangesView.tsx";
 import { filename } from "./utils.ts";
@@ -71,7 +70,7 @@ export function HistoryEntryView({
     },
   });
 
-  const message = useMemo(() => (entry?.message ? renderProse(entry.message) : undefined), [entry]);
+  const message = entry?.messageHtml || undefined;
 
   if (!pearl) {
     return (
@@ -115,7 +114,7 @@ export function HistoryEntryView({
           className={styles.commitMessage}
           aria-label="Commit message"
           data-testid="commit-message"
-          // Rendered from the commit message (repository content), like the documents.
+          // Rendered on the server from the commit message (repository content).
           dangerouslySetInnerHTML={{ __html: message }}
         />
       )}

@@ -2,6 +2,7 @@
 // workspace adapter, in the Web Renderer's history format.
 import { snapshotBlobFile, snapshotTreeFile, toHistoryPearls } from "@biz42/web/history-format";
 import type { HistoryEntry, HistoryPearl, SnapshotTree } from "@biz42/web/history-format";
+import { renderMarkdown } from "@cli42/lib/markdown";
 import { loadCommitChange, readBusinessModelBlob, readCommitFiles } from "@biz42/workspace-fs";
 import type { BusinessModelCommit, BusinessModelHistory } from "@biz42/workspace-fs";
 
@@ -10,9 +11,13 @@ export function historyPearls(history: BusinessModelHistory): HistoryPearl[] {
   return toHistoryPearls(history.commits);
 }
 
-/** The entry of one pearl: its change and its commit message. */
-export function loadHistoryEntry(dir: string, commit: BusinessModelCommit): HistoryEntry {
-  return { ...loadCommitChange(dir, commit), message: commit.body };
+/** The entry of one pearl: its change and its commit message, rendered (Markdown). */
+export async function loadHistoryEntry(
+  dir: string,
+  commit: BusinessModelCommit,
+): Promise<HistoryEntry> {
+  const messageHtml = commit.body ? renderMarkdown(commit.body) : "";
+  return { ...(await loadCommitChange(dir, commit)), messageHtml };
 }
 
 /** The commits of one chunk, in pearl order. */

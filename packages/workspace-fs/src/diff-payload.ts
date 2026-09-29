@@ -11,8 +11,8 @@ export interface LoadedDiff {
 }
 
 /** Load both snapshots of a change, lint it and build its render-ready view. */
-export function loadDiffPayload(dir: string, spec: DiffSpec): LoadedDiff {
-  const snapshots = loadDiffSnapshots(dir, spec);
+export async function loadDiffPayload(dir: string, spec: DiffSpec): Promise<LoadedDiff> {
+  const snapshots = await loadDiffSnapshots(dir, spec);
   const result = lintBusinessModelDiff(snapshots.base.payload, snapshots.head.payload);
   return {
     snapshots,

@@ -36,8 +36,8 @@ export interface HistoryPearl {
 export interface HistoryEntry {
   /** Commit id of the pearl this entry belongs to; null for the working tree. */
   commit: string | null;
-  /** Commit message body (Markdown, rendered by the reader); empty when there is none. */
-  message: string;
+  /** Rendered commit message body (Markdown); empty when there is none. */
+  messageHtml: string;
   /** True when the semantic diff is not empty; false for reformatting-only commits. */
   semantic: boolean;
   added: number;

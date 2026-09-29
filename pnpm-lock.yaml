@@ -7,7 +7,7 @@ settings:
 catalogs:
   default:
     '@cli42/lib':
-      specifier: github:mrsimpson/cli42#4bcc18042112966f099ffc5c7d637ed098734a10
+      specifier: github:mrsimpson/cli42#301f927b46f0098370e491cf225bf89b1c75a1a1
       version: 0.1.0
     '@doctc/arc42':
       specifier: 0.21.1
@@ -89,7 +89,7 @@ importers:
         version: link:../workspace-fs
       '@cli42/lib':
         specifier: 'catalog:'
-        version: https://codeload.github.com/mrsimpson/cli42/tar.gz/4bcc18042112966f099ffc5c7d637ed098734a10(mermaid@11.17.2)
+        version: https://codeload.github.com/mrsimpson/cli42/tar.gz/301f927b46f0098370e491cf225bf89b1c75a1a1(mermaid@11.17.2)
       '@types/node':
         specifier: 'catalog:'
         version: 24.13.4
@@ -104,7 +104,7 @@ importers:
     dependencies:
       '@cli42/lib':
         specifier: 'catalog:'
-        version: https://codeload.github.com/mrsimpson/cli42/tar.gz/4bcc18042112966f099ffc5c7d637ed098734a10(mermaid@11.17.2)
+        version: https://codeload.github.com/mrsimpson/cli42/tar.gz/301f927b46f0098370e491cf225bf89b1c75a1a1(mermaid@11.17.2)
       mermaid:
         specifier: 'catalog:'
         version: 11.17.2
@@ -159,7 +159,7 @@ importers:
         version: link:../core
       '@cli42/lib':
         specifier: 'catalog:'
-        version: https://codeload.github.com/mrsimpson/cli42/tar.gz/4bcc18042112966f099ffc5c7d637ed098734a10(mermaid@11.17.2)
+        version: https://codeload.github.com/mrsimpson/cli42/tar.gz/301f927b46f0098370e491cf225bf89b1c75a1a1(mermaid@11.17.2)
       marked:
         specifier: ^14.0.0
         version: 14.1.4
@@ -208,7 +208,7 @@ importers:
         version: link:../core
       '@cli42/lib':
         specifier: 'catalog:'
-        version: https://codeload.github.com/mrsimpson/cli42/tar.gz/4bcc18042112966f099ffc5c7d637ed098734a10(mermaid@11.17.2)
+        version: https://codeload.github.com/mrsimpson/cli42/tar.gz/301f927b46f0098370e491cf225bf89b1c75a1a1(mermaid@11.17.2)
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
@@ -326,8 +326,8 @@ packages:
   '@chevrotain/types@11.1.2':
     resolution: {integrity: sha512-U+HFai5+zmJCkK86QsaJtoITlboZHBqrVketcO2ROv865xfCMSFpELQoz1GkX5GzME8pTa+3kbKrZHQtI0gdbw==}
 
-  '@cli42/lib@https://codeload.github.com/mrsimpson/cli42/tar.gz/4bcc18042112966f099ffc5c7d637ed098734a10':
-    resolution: {tarball: https://codeload.github.com/mrsimpson/cli42/tar.gz/4bcc18042112966f099ffc5c7d637ed098734a10}
+  '@cli42/lib@https://codeload.github.com/mrsimpson/cli42/tar.gz/301f927b46f0098370e491cf225bf89b1c75a1a1':
+    resolution: {tarball: https://codeload.github.com/mrsimpson/cli42/tar.gz/301f927b46f0098370e491cf225bf89b1c75a1a1}
     version: 0.1.0
     engines: {node: '>=22.6'}
     peerDependencies:
@@ -3246,8 +3246,9 @@ snapshots:
 
   '@chevrotain/types@11.1.2': {}
 
-  '@cli42/lib@https://codeload.github.com/mrsimpson/cli42/tar.gz/4bcc18042112966f099ffc5c7d637ed098734a10(mermaid@11.17.2)':
+  '@cli42/lib@https://codeload.github.com/mrsimpson/cli42/tar.gz/301f927b46f0098370e491cf225bf89b1c75a1a1(mermaid@11.17.2)':
     dependencies:
+      marked: 14.1.4
       mermaid: 11.17.2
       zod: 4.5.4
 

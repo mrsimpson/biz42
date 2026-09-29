@@ -37,8 +37,10 @@ The language-independent parts of the pipeline come from `@cli42/lib`
 ([cli42](https://github.com/mrsimpson/cli42)), shared with arc42-language, where the pipeline
 originates: the Markdown notation's parser, schema tools and model builder, the reference index
 derived from the schemas' cross-references, the validation engine with its structural rules, the
-Mermaid syntax boundary, authoring guidance, the semantic diff and its view, and Git snapshots and
-history. Where the two languages differed, biz42 follows arc42's approach. `@biz42/core` declares
+Mermaid syntax boundary, the Markdown prose renderer, authoring guidance, the semantic diff and its
+view, and Git snapshots and history. Prose is rendered once, in the backend, while documents are
+parsed; the web renderer shows the rendered HTML. Where the two languages differed, biz42 follows
+arc42's approach. `@biz42/core` declares
 what makes the language biz42 — its schemas, diagrams and rules — and keeps its public API; the CLI
 bundles the library, so it adds no runtime dependency.
 

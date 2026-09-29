@@ -5,6 +5,8 @@ export {
   validateDocumentsAsync,
   getElementsFromDocuments,
   parseBusinessDocument,
+  parseBusinessDocumentAsync,
+  loadWorkspaceFromFiles,
   loadWorkspaceFromDocuments,
   processModel,
 } from "./biz42.ts";
@@ -18,7 +20,9 @@ export type {
   ElementView,
   ResolvedRef,
   WorkspacePayload,
+  SourceFile,
 } from "./biz42.ts";
+export { MarkdownNotationAdapter } from "./notation.ts";
 
 // Semantic diff of two workspace snapshots
 export { diffWorkspaces } from "./workspace-diff.ts";

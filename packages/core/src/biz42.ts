@@ -1,3 +1,5 @@
+import { parseDocumentAsync } from "@cli42/lib/notation";
+import { MarkdownNotationAdapter } from "./notation.ts";
 import { MarkdownParser } from "./parser/markdown-parser.ts";
 import { buildWorkspace } from "./model/builder.ts";
 import { buildIndex } from "./resolver/index.ts";
@@ -55,8 +57,40 @@ export interface WorkspacePayload {
   ignoreDirectives: IgnoreDirective[];
 }
 
+/** Parse one document; its prose stays unrendered (see parseBusinessDocumentAsync). */
 export function parseBusinessDocument(filePath: string, content: string): DocumentAst {
   return new MarkdownParser().parse(filePath, content);
+}
+
+const notation = new MarkdownNotationAdapter();
+const parser = notation.createParser();
+const proseRenderer = notation.createProseRenderer();
+
+/** Parse one document and render its prose with the notation's renderer. */
+export function parseBusinessDocumentAsync(
+  filePath: string,
+  content: string,
+): Promise<DocumentAst> {
+  return parseDocumentAsync(filePath, content, parser, proseRenderer);
+}
+
+export interface SourceFile {
+  path: string;
+  content: string;
+}
+
+/**
+ * Files in, model out: the one way every caller turns business model
+ * documents into a workspace — the filesystem adapter from disk or git, the
+ * web renderer from an earlier version's files. Prose is rendered.
+ */
+export async function loadWorkspaceFromFiles(
+  files: readonly SourceFile[],
+): Promise<WorkspacePayload> {
+  const documents = await Promise.all(
+    files.map((file) => parseBusinessDocumentAsync(file.path, file.content)),
+  );
+  return loadWorkspaceFromDocuments(documents);
 }
 
 /** Build the workspace from documents and index reference relationships */

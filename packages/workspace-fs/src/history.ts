@@ -38,12 +38,12 @@ export function listBusinessModelHistory(dir: string): BusinessModelHistory {
  * diffed (e.g. an old commit with duplicate ids) yields a change with `error`
  * instead of `diff`, so one broken commit does not hide the rest of the history.
  */
-export function loadCommitChange(
+export async function loadCommitChange(
   dir: string,
   commit: Pick<BusinessModelCommit, "commit">,
-): CommitChange {
+): Promise<CommitChange> {
   try {
-    const { payload, result } = loadDiffPayload(dir, commitDiffSpec(commit));
+    const { payload, result } = await loadDiffPayload(dir, commitDiffSpec(commit));
     const model = result.model;
     return {
       commit: commit.commit,

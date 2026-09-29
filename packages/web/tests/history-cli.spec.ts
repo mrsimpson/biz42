@@ -21,7 +21,7 @@ interface Pearl {
 interface Entry {
   commit: string | null;
   semantic: boolean;
-  message: string;
+  messageHtml: string;
   added: number;
   modified: number;
   removed: number;
@@ -66,7 +66,7 @@ function expectHistory(pearls: Pearl[], entries: Entry[]) {
   expect(working).toMatchObject({ commit: null, semantic: true, added: 0, modified: 1 });
   expect(capability).toMatchObject({ semantic: true, added: 2, modified: 1, removed: 0 });
   expect(objective).toMatchObject({ semantic: true, added: 3, modified: 2, removed: 0 });
-  expect(objective!.message).toContain("**Head of Business Development**");
+  expect(objective!.messageHtml).toContain("<strong>Head of Business Development</strong>");
   expect(style).toMatchObject({ semantic: false, added: 0, modified: 0, removed: 0 });
   expect(opportunity).toMatchObject({ semantic: true, added: 2, modified: 2 });
   expect(evidence).toMatchObject({ semantic: true, added: 2, modified: 0 });
