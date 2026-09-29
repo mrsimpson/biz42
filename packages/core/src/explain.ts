@@ -3,7 +3,7 @@
 // Element guidance is derived from Zod schemas in schemas.ts.
 // Diagram notation guidance is kept as a static data table here.
 
-import { z } from "zod";
+import { z } from "@cli42/lib/schema";
 import type { BlockType } from "./ast.ts";
 import type { DiagramNotation } from "./model/types.ts";
 import { ELEMENT_SCHEMAS, deriveFields, type CrossRefMeta } from "./model/schemas.ts";

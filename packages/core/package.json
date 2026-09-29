@@ -24,8 +24,7 @@
   },
   "dependencies": {
     "@cli42/lib": "catalog:",
-    "mermaid": "catalog:",
-    "zod": "4.5.4"
+    "mermaid": "catalog:"
   },
   "devDependencies": {
     "@types/node": "catalog:",
