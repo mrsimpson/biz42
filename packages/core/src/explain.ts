@@ -3,28 +3,23 @@
 // Element guidance is derived from Zod schemas in schemas.ts.
 // Diagram notation guidance is kept as a static data table here.
 
-import { z } from "@cli42/lib/schema";
+import { blockGuidance, ignoreGuidance } from "@cli42/lib/explain";
+import type {
+  ExplainCrossRefResult,
+  ExplainFieldResult,
+  ExplainIgnoreResult,
+} from "@cli42/lib/explain";
+import { metaOf } from "@cli42/lib/schema";
 import type { BlockType } from "./ast.ts";
 import type { DiagramNotation } from "./model/types.ts";
-import { ELEMENT_SCHEMAS, deriveFields, type CrossRefMeta } from "./model/schemas.ts";
+import { ELEMENT_SCHEMAS } from "./model/schemas.ts";
 import { ELEMENT_KIND_ORDER, ELEMENT_CHAPTER, CHAPTER_TITLE } from "./model/types.ts";
 
 // ---------------------------------------------------------------------------
 // Public result types
 // ---------------------------------------------------------------------------
 
-export interface ExplainFieldResult {
-  name: string;
-  description: string;
-  required: boolean;
-  enumValues: string[] | null;
-}
-
-export interface ExplainCrossRefResult {
-  field: string;
-  targetKind: string;
-  cardinality: "one" | "many";
-}
+export type { ExplainCrossRefResult, ExplainFieldResult, ExplainIgnoreResult };
 
 /** Full guidance for a single block type. */
 export interface ExplainResult {
@@ -49,39 +44,20 @@ export interface ExplainSummary {
 // Core logic
 // ---------------------------------------------------------------------------
 
-interface SchemaMeta {
-  description?: string;
-  biz42Chapter?: number;
-  crossRefs?: CrossRefMeta[];
-  authoringTips?: string[];
+function chapterOf(blockType: BlockType): number {
+  return (
+    metaOf<{ biz42Chapter: number }>(ELEMENT_SCHEMAS[blockType])?.biz42Chapter ??
+    ELEMENT_CHAPTER[blockType]
+  );
 }
 
 function buildResult(blockType: BlockType): ExplainResult {
-  const schema = ELEMENT_SCHEMAS[blockType];
-  const meta = (z.globalRegistry.get(schema) ?? {}) as SchemaMeta;
-
-  const chapter = meta.biz42Chapter ?? ELEMENT_CHAPTER[blockType];
-  const description = meta.description ?? blockType;
-  const crossRefs = meta.crossRefs ?? [];
-  const authoringTips = meta.authoringTips ?? [];
-
-  // deriveFields works on ZodObject
-  const objectSchema = schema instanceof z.ZodObject ? schema : null;
-  const allFields = objectSchema ? deriveFields(objectSchema) : [];
-
+  const chapter = chapterOf(blockType);
   return {
     blockType,
     biz42Chapter: chapter,
     biz42ChapterTitle: CHAPTER_TITLE[chapter] ?? `Chapter ${chapter}`,
-    description,
-    requiredFields: allFields.filter((f) => f.required),
-    optionalFields: allFields.filter((f) => !f.required),
-    crossRefs: crossRefs.map((cr) => ({
-      field: cr.field,
-      targetKind: cr.targetKind,
-      cardinality: cr.cardinality,
-    })),
-    authoringTips,
+    ...blockGuidance(ELEMENT_SCHEMAS[blockType], blockType),
   };
 }
 
@@ -98,10 +74,8 @@ export function explainElement(blockType: BlockType): ExplainResult {
 export function formatExplainListText(): string {
   const lines: string[] = ["biz42 block types:\n"];
   for (const kind of ELEMENT_KIND_ORDER) {
-    const schema = ELEMENT_SCHEMAS[kind];
-    const meta = (z.globalRegistry.get(schema) ?? {}) as SchemaMeta;
-    const chapter = meta.biz42Chapter ?? ELEMENT_CHAPTER[kind];
-    const desc = meta.description ?? kind;
+    const chapter = chapterOf(kind);
+    const desc = blockGuidance(ELEMENT_SCHEMAS[kind], kind).description;
     lines.push(`  ch.${String(chapter).padStart(2, "0")}  ${kind.padEnd(14)}  ${desc}`);
   }
   return lines.join("\n");
@@ -421,51 +395,15 @@ export function formatExplainDiagramListText(): string {
 // ---------------------------------------------------------------------------
 
 /** Full guidance for the :::ignore directive. */
-export interface ExplainIgnoreResult {
-  name: string;
-  description: string;
-  syntax: string[];
-  constraints: string[];
-  authoringTips: string[];
-}
-
-const IGNORE_DATA: ExplainIgnoreResult = {
-  name: "ignore directive",
-  description:
-    "The :::ignore directive suppresses a specific warning (W) or hint (H) diagnostic on a " +
-    "given line of a biz42 document. It must appear inside a ```biz42 fence. " +
-    "Outside the fence, :::ignore is treated as prose and has no effect.\n\n" +
-    "Only warnings (W-prefix) and hints (H-prefix) can be suppressed. Errors (E-prefix) are " +
-    "structural — the affected block is excluded from the model and must be fixed, not ignored. " +
-    "Attempting to ignore an error code emits W020 instead.",
-  syntax: [
-    "Single-line form:",
-    "  :::ignore W001 reason on one line :::",
-    "",
-    "Multi-line form:",
-    "  :::ignore W001 reason on first line",
-    "  :::",
-    "",
-    "Both forms must be inside a ```biz42 fence:",
-    "  ```biz42",
-    "  :::ignore H001 risk is deliberately out of scope",
-    "  :::",
-    "  ```",
-  ],
-  constraints: [
-    "Only W (warning) and H (hint) rule codes can be ignored.",
-    "Attempting to ignore an E (error) code emits W020 — errors must be fixed.",
-    "An ignore directive suppresses the next matching diagnostic in the same file at or after the directive line.",
-    "An unused ignore directive emits W019 (stale ignore). Remove it when the underlying issue is resolved.",
-  ],
-  authoringTips: [
-    "Always provide a reason — it documents why the suppression is intentional.",
-    "Record each suppressed hint in business-evidence.md with the rule code, element id, and reason.",
-    "Run `biz42 validate` after adding an ignore to confirm the directive is used (no W019).",
-    "Run `biz42 get --type ignore` to list all ignore directives in the workspace.",
-    "If you are suppressing a warning (W), discuss with the team first — warnings usually indicate a real gap.",
-  ],
-};
+const IGNORE_DATA: ExplainIgnoreResult = ignoreGuidance({
+  cli: "biz42",
+  document: "a biz42 document",
+  fence: "biz42",
+  rejectedCode: "W020",
+  staleCode: "W019",
+  example: ":::ignore H001 risk is deliberately out of scope",
+  evidenceFile: "business-evidence.md",
+});
 
 /** Get full guidance for the :::ignore directive. */
 export function explainIgnore(): ExplainIgnoreResult {

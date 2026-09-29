@@ -1,8 +1,7 @@
-import type { Rule, Diagnostic } from "../types.ts";
-import type { Workspace } from "../../model/types.ts";
-import type { ReferenceIndex } from "../../resolver/types.ts";
-import { ELEMENT_CHAPTER } from "../../model/types.ts";
+import { elementWrongChapterRule } from "@cli42/lib/rules";
 import type { BlockType } from "../../ast.ts";
+import { ELEMENT_CHAPTER } from "../../model/types.ts";
+import type { Rule, RuleDocs } from "../types.ts";
 
 /**
  * Expected chapter number derived from the file name convention:
@@ -17,8 +16,8 @@ function chapterFromFilePath(filePath: string): number | null {
   return parseInt(match[1]!, 10);
 }
 
-export const e004ElementWrongChapter: Rule = {
-  meta: {
+export const e004ElementWrongChapter: Rule = elementWrongChapterRule<BlockType, RuleDocs>(
+  {
     code: "E004",
     severity: "error",
     type: "problem",
@@ -30,22 +29,5 @@ export const e004ElementWrongChapter: Rule = {
       recommended: true,
     },
   },
-  check(workspace: Workspace, _index: ReferenceIndex): Diagnostic[] {
-    const diagnostics: Diagnostic[] = [];
-    for (const el of workspace.elements) {
-      const fileChapter = chapterFromFilePath(el.loc.file);
-      if (fileChapter === null) continue; // non-conventional filename — skip
-      const expectedChapter = ELEMENT_CHAPTER[el.kind as BlockType];
-      if (fileChapter !== expectedChapter) {
-        diagnostics.push({
-          code: "E004",
-          severity: "error",
-          message: `Element '${el.id}' of type '${el.kind}' (chapter ${expectedChapter}) found in chapter-${String(fileChapter).padStart(2, "0")} file`,
-          file: el.loc.file,
-          line: el.loc.line,
-        });
-      }
-    }
-    return diagnostics;
-  },
-};
+  { chapters: ELEMENT_CHAPTER, chapterOfFile: chapterFromFilePath },
+);
