@@ -1,7 +1,8 @@
 // Meta-model element types for biz42
 
 import type { BlockType, DocumentAst } from "../ast.ts";
-import type { MermaidNotation } from "@biz42/mermaid";
+import type { IgnoreDirective } from "@cli42/lib/validator";
+import type { MermaidNotation } from "../mermaid.ts";
 import { z } from "zod";
 import {
   ELEMENT_SCHEMAS,
@@ -174,14 +175,7 @@ export interface ParseWarning {
   line: number;
 }
 
-export interface IgnoreDirective {
-  ruleCode: string;
-  reason?: string;
-  file: string;
-  line: number;
-  /** True if at least one diagnostic with matching code and file was suppressed */
-  used: boolean;
-}
+export type { IgnoreDirective };
 
 /**
  * All diagram notations understood by biz42.

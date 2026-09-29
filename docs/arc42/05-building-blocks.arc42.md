@@ -216,10 +216,11 @@ requires: if-reference-index, if-mermaid-syntax, if-workspace-paths
 
 ### Mermaid Syntax
 
-A thin wrapper around the upstream `mermaid` npm package that exposes a Node-compatible,
-tree-shaken syntax check for Mermaid diagrams. Kept as a separate package to isolate the
-large Mermaid bundle from the rest of the toolchain. The Validator uses it for W017 (invalid
-Mermaid syntax) without bundling the full browser-oriented Mermaid runtime into `@biz42/core`.
+A Node-compatible syntax check for Mermaid diagrams around the upstream `mermaid` npm package,
+shared with arc42 through `@cli42/lib/mermaid`. `@biz42/core` only declares which Mermaid grammar
+checks each biz42 notation (SIPOC, turtle and strategy maps are flowcharts); Mermaid itself stays a
+runtime dependency loaded on demand, so the browser-oriented Mermaid runtime is not bundled into
+`@biz42/core`. The Validator uses it for E010 (invalid Mermaid syntax).
 
 ```arc42
 :::building-block

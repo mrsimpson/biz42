@@ -52,7 +52,6 @@ pnpm test
 | `packages/cli`          | CLI (`biz42`) — the published artifact (`@biz42/cli`) |
 | `packages/web`          | SPA viewer bundled into the CLI                       |
 | `packages/workspace-fs` | File system workspace loader                          |
-| `packages/mermaid`      | Mermaid diagram utilities                             |
 | `packages/skill`        | Agent skill definition                                |
 | `packages/site`         | Landing page (deployed to GitHub Pages)               |
 

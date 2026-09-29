@@ -224,8 +224,8 @@ duplicate id) is shown as an error instead of a stale view.
 ## Site build with Mermaid validation and verdict loading
 
 This scenario describes the two build-time flows specific to the Project Site and the Mermaid
-Syntax building block. During `biz42 validate`, the Validator calls `@biz42/mermaid` to parse
-and check Mermaid diagram syntax (W017). Separately, when the Project Site is built, the Verdicts
+Syntax building block. During `biz42 validate`, the Validator calls the shared Mermaid syntax
+check (`@cli42/lib/mermaid`) to parse and check Mermaid diagram syntax (E010). Separately, when the Project Site is built, the Verdicts
 Vite Plugin reads `docs/verdicts` markdown files and exposes them as a virtual module consumed by
 the site's React components.
 

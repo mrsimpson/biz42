@@ -7,7 +7,7 @@ settings:
 catalogs:
   default:
     '@cli42/lib':
-      specifier: github:mrsimpson/cli42#185a24cf9e1dfe79e9ea64fb0b68fcc5cda7c7d9
+      specifier: github:mrsimpson/cli42#d3c3cf71a179872177ef50ecbc5c0d1e0c4ca267
       version: 0.1.0
     '@doctc/arc42':
       specifier: 0.21.1
@@ -27,6 +27,9 @@ catalogs:
     '@types/node':
       specifier: ^24.13.3
       version: 24.13.4
+    mermaid:
+      specifier: 11.17.2
+      version: 11.17.2
     semantic-release:
       specifier: 25.0.9
       version: 25.0.9
@@ -86,7 +89,7 @@ importers:
         version: link:../workspace-fs
       '@cli42/lib':
         specifier: 'catalog:'
-        version: https://codeload.github.com/mrsimpson/cli42/tar.gz/185a24cf9e1dfe79e9ea64fb0b68fcc5cda7c7d9
+        version: https://codeload.github.com/mrsimpson/cli42/tar.gz/d3c3cf71a179872177ef50ecbc5c0d1e0c4ca267(mermaid@11.17.2)
       '@types/node':
         specifier: 'catalog:'
         version: 24.13.4
@@ -99,31 +102,15 @@ importers:
 
   packages/core:
     dependencies:
-      '@biz42/mermaid':
-        specifier: workspace:*
-        version: link:../mermaid
       '@cli42/lib':
         specifier: 'catalog:'
-        version: https://codeload.github.com/mrsimpson/cli42/tar.gz/185a24cf9e1dfe79e9ea64fb0b68fcc5cda7c7d9
+        version: https://codeload.github.com/mrsimpson/cli42/tar.gz/d3c3cf71a179872177ef50ecbc5c0d1e0c4ca267(mermaid@11.17.2)
+      mermaid:
+        specifier: 'catalog:'
+        version: 11.17.2
       zod:
         specifier: 4.5.4
         version: 4.5.4
-    devDependencies:
-      '@types/node':
-        specifier: 'catalog:'
-        version: 24.13.4
-      typescript:
-        specifier: 'catalog:'
-        version: 5.9.3
-      vite-plus:
-        specifier: 'catalog:'
-        version: 0.1.24(@types/node@24.13.4)(typescript@5.9.3)(vite@8.3.0(@types/node@24.13.4))
-
-  packages/mermaid:
-    dependencies:
-      mermaid:
-        specifier: 11.17.2
-        version: 11.17.2
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
@@ -175,7 +162,7 @@ importers:
         version: link:../core
       '@cli42/lib':
         specifier: 'catalog:'
-        version: https://codeload.github.com/mrsimpson/cli42/tar.gz/185a24cf9e1dfe79e9ea64fb0b68fcc5cda7c7d9
+        version: https://codeload.github.com/mrsimpson/cli42/tar.gz/d3c3cf71a179872177ef50ecbc5c0d1e0c4ca267(mermaid@11.17.2)
       marked:
         specifier: ^14.0.0
         version: 14.1.4
@@ -224,7 +211,7 @@ importers:
         version: link:../core
       '@cli42/lib':
         specifier: 'catalog:'
-        version: https://codeload.github.com/mrsimpson/cli42/tar.gz/185a24cf9e1dfe79e9ea64fb0b68fcc5cda7c7d9
+        version: https://codeload.github.com/mrsimpson/cli42/tar.gz/d3c3cf71a179872177ef50ecbc5c0d1e0c4ca267(mermaid@11.17.2)
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
@@ -342,10 +329,12 @@ packages:
   '@chevrotain/types@11.1.2':
     resolution: {integrity: sha512-U+HFai5+zmJCkK86QsaJtoITlboZHBqrVketcO2ROv865xfCMSFpELQoz1GkX5GzME8pTa+3kbKrZHQtI0gdbw==}
 
-  '@cli42/lib@https://codeload.github.com/mrsimpson/cli42/tar.gz/185a24cf9e1dfe79e9ea64fb0b68fcc5cda7c7d9':
-    resolution: {tarball: https://codeload.github.com/mrsimpson/cli42/tar.gz/185a24cf9e1dfe79e9ea64fb0b68fcc5cda7c7d9}
+  '@cli42/lib@https://codeload.github.com/mrsimpson/cli42/tar.gz/d3c3cf71a179872177ef50ecbc5c0d1e0c4ca267':
+    resolution: {tarball: https://codeload.github.com/mrsimpson/cli42/tar.gz/d3c3cf71a179872177ef50ecbc5c0d1e0c4ca267}
     version: 0.1.0
     engines: {node: '>=22.6'}
+    peerDependencies:
+      mermaid: ^11
 
   '@colors/colors@1.5.0':
     resolution: {integrity: sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==}
@@ -3260,7 +3249,9 @@ snapshots:
 
   '@chevrotain/types@11.1.2': {}
 
-  '@cli42/lib@https://codeload.github.com/mrsimpson/cli42/tar.gz/185a24cf9e1dfe79e9ea64fb0b68fcc5cda7c7d9': {}
+  '@cli42/lib@https://codeload.github.com/mrsimpson/cli42/tar.gz/d3c3cf71a179872177ef50ecbc5c0d1e0c4ca267(mermaid@11.17.2)':
+    dependencies:
+      mermaid: 11.17.2
 
   '@colors/colors@1.5.0':
     optional: true
