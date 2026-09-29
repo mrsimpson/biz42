@@ -1,6 +1,7 @@
 import { changeCounts, isSemanticChange } from "@cli42/lib/diff";
 import { commitDiffSpec, errorMessage, listDocumentHistory } from "@cli42/lib/git";
 import type { DocumentCommit, DocumentHistory } from "@cli42/lib/git";
+import { NOTATIONS } from "@biz42/core";
 import type { DiffPayload } from "@biz42/core";
 
 import { loadDiffPayload } from "./diff-payload.ts";
@@ -30,7 +31,10 @@ export interface CommitChange {
  * are any. Throws outside a Git repository.
  */
 export function listBusinessModelHistory(dir: string): BusinessModelHistory {
-  return listDocumentHistory(dir, [".biz42.md"]);
+  return listDocumentHistory(
+    dir,
+    Object.values(NOTATIONS).map((notation) => notation.fileExtension),
+  );
 }
 
 /**

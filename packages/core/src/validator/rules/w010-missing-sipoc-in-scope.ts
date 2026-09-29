@@ -4,7 +4,7 @@ import type { ReferenceIndex } from "../../resolver/types.ts";
 import * as path from "node:path";
 
 /**
- * W010 — The scope chapter (01-*.biz42.md) has no SIPOC diagram.
+ * W010 — The scope chapter (01-*.biz42.md or .adoc) has no SIPOC diagram.
  *
  * A SIPOC diagram in the scope chapter makes the scope concrete: it shows
  * who supplies inputs (Supplier), what those inputs are (Input), what the
@@ -33,7 +33,7 @@ export const w010MissingSipocInScope: Rule = {
 
     for (const doc of workspace.documents) {
       const basename = path.basename(doc.filePath);
-      if (!/^01-.*\.biz42\.md$/.test(basename)) continue;
+      if (!/^01-.*\.biz42\.(md|adoc)$/.test(basename)) continue;
 
       const hasScopeBlock = doc.nodes.some(
         (node) => node.kind === "block" && node.blockType === "scope",

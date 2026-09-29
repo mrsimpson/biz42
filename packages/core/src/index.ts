@@ -22,7 +22,15 @@ export type {
   WorkspacePayload,
   SourceFile,
 } from "./biz42.ts";
-export { MarkdownNotationAdapter } from "./notation.ts";
+export {
+  AsciidocNotationAdapter,
+  MarkdownNotationAdapter,
+  NOTATIONS,
+  detectWorkspaceNotation,
+  isBusinessModelDocument,
+  notationOfFile,
+} from "./notation.ts";
+export type { Notation } from "./notation.ts";
 
 // Semantic diff of two workspace snapshots
 export { diffWorkspaces } from "./workspace-diff.ts";

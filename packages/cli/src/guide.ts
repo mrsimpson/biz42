@@ -160,8 +160,8 @@ Options:
   --staged         With --diff: compare the index with HEAD, or with <reference>
   --help           Show this help
 
-The server watches the workspace and refreshes the browser when *.biz42.md files
-change, and follows the Git index and HEAD. Inside a Git repository the browser also
+The server watches the workspace and refreshes the browser when *.biz42.md (or
+*.biz42.adoc) files change, and follows the Git index and HEAD. Inside a Git repository the browser also
 offers the business model history: every commit that touched the business model
 documents, computed lazily as it scrolls into view. Each commit can be browsed as a
 whole: its documents are read from Git and parsed in the browser.
@@ -238,6 +238,10 @@ Do not create all chapter files upfront. Create each \`.biz42.md\` file when you
 reach that chapter in Step 2. Use \`biz42 guide chapter <n>\` to get authoring
 instructions, then create the corresponding file with an empty block stub before
 filling it in.
+
+AsciiDoc works too: name the files \`.biz42.adoc\` and wrap the blocks in a
+\`[source,biz42]\` + \`----\` fence (diagram sources in \`[source,mermaid]\` +
+\`----\`). Use one notation for the whole workspace.
 
 ## Step 0.5 — Gather existing documents
 

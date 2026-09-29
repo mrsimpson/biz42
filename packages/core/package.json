@@ -23,6 +23,7 @@
     "prepublishOnly": "vp run build"
   },
   "dependencies": {
+    "@asciidoctor/core": "catalog:",
     "@cli42/lib": "catalog:",
     "mermaid": "catalog:"
   },

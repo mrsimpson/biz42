@@ -1,6 +1,6 @@
 import { parseDocumentAsync } from "@cli42/lib/notation";
-import { MarkdownNotationAdapter } from "./notation.ts";
-import { MarkdownParser } from "./parser/markdown-parser.ts";
+import type { ProseRenderer } from "@cli42/lib/notation";
+import { notationOfFile } from "./notation.ts";
 import { buildWorkspace } from "./model/builder.ts";
 import { buildIndex } from "./resolver/index.ts";
 import { validate, validateAsync } from "./validator/index.ts";
@@ -57,21 +57,25 @@ export interface WorkspacePayload {
   ignoreDirectives: IgnoreDirective[];
 }
 
-/** Parse one document; its prose stays unrendered (see parseBusinessDocumentAsync). */
+/** Parse one document, by its notation; its prose stays unrendered (see parseBusinessDocumentAsync). */
 export function parseBusinessDocument(filePath: string, content: string): DocumentAst {
-  return new MarkdownParser().parse(filePath, content);
+  return notationOfFile(filePath).createParser().parse(filePath, content);
 }
 
-const notation = new MarkdownNotationAdapter();
-const parser = notation.createParser();
-const proseRenderer = notation.createProseRenderer();
+const proseRenderers = new Map<string, ProseRenderer>();
 
-/** Parse one document and render its prose with the notation's renderer. */
+/** Parse one document and render its prose with its notation's renderer. */
 export function parseBusinessDocumentAsync(
   filePath: string,
   content: string,
 ): Promise<DocumentAst> {
-  return parseDocumentAsync(filePath, content, parser, proseRenderer);
+  const notation = notationOfFile(filePath);
+  let proseRenderer = proseRenderers.get(notation.notation);
+  if (!proseRenderer) {
+    proseRenderer = notation.createProseRenderer();
+    proseRenderers.set(notation.notation, proseRenderer);
+  }
+  return parseDocumentAsync(filePath, content, notation.createParser(), proseRenderer);
 }
 
 export interface SourceFile {

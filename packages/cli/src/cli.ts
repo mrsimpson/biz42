@@ -27,6 +27,7 @@ import {
   explainIgnore,
   formatExplainIgnoreText,
   ELEMENT_KIND_ORDER,
+  isBusinessModelDocument,
 } from "@biz42/core";
 import { builtinGetRenderers, rendererById } from "./renderer/index.ts";
 import type { BlockType, Diagnostic } from "@biz42/core";
@@ -733,7 +734,7 @@ async function runServe(dir: string, args: string[]) {
     }
   };
 
-  watchPath(dir, { recursive: true }, (changed) => !changed || changed.endsWith(".biz42.md"));
+  watchPath(dir, { recursive: true }, (changed) => !changed || isBusinessModelDocument(changed));
   // Follow the Git index and HEAD: with --diff they define the comparison, and
   // the history gains pearls on commit. Outside a repository there is nothing
   // to follow (--diff has already failed to load in that case).

@@ -1,7 +1,10 @@
 import { access, readdir, readFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import {
+  detectWorkspaceNotation,
   getElementsFromDocuments,
+  isBusinessModelDocument,
+  NOTATIONS,
   loadWorkspaceFromDocuments,
   parseBusinessDocumentAsync,
   validateDocumentsAsync,
@@ -33,10 +36,12 @@ export async function discoverFiles(dir: string): Promise<string[]> {
     for (const entry of entries) {
       const path = resolve(current, entry.name);
       if (entry.isDirectory()) await walk(path);
-      else if (entry.isFile() && entry.name.endsWith(".biz42.md")) files.push(path);
+      else if (entry.isFile() && isBusinessModelDocument(entry.name)) files.push(path);
     }
   }
   await walk(resolve(dir));
+  // One notation per workspace: a mix of .biz42.md and .biz42.adoc is refused.
+  detectWorkspaceNotation(files, dir);
   return files;
 }
 
@@ -68,11 +73,18 @@ export async function loadWorkspace(dir: string): Promise<WorkspacePayload> {
 
 export async function validateWorkspace(
   dir: string,
-  _context?: ValidationContext,
+  context?: ValidationContext,
 ): Promise<ValidateResult> {
   warmMermaid();
-  const documents = await readWorkspaceDocuments(dir);
-  return validateDocumentsAsync(documents);
+  const files = await discoverFiles(dir);
+  const notation = NOTATIONS[detectWorkspaceNotation(files, dir)];
+  const documents = await Promise.all(
+    files.map(async (file) => parseBusinessDocumentAsync(file, await readFile(file, "utf8"))),
+  );
+  return validateDocumentsAsync(documents, {
+    fenceDescription: notation.fenceDescription,
+    ...context,
+  });
 }
 
 export async function getElements(opts: {

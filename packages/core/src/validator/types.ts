@@ -13,7 +13,8 @@ export type { Diagnostic, RuleType, Severity } from "@cli42/lib/validator";
 
 /** Validation context passed to rules. */
 export interface ValidationContext {
-  // reserved for future use (e.g. path evidence)
+  /** How the workspace's notation calls the biz42 fence (WG05), e.g. "```biz42 fence". */
+  fenceDescription?: string;
 }
 
 /** Which biz42 chapter this rule primarily relates to.
