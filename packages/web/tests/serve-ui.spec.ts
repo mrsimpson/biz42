@@ -241,10 +241,13 @@ test.describe("Mobile sidebar", () => {
 
     await page.getByRole("button", { name: "Close document navigation" }).first().click();
     const nav = page.locator("nav[aria-label='Document navigation']");
-    const box = await nav.boundingBox();
-    if (box) {
-      expect(box.x + box.width).toBeLessThanOrEqual(10);
-    }
+    // Poll until the CSS transition (180ms) has moved the sidebar off-screen
+    await expect
+      .poll(async () => {
+        const box = await nav.boundingBox();
+        return box ? box.x + box.width : 0;
+      })
+      .toBeLessThanOrEqual(10);
   });
 
   test("selecting a doc on mobile closes the sidebar", async ({ page }) => {
