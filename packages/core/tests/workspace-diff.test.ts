@@ -144,16 +144,12 @@ describe("diffWorkspaces — elements", () => {
     ]);
   });
 
-  test("an element before the first heading belongs to the document preamble", () => {
+  test("refuses an element before the first heading (E017)", () => {
     const outside = (severity: string) =>
       `${block("risk", { id: "churn", title: "Churn", severity })}\n`;
-    const diff = diffWorkspaces(
-      workspace({ [FILE]: outside("high") }),
-      workspace({ [FILE]: outside("low") }),
-    );
-    expect(diff.elements).toMatchObject([
-      { id: "churn", status: "modified", proseChanged: false, section: { headingPath: [] } },
-    ]);
+    expect(() =>
+      diffWorkspaces(workspace({ [FILE]: outside("high") }), workspace({ [FILE]: outside("low") })),
+    ).toThrow(/04-risks\.biz42\.md:2: block is not placed under any heading \(E017\)/);
   });
 });
 

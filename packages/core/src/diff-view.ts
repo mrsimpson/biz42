@@ -15,7 +15,7 @@ import type {
 import type { WorkspacePayload } from "./biz42.ts";
 import type { DiffFinding } from "./diff.ts";
 import type { Diagram } from "./model/types.ts";
-import { diffWorkspaces } from "./workspace-diff.ts";
+import { DIFF_OPTIONS, diffWorkspaces } from "./workspace-diff.ts";
 import type { BusinessModelDiff } from "./workspace-diff.ts";
 
 export type { OutlineEntry } from "@cli42/lib/diff";
@@ -61,5 +61,5 @@ export function buildDiffView(
   diff: BusinessModelDiff = diffWorkspaces(base, head),
 ): DiffView {
   // With section diagrams, every section content holds its diagrams.
-  return buildView(base, head, diff, { sectionDiagrams: true }) as DiffView;
+  return buildView(base, head, diff, { ...DIFF_OPTIONS, sectionDiagrams: true }) as DiffView;
 }
