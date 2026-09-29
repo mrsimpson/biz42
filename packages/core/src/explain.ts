@@ -3,7 +3,13 @@
 // Element guidance is derived from Zod schemas in schemas.ts.
 // Diagram notation guidance is kept as a static data table here.
 
-import { blockGuidance, ignoreGuidance } from "@cli42/lib/explain";
+import {
+  blockGuidance,
+  formatBlockGuidance,
+  formatBlockList,
+  formatIgnoreGuidance,
+  ignoreGuidance,
+} from "@cli42/lib/explain";
 import type {
   ExplainCrossRefResult,
   ExplainFieldResult,
@@ -70,55 +76,24 @@ export function explainElement(blockType: BlockType): ExplainResult {
   return buildResult(blockType);
 }
 
-/** Get one-line summaries for all block types, in chapter order. */
+/** One-line summaries for all block types, in chapter order, as text. */
 export function formatExplainListText(): string {
-  const lines: string[] = ["biz42 block types:\n"];
-  for (const kind of ELEMENT_KIND_ORDER) {
-    const chapter = chapterOf(kind);
-    const desc = blockGuidance(ELEMENT_SCHEMAS[kind], kind).description;
-    lines.push(`  ch.${String(chapter).padStart(2, "0")}  ${kind.padEnd(14)}  ${desc}`);
-  }
-  return lines.join("\n");
+  return formatBlockList(
+    "biz42",
+    ELEMENT_KIND_ORDER.map((kind) => ({
+      blockType: kind,
+      chapter: chapterOf(kind),
+      description: blockGuidance(ELEMENT_SCHEMAS[kind], kind).description,
+    })),
+  );
 }
 
 /** Format full explain output as human-readable text. */
 export function formatExplainText(result: ExplainResult): string {
-  const lines: string[] = [];
-  lines.push(`Block type: ${result.blockType}`);
-  lines.push(`Chapter:    ${result.biz42Chapter} — ${result.biz42ChapterTitle}`);
-  lines.push(`\n${result.description}\n`);
-
-  if (result.requiredFields.length > 0) {
-    lines.push("Required fields:");
-    for (const f of result.requiredFields) {
-      const enums = f.enumValues ? ` (${f.enumValues.join(" | ")})` : "";
-      lines.push(`  ${f.name}${enums}  — ${f.description}`);
-    }
-  }
-
-  if (result.optionalFields.length > 0) {
-    lines.push("\nOptional fields:");
-    for (const f of result.optionalFields) {
-      const enums = f.enumValues ? ` (${f.enumValues.join(" | ")})` : "";
-      lines.push(`  ${f.name}${enums}  — ${f.description}`);
-    }
-  }
-
-  if (result.crossRefs.length > 0) {
-    lines.push("\nCross-references:");
-    for (const cr of result.crossRefs) {
-      lines.push(`  ${cr.field} → ${cr.targetKind} (${cr.cardinality})`);
-    }
-  }
-
-  if (result.authoringTips.length > 0) {
-    lines.push("\nAuthoring tips:");
-    for (const tip of result.authoringTips) {
-      lines.push(`  • ${tip}`);
-    }
-  }
-
-  return lines.join("\n");
+  return formatBlockGuidance(
+    `${result.blockType}  (biz42 ch. ${result.biz42Chapter} — ${result.biz42ChapterTitle})`,
+    result,
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -414,26 +389,5 @@ export function explainIgnore(): ExplainIgnoreResult {
 
 /** Format ignore explain output as human-readable text. */
 export function formatExplainIgnoreText(result: ExplainIgnoreResult): string {
-  const lines: string[] = [];
-  lines.push(`Directive: ${result.name}`);
-  lines.push(`\n${result.description}`);
-
-  lines.push("\nSyntax:");
-  for (const line of result.syntax) {
-    lines.push(line ? `  ${line}` : "");
-  }
-
-  lines.push("\nConstraints:");
-  for (const c of result.constraints) {
-    lines.push(`  • ${c}`);
-  }
-
-  if (result.authoringTips.length > 0) {
-    lines.push("\nAuthoring tips:");
-    for (const tip of result.authoringTips) {
-      lines.push(`  • ${tip}`);
-    }
-  }
-
-  return lines.join("\n");
+  return formatIgnoreGuidance(result);
 }
