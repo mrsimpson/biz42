@@ -46,7 +46,7 @@ export const ScopeSchema = z
     description: "Defines the organisation, its purpose, and the boundaries of the business model.",
     biz42Chapter: 1,
     crossRefs: [
-      { field: "parent", targetKind: "scope", cardinality: "one" },
+      { field: "parent", targetKind: "scope", cardinality: "one", relation: "parent" },
     ] satisfies CrossRefMeta[],
     authoringTips: [
       "A biz42 model has exactly one scope block — it is the boundary declaration for the whole model.",
@@ -76,7 +76,12 @@ export const SignalSchema = z
       "An external or internal factor that could affect the organisation's ability to achieve intended outcomes.",
     biz42Chapter: 2,
     crossRefs: [
-      { field: "surfaces", targetKind: "risk or opportunity", cardinality: "many" },
+      {
+        field: "surfaces",
+        targetKind: "risk or opportunity",
+        cardinality: "many",
+        relation: "surfaces",
+      },
     ] satisfies CrossRefMeta[],
     authoringTips: [
       "Signals come from environmental scanning — PESTLE, SWOT inputs, or customer feedback.",
@@ -105,7 +110,12 @@ export const ExpectationSchema = z
       "A requirement or need of an interested party that must be considered by the business model.",
     biz42Chapter: 3,
     crossRefs: [
-      { field: "surfaces", targetKind: "risk or opportunity", cardinality: "many" },
+      {
+        field: "surfaces",
+        targetKind: "risk or opportunity",
+        cardinality: "many",
+        relation: "surfaces",
+      },
     ] satisfies CrossRefMeta[],
     authoringTips: [
       "Map each expectation to a specific stakeholder (customer, regulator, employee, investor).",
@@ -188,10 +198,15 @@ export const ObjectiveSchema = z
       "A specific, time-bound outcome the organisation is committed to achieving. The hub of the biz42 traceability chain.",
     biz42Chapter: 6,
     crossRefs: [
-      { field: "addresses", targetKind: "risk or opportunity", cardinality: "many" },
-      { field: "measured-by", targetKind: "measure", cardinality: "many" },
-      { field: "owner", targetKind: "owner", cardinality: "one" },
-      { field: "requires", targetKind: "capability", cardinality: "many" },
+      {
+        field: "addresses",
+        targetKind: "risk or opportunity",
+        cardinality: "many",
+        relation: "addresses",
+      },
+      { field: "measured-by", targetKind: "measure", cardinality: "many", relation: "measured-by" },
+      { field: "owner", targetKind: "owner", cardinality: "one", relation: "owner" },
+      { field: "requires", targetKind: "capability", cardinality: "many", relation: "requires" },
     ] satisfies CrossRefMeta[],
     authoringTips: [
       "Objectives must be SMART — Specific, Measurable, Achievable, Relevant, Time-bound.",
@@ -267,8 +282,8 @@ export const CapabilitySchema = z
       "An organisational ability, skill, or resource required to achieve one or more objectives.",
     biz42Chapter: 9,
     crossRefs: [
-      { field: "enables", targetKind: "product", cardinality: "many" },
-      { field: "owner", targetKind: "owner", cardinality: "one" },
+      { field: "enables", targetKind: "product", cardinality: "many", relation: "enables" },
+      { field: "owner", targetKind: "owner", cardinality: "one", relation: "owner" },
     ] satisfies CrossRefMeta[],
     authoringTips: [
       "Use status: gap to flag capabilities that must be built or acquired.",
@@ -297,8 +312,8 @@ export const ProductSchema = z
       "A product or service delivered by the organisation that fulfils stakeholder expectations.",
     biz42Chapter: 10,
     crossRefs: [
-      { field: "fulfills", targetKind: "expectation", cardinality: "many" },
-      { field: "owner", targetKind: "owner", cardinality: "one" },
+      { field: "fulfills", targetKind: "expectation", cardinality: "many", relation: "fulfills" },
+      { field: "owner", targetKind: "owner", cardinality: "one", relation: "owner" },
     ] satisfies CrossRefMeta[],
     authoringTips: [
       "Use 'fulfills' to link each product to the stakeholder expectations it satisfies.",
@@ -326,7 +341,7 @@ export const EvaluationSchema = z
       "A described practice for evaluating performance, customer satisfaction, or system effectiveness.",
     biz42Chapter: 11,
     crossRefs: [
-      { field: "evaluates", targetKind: "measure", cardinality: "many" },
+      { field: "evaluates", targetKind: "measure", cardinality: "many", relation: "evaluates" },
     ] satisfies CrossRefMeta[],
     authoringTips: [
       "Evaluation is a practice, not a single event — describe the cadence and method.",
@@ -359,8 +374,18 @@ export const ImprovementSchema = z
       "A planned or ongoing action to improve the business model in response to evaluation findings.",
     biz42Chapter: 12,
     crossRefs: [
-      { field: "triggered-by", targetKind: "evaluation", cardinality: "one" },
-      { field: "addresses", targetKind: "objective, capability, or product", cardinality: "many" },
+      {
+        field: "triggered-by",
+        targetKind: "evaluation",
+        cardinality: "one",
+        relation: "triggered-by",
+      },
+      {
+        field: "addresses",
+        targetKind: "objective, capability, or product",
+        cardinality: "many",
+        relation: "improvement-addresses",
+      },
     ] satisfies CrossRefMeta[],
     authoringTips: [
       "Set 'type' to corrective (fix a confirmed problem), proactive (act before failure recurs), or innovative (exploit an opportunity).",
@@ -398,7 +423,12 @@ export const CashflowSchema = z
     description: "A single revenue stream (revenue) or cost item (cost) in the business model.",
     biz42Chapter: 13,
     crossRefs: [
-      { field: "linked-to", targetKind: "product or capability", cardinality: "one" },
+      {
+        field: "linked-to",
+        targetKind: "product or capability",
+        cardinality: "one",
+        relation: "linked-to",
+      },
     ] satisfies CrossRefMeta[],
     authoringTips: [
       "Set type: revenue or cost.",
