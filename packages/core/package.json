@@ -23,8 +23,8 @@
     "prepublishOnly": "vp run build"
   },
   "dependencies": {
-    "@biz42/mermaid": "workspace:*",
     "@cli42/lib": "catalog:",
+    "mermaid": "catalog:",
     "zod": "4.5.4"
   },
   "devDependencies": {
