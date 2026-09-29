@@ -2,6 +2,7 @@ import { defineConfig } from "vite-plus";
 import react from "@vitejs/plugin-react";
 import { viteSingleFile } from "vite-plugin-singlefile";
 import { resolve } from "path";
+import { asciidoctorBrowserPaths } from "@cli42/lib/vite";
 import type { Plugin } from "vite-plus";
 
 /**
@@ -64,7 +65,7 @@ function escapeInlineScriptTags(): Plugin {
 }
 
 export default defineConfig({
-  plugins: [react(), viteSingleFile(), escapeInlineScriptTags()],
+  plugins: [react(), asciidoctorBrowserPaths(), viteSingleFile(), escapeInlineScriptTags()],
   root: resolve(import.meta.dirname),
   build: {
     outDir: resolve(import.meta.dirname, "dist-single"),
