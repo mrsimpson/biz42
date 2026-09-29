@@ -27,7 +27,7 @@ import type { Rule, ValidationContext } from "../types.ts";
 
 /**
  * Chapter number derived from the file name convention:
- * 01-scope.biz42.md → chapter 1, 06-objectives.biz42.md → chapter 6, etc.
+ * 01-scope.biz42.md (or .adoc) → chapter 1, 06-objectives.biz42.md → chapter 6, etc.
  */
 function chapterFromFilePath(filePath: string): number | null {
   const base = filePath.split("/").pop() ?? "";
@@ -44,7 +44,7 @@ const sharedRules: Rule[] = genericRules<ValidationContext>({
   chapters: ELEMENT_CHAPTER,
   chapterOfFile: chapterFromFilePath,
   fenceFlag: "inBiz42Fence",
-  fenceDescription: () => "```biz42 fence",
+  fenceDescription: (context) => context?.fenceDescription ?? "```biz42 fence",
 }).map((rule) => ({
   ...rule,
   meta: { ...rule.meta, docs: { ...rule.meta.docs, biz42Chapter: 0 } },

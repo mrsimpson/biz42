@@ -1,9 +1,7 @@
+import { isBusinessModelDocument } from "@biz42/core";
 import { readCommitFiles as readFiles, readDocumentBlob } from "@cli42/lib/git";
 
-/** A business model document of the workspace, by its path. */
-export function isBusinessModelDocument(path: string): boolean {
-  return path.endsWith(".biz42.md");
-}
+export { isBusinessModelDocument };
 
 /**
  * Read the business model documents of the workspace at one commit, as

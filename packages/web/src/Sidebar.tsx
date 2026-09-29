@@ -13,7 +13,7 @@ function docTitle(doc: DocumentAst): string {
   );
   if (h1) return (h1 as { text: string }).text;
   const base = basename(doc.filePath);
-  return base.replace(/\.biz42\.md$/, "");
+  return base.replace(/\.biz42\.(md|adoc)$/, "");
 }
 
 interface SidebarProps {
