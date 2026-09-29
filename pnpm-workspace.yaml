@@ -2,7 +2,7 @@ packages:
   - packages/*
 
 catalog:
-  "@cli42/lib": github:mrsimpson/cli42#640cf4958ccc7b241ea56866ead628c0b88af9fa
+  "@cli42/lib": github:mrsimpson/cli42#ad0186de1c2653e127b250bc853686777e3cbcf2
   "@doctc/arc42": 0.21.1
   "@semantic-release/changelog": 7.0.0
   "@semantic-release/exec": 7.1.0

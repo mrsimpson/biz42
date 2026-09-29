@@ -2,6 +2,8 @@ import { e001DuplicateId } from "./e001-duplicate-id.ts";
 import { e002UnresolvedReference } from "./e002-unresolved-reference.ts";
 import { e003ParseError } from "./e003-parse-error.ts";
 import { e004ElementWrongChapter } from "./e004-element-wrong-chapter.ts";
+import { e017BlockOutsideSection } from "./e017-block-outside-section.ts";
+import { w016BlockNotInBiz42Fence } from "./w016-block-not-in-biz42-fence.ts";
 import { w001RiskUnaddressed } from "./w001-risk-unaddressed.ts";
 import { w002ObjectiveNoMeasure } from "./w002-objective-no-measure.ts";
 import { w003ObjectiveNoOwner } from "./w003-objective-no-owner.ts";
@@ -49,11 +51,13 @@ export const builtinRules: readonly Rule[] = [
   w012EvaluationNoEvaluates,
   w013ImprovementAddressesNothing,
   w014UnknownAttribute,
+  w016BlockNotInBiz42Fence,
   e011UnknownDiagramElement,
   e012SipocDiagramValidation,
   e013TurtleDiagramValidation,
   e014StrategyMapValidation,
   e015BmcDiagramValidation,
+  e017BlockOutsideSection,
   h001SignalNoRiskOpportunity,
   h002ExpectationNoRiskOpportunity,
   h003CapabilityNoProduct,
