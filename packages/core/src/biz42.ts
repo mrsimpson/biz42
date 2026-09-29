@@ -1,7 +1,7 @@
 import { MarkdownParser } from "./parser/markdown-parser.ts";
 import { buildWorkspace } from "./model/builder.ts";
 import { buildIndex } from "./resolver/index.ts";
-import { validate } from "./validator/index.ts";
+import { validate, validateAsync } from "./validator/index.ts";
 import { ELEMENT_KIND_ORDER } from "./model/types.ts";
 import type { Diagnostic, ValidationContext } from "./validator/types.ts";
 import type { Element, Diagram, IgnoreDirective } from "./model/types.ts";
@@ -79,6 +79,21 @@ export function validateDocuments(
   context?: ValidationContext,
 ): ValidateResult {
   const { diagnostics } = processModel(documents, context);
+  const valid = !diagnostics.some((d) => d.severity === "error");
+  return { version: 1, valid, diagnostics };
+}
+
+/**
+ * Validate documents including Mermaid's syntax check of every diagram; a
+ * syntax error suppresses the follow-up findings of its diagram's rule.
+ */
+export async function validateDocumentsAsync(
+  documents: DocumentAst[],
+  context?: ValidationContext,
+): Promise<ValidateResult> {
+  const workspace = buildWorkspace(documents);
+  const index = buildIndex(workspace);
+  const diagnostics = await validateAsync(workspace, index, context);
   const valid = !diagnostics.some((d) => d.severity === "error");
   return { version: 1, valid, diagnostics };
 }
