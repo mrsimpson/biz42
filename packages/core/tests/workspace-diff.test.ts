@@ -144,12 +144,12 @@ describe("diffWorkspaces — elements", () => {
     ]);
   });
 
-  test("refuses an element before the first heading (E017)", () => {
+  test("refuses an element before the first heading (EG04)", () => {
     const outside = (severity: string) =>
       `${block("risk", { id: "churn", title: "Churn", severity })}\n`;
     expect(() =>
       diffWorkspaces(workspace({ [FILE]: outside("high") }), workspace({ [FILE]: outside("low") })),
-    ).toThrow(/04-risks\.biz42\.md:2: block is not placed under any heading \(E017\)/);
+    ).toThrow(/04-risks\.biz42\.md:2: block is not placed under any heading \(EG04\)/);
   });
 });
 

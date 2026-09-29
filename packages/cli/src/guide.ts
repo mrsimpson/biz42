@@ -350,9 +350,9 @@ the same \`\`\`biz42 fence, giving a reason:
   \`\`\`
 
 Only W (warning) and H (hint) codes can be ignored. Attempting to ignore an
-E (error) code emits W020 — errors are structural and must be fixed.
+E (error) code emits WG07 — errors are structural and must be fixed.
 
-An unused ignore directive produces W019 — so if the underlying issue is later
+An unused ignore directive produces WG06 — so if the underlying issue is later
 fixed, the suppress will remind you to remove it. After suppressing, record the
 decision in \`business-evidence.md\` with the rule code, element id, and reason.
 
