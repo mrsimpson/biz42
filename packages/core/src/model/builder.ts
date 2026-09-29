@@ -17,7 +17,5 @@ export function buildWorkspace(documents: DocumentAst[]): Workspace {
       };
       return { diagram };
     },
-    // A diagram, or a bare Mermaid fence, ends the prose of the next block.
-    proseConsumedBy: ["diagram", "bare-mermaid"],
   });
 }
