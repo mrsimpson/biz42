@@ -51,11 +51,13 @@ organisation runs, the products it delivers, and who receives the value.
 It makes the scope concrete by showing what is inside (Process, Output) and
 what is outside (Supplier, Customer).
 
+```biz42
 :::diagram
 id: diagram-sipoc-alerting
 title: Alerting Process — SIPOC Overview
 notation: sipoc
 :::
+```
 
 ```mermaid
 flowchart TD

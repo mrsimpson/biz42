@@ -6,11 +6,13 @@ The turtle diagram audits the alert delivery process against six questions:
 what resources it needs, who is accountable, what objectives it must achieve,
 who benefits, and what measures define success.
 
+```biz42
 :::diagram
 id: diagram-turtle-alert-delivery
 title: Alert Delivery — Process Audit
 notation: turtle
 :::
+```
 
 ```mermaid
 flowchart TD

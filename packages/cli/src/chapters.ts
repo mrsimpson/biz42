@@ -78,11 +78,13 @@ Describe the interfaces with adjacent systems, platforms, or organisations. What
 
 Add a SIPOC diagram to make the scope machine-readable and auditable. The SIPOC maps who supplies what, what the process does, what it produces, and who receives the value.
 
+\`\`\`biz42
 :::diagram
 id: diagram-sipoc-main
 title: <Process Name> — SIPOC Overview
 notation: sipoc
 :::
+\`\`\`
 
 \`\`\`mermaid
 flowchart TD
