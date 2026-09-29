@@ -1,65 +1,19 @@
-import { useState } from "react";
-
-function copyToClipboard(text: string): Promise<void> {
-  if (navigator.clipboard?.writeText) {
-    return navigator.clipboard.writeText(text);
-  }
-  return new Promise((resolve, reject) => {
-    const el = document.createElement("textarea");
-    el.value = text;
-    el.style.position = "fixed";
-    el.style.opacity = "0";
-    document.body.appendChild(el);
-    el.focus();
-    el.select();
-    const ok = document.execCommand("copy");
-    document.body.removeChild(el);
-    if (ok) resolve();
-    else reject(new Error("execCommand copy failed"));
-  });
-}
-
 export function Hero() {
-  const [copied, setCopied] = useState(false);
-  const startCmd = "npx skills add mrsimpson/biz42";
-
-  const handleCopy = () => {
-    copyToClipboard(startCmd)
-      .then(() => {
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-      })
-      .catch(() => {
-        // Copy failed — nothing to show, button state stays unchanged
-      });
-  };
-
   return (
-    <section className="hero" aria-label="Introduction">
+    <section className="hero hero--landing" aria-label="Introduction">
       <div className="container hero__inner">
-        <p className="hero__eyebrow">Business model · Plain text · ISO 9001</p>
-        <h1 className="hero__headline">
-          Agents build fast.
-          <br />
-          <em>Do they build what matters?</em>
+        <p className="hero__eyebrow">Organisation model · Plain text · ISO 9001</p>
+        <h1 className="hero__headline hero__headline--question">
+          <em>Where do agents read your organisation?</em>
         </h1>
-        <p className="hero__sub">
-          biz42 writes down why a business does what it does — from market signals to objectives to
-          products — as plain-text Markdown that people and coding agents read, validate and change
-          by pull request.
+        <p className="hero__sub hero__sub--problem">
+          Business plans, product decisions, reorganisations — agents help with all of them, but the
+          organisation itself lives in slide decks and people&apos;s heads.
         </p>
-        <div className="hero__install" role="group" aria-label="Install skill command">
-          <span className="hero__install-prompt">$</span>
-          <code>{startCmd}</code>
-          <button
-            className="hero__install-copy"
-            onClick={handleCopy}
-            aria-label={copied ? "Copied!" : "Copy install command"}
-            title={copied ? "Copied!" : "Copy to clipboard"}
-          >
-            {copied ? <CheckIcon /> : <CopyIcon />}
-          </button>
-        </div>
+        <p className="hero__sub">
+          biz42 writes it down: signals, objectives, owners, capabilities and products, linked in
+          plain-text Markdown that people and agents can navigate.
+        </p>
         <p className="hero__agent">
           <strong>Are you an AI agent?</strong> Run <code>npx @biz42/cli guide</code> — it walks you
           and your human through the model, chapter by chapter.
@@ -72,48 +26,11 @@ export function Hero() {
             Explore the model →
           </a>
         </div>
-        <a href="#why" className="hero__scroll-hint" aria-label="Scroll to why biz42">
+        <a href="#getting-started" className="hero__scroll-hint" aria-label="Scroll to get started">
           <ChevronDownIcon />
         </a>
       </div>
     </section>
-  );
-}
-
-function CopyIcon() {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-      <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
-    </svg>
-  );
-}
-
-function CheckIcon() {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <polyline points="20 6 9 17 4 12" />
-    </svg>
   );
 }
 

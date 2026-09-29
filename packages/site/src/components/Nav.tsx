@@ -12,14 +12,14 @@ export function Nav({ home = "" }: { home?: string }) {
           biz42
         </a>
         <div className="nav__links">
+          <a href={`${home}#getting-started`} className="nav__link">
+            Get started
+          </a>
           <a href={`${home}#why`} className="nav__link">
             Why biz42
           </a>
           <a href={`${home}model/`} className="nav__link">
             The Model
-          </a>
-          <a href={`${home}#getting-started`} className="nav__link">
-            Get started
           </a>
           <a href={`${home}evolution/`} className="nav__link">
             Evolution
