@@ -15,35 +15,12 @@
 // IMPORTANT: `kind` and `loc` are NOT part of the schemas — they come from the
 // AST node and are injected by the builder after a successful parse.
 
-import { z } from "zod";
+import { splitListSchema, z } from "@cli42/lib/schema";
+import type { CrossRefMeta } from "@cli42/lib/schema";
 import type { BlockType } from "../ast.ts";
 
-// ---------------------------------------------------------------------------
-// Cross-reference metadata type
-// ---------------------------------------------------------------------------
-
-export interface CrossRefMeta {
-  field: string;
-  targetKind: string;
-  cardinality: "one" | "many";
-}
-
-// ---------------------------------------------------------------------------
-// Shared helpers
-// ---------------------------------------------------------------------------
-
-/** Optional comma-separated list (field may be absent). */
-export const splitListSchema = z
-  .string()
-  .optional()
-  .transform((v) =>
-    v && v.trim() !== ""
-      ? v
-          .split(",")
-          .map((s) => s.trim())
-          .filter((s) => s.length > 0)
-      : [],
-  );
+export type { CrossRefMeta } from "@cli42/lib/schema";
+export { splitListSchema } from "@cli42/lib/schema";
 
 // ---------------------------------------------------------------------------
 // Per-element schemas — all metadata lives in .meta()
@@ -456,55 +433,5 @@ export const ELEMENT_SCHEMAS = {
 // Schema introspection — derive FieldMeta[] from Zod shape + globalRegistry
 // ---------------------------------------------------------------------------
 
-export interface FieldMeta {
-  name: string;
-  description: string;
-  required: boolean;
-  enumValues: string[] | null;
-}
-
-/**
- * Walk a ZodObject's shape and extract field metadata structurally.
- * - required: field def type is not "optional" and not a pipe whose input is "optional"
- * - enumValues: field (or unwrapped optional inner) def type is "enum" → entries keys
- * - description: from globalRegistry.get(field)?.description
- *
- * NOTE: This function inspects Zod v4 internal `_zod.def` structure. It is coupled to
- * zod@4.5.4 (pinned). If Zod is upgraded, verify this function still works correctly.
- */
-export function deriveFields(schema: z.ZodObject<z.ZodRawShape>): FieldMeta[] {
-  const fields: FieldMeta[] = [];
-
-  for (const [name, field] of Object.entries(schema._zod.def.shape)) {
-    const meta = z.globalRegistry.get(field as z.ZodType) as { description?: string } | undefined;
-    const description = meta?.description ?? name;
-
-    const def = (field as z.ZodType)._zod.def as unknown as Record<string, unknown>;
-    let required = true;
-    let enumValues: string[] | null = null;
-
-    if (def["type"] === "optional") {
-      required = false;
-      const innerDef = (def["innerType"] as z.ZodType)._zod.def as unknown as Record<
-        string,
-        unknown
-      >;
-      if (innerDef["type"] === "enum") {
-        enumValues = Object.keys(innerDef["entries"] as Record<string, string>);
-      }
-    } else if (def["type"] === "pipe") {
-      // splitListSchema:         pipe(optional(string), transform) → optional
-      // splitListRequiredSchema: pipe(string.min(1), transform)    → required
-      const inDef = (def["in"] as z.ZodType)._zod.def as unknown as Record<string, unknown>;
-      if (inDef["type"] === "optional") {
-        required = false;
-      }
-    } else if (def["type"] === "enum") {
-      enumValues = Object.keys(def["entries"] as Record<string, string>);
-    }
-
-    fields.push({ name, description, required, enumValues });
-  }
-
-  return fields;
-}
+export { deriveFields } from "@cli42/lib/schema";
+export type { FieldMeta } from "@cli42/lib/schema";

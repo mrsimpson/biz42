@@ -3,32 +3,11 @@
 import type { BlockType, DocumentAst } from "../ast.ts";
 import type { IgnoreDirective } from "@cli42/lib/validator";
 import type { MermaidNotation } from "../mermaid.ts";
-import { z } from "zod";
-import {
-  ELEMENT_SCHEMAS,
-  ScopeSchema,
-  SignalSchema,
-  ExpectationSchema,
-  RiskSchema,
-  OpportunitySchema,
-  ObjectiveSchema,
-  MeasureSchema,
-  OwnerSchema,
-  CapabilitySchema,
-  ProductSchema,
-  EvaluationSchema,
-  ImprovementSchema,
-  CashflowSchema,
-} from "./schemas.ts";
+import type { ElementOf, ParseError, ParseWarning, SourceLocation } from "@cli42/lib/model";
+import { chaptersOf } from "@cli42/lib/schema";
+import { ELEMENT_SCHEMAS } from "./schemas.ts";
 
-export interface SourceLocation {
-  file: string;
-  line: number;
-  /** The text of the nearest heading that precedes this element in its source file, if any. */
-  heading?: string;
-  /** Prose lines between the nearest preceding heading and this element's block, if any. */
-  prose?: string;
-}
+export type { IgnoreDirective, ParseError, ParseWarning, SourceLocation };
 
 /**
  * Canonical biz42 chapter order for element kinds.
@@ -52,15 +31,10 @@ export const ELEMENT_KIND_ORDER: readonly BlockType[] = [
 ] as const;
 
 /** biz42 chapter each element kind belongs to — derived from schema metadata. */
-export const ELEMENT_CHAPTER: Readonly<Record<BlockType, number>> = Object.fromEntries(
-  (Object.entries(ELEMENT_SCHEMAS) as [BlockType, z.ZodType][]).map(([kind, schema]) => {
-    const meta = z.globalRegistry.get(schema) as { biz42Chapter?: number } | undefined;
-    if (meta?.biz42Chapter === undefined) {
-      throw new Error(`Schema for '${kind}' is missing biz42Chapter in .meta()`);
-    }
-    return [kind, meta.biz42Chapter];
-  }),
-) as Readonly<Record<BlockType, number>>;
+export const ELEMENT_CHAPTER: Readonly<Record<BlockType, number>> = chaptersOf(
+  ELEMENT_SCHEMAS,
+  "biz42Chapter",
+);
 
 /** Human-readable biz42 chapter titles */
 export const CHAPTER_TITLE: Readonly<Record<number, string>> = {
@@ -83,99 +57,23 @@ export const CHAPTER_TITLE: Readonly<Record<number, string>> = {
 // Element types — derived from Zod schemas + { kind, loc }
 // ---------------------------------------------------------------------------
 
-export type Scope = z.infer<typeof ScopeSchema> & {
-  kind: "scope";
-  loc: SourceLocation;
-};
+export type Element = ElementOf<typeof ELEMENT_SCHEMAS>;
 
-export type Signal = z.infer<typeof SignalSchema> & {
-  kind: "signal";
-  loc: SourceLocation;
-};
+type ElementKind<K extends BlockType> = Extract<Element, { kind: K }>;
 
-export type Expectation = z.infer<typeof ExpectationSchema> & {
-  kind: "expectation";
-  loc: SourceLocation;
-};
-
-export type Risk = z.infer<typeof RiskSchema> & {
-  kind: "risk";
-  loc: SourceLocation;
-};
-
-export type Opportunity = z.infer<typeof OpportunitySchema> & {
-  kind: "opportunity";
-  loc: SourceLocation;
-};
-
-export type Objective = z.infer<typeof ObjectiveSchema> & {
-  kind: "objective";
-  loc: SourceLocation;
-};
-
-export type Measure = z.infer<typeof MeasureSchema> & {
-  kind: "measure";
-  loc: SourceLocation;
-};
-
-export type Owner = z.infer<typeof OwnerSchema> & {
-  kind: "owner";
-  loc: SourceLocation;
-};
-
-export type Capability = z.infer<typeof CapabilitySchema> & {
-  kind: "capability";
-  loc: SourceLocation;
-};
-
-export type Product = z.infer<typeof ProductSchema> & {
-  kind: "product";
-  loc: SourceLocation;
-};
-
-export type Evaluation = z.infer<typeof EvaluationSchema> & {
-  kind: "evaluation";
-  loc: SourceLocation;
-};
-
-export type Improvement = z.infer<typeof ImprovementSchema> & {
-  kind: "improvement";
-  loc: SourceLocation;
-};
-
-export type Cashflow = z.infer<typeof CashflowSchema> & {
-  kind: "cashflow";
-  loc: SourceLocation;
-};
-
-export type Element =
-  | Scope
-  | Signal
-  | Expectation
-  | Risk
-  | Opportunity
-  | Objective
-  | Measure
-  | Owner
-  | Capability
-  | Product
-  | Evaluation
-  | Improvement
-  | Cashflow;
-
-export interface ParseError {
-  message: string;
-  file: string;
-  line: number;
-}
-
-export interface ParseWarning {
-  message: string;
-  file: string;
-  line: number;
-}
-
-export type { IgnoreDirective };
+export type Scope = ElementKind<"scope">;
+export type Signal = ElementKind<"signal">;
+export type Expectation = ElementKind<"expectation">;
+export type Risk = ElementKind<"risk">;
+export type Opportunity = ElementKind<"opportunity">;
+export type Objective = ElementKind<"objective">;
+export type Measure = ElementKind<"measure">;
+export type Owner = ElementKind<"owner">;
+export type Capability = ElementKind<"capability">;
+export type Product = ElementKind<"product">;
+export type Evaluation = ElementKind<"evaluation">;
+export type Improvement = ElementKind<"improvement">;
+export type Cashflow = ElementKind<"cashflow">;
 
 /**
  * All diagram notations understood by biz42.
