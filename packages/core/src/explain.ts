@@ -376,8 +376,6 @@ const IGNORE_DATA: ExplainIgnoreResult = ignoreGuidance({
   cli: "biz42",
   document: "a biz42 document",
   fence: "biz42",
-  rejectedCode: "W020",
-  staleCode: "W019",
   example: ":::ignore H001 risk is deliberately out of scope",
   evidenceFile: "business-evidence.md",
 });

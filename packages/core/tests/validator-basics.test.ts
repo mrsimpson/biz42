@@ -17,7 +17,7 @@ function loc(line = 1) {
   return { file: "test.biz42.md", line };
 }
 
-describe("validator › E001 — duplicate id", () => {
+describe("validator › EG01 — duplicate id", () => {
   test("flags two elements with the same id", () => {
     const ws = makeWorkspace([
       { kind: "scope", id: "scope-org", title: "Org", loc: loc(1) },
@@ -25,7 +25,7 @@ describe("validator › E001 — duplicate id", () => {
     ]);
     const idx = buildIndex(ws);
     const diags = validate(ws, idx);
-    expect(diags.some((d) => d.code === "E001")).toBe(true);
+    expect(diags.some((d) => d.code === "EG01")).toBe(true);
   });
 
   test("passes when all ids are unique", () => {
@@ -35,7 +35,7 @@ describe("validator › E001 — duplicate id", () => {
     ]);
     const idx = buildIndex(ws);
     const diags = validate(ws, idx);
-    expect(diags.filter((d) => d.code === "E001")).toHaveLength(0);
+    expect(diags.filter((d) => d.code === "EG01")).toHaveLength(0);
   });
 });
 
@@ -414,8 +414,8 @@ function makeDoc(blockType: string, attrs: Record<string, string>): DocumentAst 
   };
 }
 
-describe("validator › W014 — unknown attribute on block", () => {
-  test("emits W014 warning when a block has an unrecognised attribute", () => {
+describe("validator › WG01 — unknown attribute on block", () => {
+  test("emits WG01 warning when a block has an unrecognised attribute", () => {
     const ws = buildWorkspace([
       makeDoc("risk", { id: "risk-1", title: "Supply chain", severity: "high", sevrity: "medium" }),
     ]);
@@ -428,13 +428,13 @@ describe("validator › W014 — unknown attribute on block", () => {
 
     const idx = buildIndex(ws);
     const diags = validate(ws, idx);
-    const w014 = diags.filter((d) => d.code === "W014");
-    expect(w014).toHaveLength(1);
-    expect(w014[0]!.severity).toBe("warning");
-    expect(w014[0]!.message).toMatch(/Unknown attribute 'sevrity' on risk/);
+    const wg01 = diags.filter((d) => d.code === "WG01");
+    expect(wg01).toHaveLength(1);
+    expect(wg01[0]!.severity).toBe("warning");
+    expect(wg01[0]!.message).toMatch(/Unknown attribute 'sevrity' on risk/);
   });
 
-  test("no W014 when all attributes are known", () => {
+  test("no WG01 when all attributes are known", () => {
     const ws = buildWorkspace([
       makeDoc("risk", { id: "risk-1", title: "Supply chain", severity: "high" }),
     ]);
@@ -442,17 +442,17 @@ describe("validator › W014 — unknown attribute on block", () => {
     expect(ws.parseErrors).toHaveLength(0);
     const idx = buildIndex(ws);
     const diags = validate(ws, idx);
-    expect(diags.filter((d) => d.code === "W014")).toHaveLength(0);
+    expect(diags.filter((d) => d.code === "WG01")).toHaveLength(0);
   });
 
-  test("emits one W014 per unknown attribute", () => {
+  test("emits one WG01 per unknown attribute", () => {
     const ws = buildWorkspace([
       makeDoc("scope", { id: "scope-1", title: "Org", foo: "bar", baz: "qux" }),
     ]);
     expect(ws.elements).toHaveLength(1);
     const idx = buildIndex(ws);
     const diags = validate(ws, idx);
-    expect(diags.filter((d) => d.code === "W014")).toHaveLength(2);
+    expect(diags.filter((d) => d.code === "WG01")).toHaveLength(2);
   });
 });
 
@@ -480,7 +480,7 @@ describe("validator › ignore directives", () => {
     const idx = buildIndex(ws);
     const diags = validate(ws, idx);
     expect(diags.filter((d) => d.code === "W001")).toHaveLength(0);
-    expect(diags.filter((d) => d.code === "W019")).toHaveLength(0);
+    expect(diags.filter((d) => d.code === "WG06")).toHaveLength(0);
   });
 
   test("H-code directive suppresses a matching hint", () => {
@@ -509,10 +509,10 @@ describe("validator › ignore directives", () => {
     const idx = buildIndex(ws);
     const diags = validate(ws, idx);
     expect(diags.filter((d) => d.code === "H005")).toHaveLength(0);
-    expect(diags.filter((d) => d.code === "W019")).toHaveLength(0);
+    expect(diags.filter((d) => d.code === "WG06")).toHaveLength(0);
   });
 
-  test("unused directive emits W019 (stale ignore)", () => {
+  test("unused directive emits WG06 (stale ignore)", () => {
     const ws = makeWorkspace(
       [],
       [],
@@ -520,11 +520,11 @@ describe("validator › ignore directives", () => {
     );
     const idx = buildIndex(ws);
     const diags = validate(ws, idx);
-    expect(diags.filter((d) => d.code === "W019")).toHaveLength(1);
+    expect(diags.filter((d) => d.code === "WG06")).toHaveLength(1);
     expect(diags[0]!.message).toMatch(/W001/);
   });
 
-  test("E-code directive emits W020 and does not suppress the error", () => {
+  test("E-code directive emits WG07 and does not suppress the error", () => {
     const ws = makeWorkspace(
       [
         {
@@ -541,17 +541,17 @@ describe("validator › ignore directives", () => {
         },
       ],
       [],
-      [{ ruleCode: "E001", file: "test.biz42.md", line: 1, used: false }],
+      [{ ruleCode: "EG01", file: "test.biz42.md", line: 1, used: false }],
     );
     const idx = buildIndex(ws);
     const diags = validate(ws, idx);
-    // W020 must be emitted
-    const w020 = diags.find((d) => d.code === "W020");
-    expect(w020).toBeDefined();
-    expect(w020!.message).toMatch(/E001/);
-    // E001 must NOT be suppressed
-    expect(diags.filter((d) => d.code === "E001")).toHaveLength(1);
-    // No W019 for the same directive
-    expect(diags.filter((d) => d.code === "W019")).toHaveLength(0);
+    // WG07 must be emitted
+    const wg07 = diags.find((d) => d.code === "WG07");
+    expect(wg07).toBeDefined();
+    expect(wg07!.message).toMatch(/EG01/);
+    // EG01 must NOT be suppressed
+    expect(diags.filter((d) => d.code === "EG01")).toHaveLength(1);
+    // No WG06 for the same directive
+    expect(diags.filter((d) => d.code === "WG06")).toHaveLength(0);
   });
 });

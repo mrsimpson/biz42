@@ -1,23 +1,14 @@
-import { e001DuplicateId } from "./e001-duplicate-id.ts";
 import { e002UnresolvedReference } from "./e002-unresolved-reference.ts";
-import { e003ParseError } from "./e003-parse-error.ts";
-import { e004ElementWrongChapter } from "./e004-element-wrong-chapter.ts";
-import { e017BlockOutsideSection } from "./e017-block-outside-section.ts";
-import { w016BlockNotInBiz42Fence } from "./w016-block-not-in-biz42-fence.ts";
 import { w001RiskUnaddressed } from "./w001-risk-unaddressed.ts";
 import { w002ObjectiveNoMeasure } from "./w002-objective-no-measure.ts";
 import { w003ObjectiveNoOwner } from "./w003-objective-no-owner.ts";
 import { w004OrphanedMeasure } from "./w004-orphaned-measure.ts";
 import { w005OwnerNoAssignments } from "./w005-owner-no-assignments.ts";
-import { w006BlockWithoutProse } from "./w006-block-without-prose.ts";
-import { w007MultipleBlocksUnderHeading } from "./w007-multiple-blocks-under-heading.ts";
 import { w008OpportunityUnaddressed } from "./w008-opportunity-unaddressed.ts";
-import { w009BareMermaid } from "./w009-bare-mermaid.ts";
 import { w010MissingSipocInScope } from "./w010-missing-sipoc-in-scope.ts";
 import { w011ObjectiveNotAddressing } from "./w011-objective-not-addressing.ts";
 import { w012EvaluationNoEvaluates } from "./w012-evaluation-no-evaluates.ts";
 import { w013ImprovementAddressesNothing } from "./w013-improvement-addresses-nothing.ts";
-import { w014UnknownAttribute } from "./w014-unknown-attribute.ts";
 import { e011UnknownDiagramElement } from "./e011-unknown-diagram-element.ts";
 import { e012SipocDiagramValidation } from "./e012-sipoc-diagram-validation.ts";
 import { e013TurtleDiagramValidation } from "./e013-turtle-diagram-validation.ts";
@@ -30,34 +21,53 @@ import { h004ProductNoExpectation } from "./h004-product-no-capability.ts";
 import { h005RiskOpportunityNoSource } from "./h005-risk-opportunity-no-source.ts";
 import { h006ImprovementNoTriggeredBy } from "./h006-improvement-no-triggered-by.ts";
 import { h007CapabilityNotRequired } from "./h007-capability-not-required.ts";
-import type { Rule } from "../types.ts";
+import { genericRules } from "@cli42/lib/rules";
+import { ELEMENT_CHAPTER } from "../../model/types.ts";
+import type { Rule, ValidationContext } from "../types.ts";
+
+/**
+ * Chapter number derived from the file name convention:
+ * 01-scope.biz42.md → chapter 1, 06-objectives.biz42.md → chapter 6, etc.
+ */
+function chapterFromFilePath(filePath: string): number | null {
+  const base = filePath.split("/").pop() ?? "";
+  const match = /^(\d{2})-/.exec(base);
+  if (!match) return null;
+  return parseInt(match[1]!, 10);
+}
+
+/**
+ * The rules every *42 language has (codes EGxx, WGxx), owned by @cli42/lib;
+ * in biz42 they are cross-cutting (chapter 0).
+ */
+const sharedRules: Rule[] = genericRules<ValidationContext>({
+  chapters: ELEMENT_CHAPTER,
+  chapterOfFile: chapterFromFilePath,
+  fenceFlag: "inBiz42Fence",
+  fenceDescription: () => "```biz42 fence",
+}).map((rule) => ({
+  ...rule,
+  meta: { ...rule.meta, docs: { ...rule.meta.docs, biz42Chapter: 0 } },
+}));
 
 export const builtinRules: readonly Rule[] = [
-  e001DuplicateId,
+  ...sharedRules,
   e002UnresolvedReference,
-  e003ParseError,
-  e004ElementWrongChapter,
   w001RiskUnaddressed,
   w002ObjectiveNoMeasure,
   w003ObjectiveNoOwner,
   w004OrphanedMeasure,
   w005OwnerNoAssignments,
-  w006BlockWithoutProse,
-  w007MultipleBlocksUnderHeading,
   w008OpportunityUnaddressed,
-  w009BareMermaid,
   w010MissingSipocInScope,
   w011ObjectiveNotAddressing,
   w012EvaluationNoEvaluates,
   w013ImprovementAddressesNothing,
-  w014UnknownAttribute,
-  w016BlockNotInBiz42Fence,
   e011UnknownDiagramElement,
   e012SipocDiagramValidation,
   e013TurtleDiagramValidation,
   e014StrategyMapValidation,
   e015BmcDiagramValidation,
-  e017BlockOutsideSection,
   h001SignalNoRiskOpportunity,
   h002ExpectationNoRiskOpportunity,
   h003CapabilityNoProduct,

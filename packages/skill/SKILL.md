@@ -99,7 +99,7 @@ Run `biz42 rules [--chapter <n>]` to list all validation rules with explanations
 Run `biz42 rules` to see all validation rules. The most common mistakes:
 
 1. Every block **must** have a unique `id` — use kebab-case: `obj-privacy-arch`
-2. Always close every block with `:::` — a missing fence silently drops the element (E003)
+2. Always close every block with `:::` — a missing fence silently drops the element (EG02)
 3. Field names are **kebab-case** in the DSL: `measured-by`, not `measuredBy`
 4. Add a prose sentence above each block — blocks without context get H005 hints
 
