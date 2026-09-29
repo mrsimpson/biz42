@@ -113,10 +113,16 @@ code {
 }
 
 /* ─── Layout helpers ─────────────────────────────────────────────────────────── */
+/* --max-w is the content width: nav, sections and footer share both edges. */
 .container {
-  max-width: var(--max-w);
+  max-width: calc(var(--max-w) + 3rem);
   margin: 0 auto;
   padding: 0 1.5rem;
+}
+
+/* The landing page is wider: its sections carry diagrams, tables and screenshots. */
+.landing {
+  --max-w: 1040px;
 }
 
 .section {
@@ -217,6 +223,8 @@ code {
 .hero__inner {
   display: flex;
   flex-direction: column;
+  /* A flex item would shrink to its content; keep the page's left edge. */
+  width: 100%;
 }
 
 .hero__eyebrow {
@@ -250,38 +258,30 @@ code {
   line-height: 1.6;
 }
 
-.hero__install {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.75rem;
-  background: var(--bg-code);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 0.6rem 1rem;
-  margin-bottom: 1rem;
-  font-family: var(--font-mono);
-  font-size: 0.875rem;
-  color: var(--text);
-  width: fit-content;
+/* Landing hero: one large question, then problem and answer, all in one column. */
+.hero--landing {
+  /* The width of the headline's first line at full size, so text and headline end together. */
+  --hero-w: 680px;
 }
 
-.hero__install-prompt {
-  color: var(--text-muted);
-  user-select: none;
+.hero--landing .hero__sub,
+.hero--landing .hero__agent {
+  max-width: var(--hero-w);
 }
 
-.hero__install-copy {
-  display: flex;
-  align-items: center;
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  cursor: pointer;
-  padding: 0;
-  margin-left: 0.25rem;
-  transition: color 0.15s;
+.hero__headline--question {
+  max-width: var(--hero-w);
+  text-wrap: balance;
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  line-height: 1.1;
+  margin-bottom: 2rem;
 }
-.hero__install-copy:hover {
+
+.hero__sub--problem {
+  margin-bottom: 0.75rem;
+}
+
+.hero__sub--problem + .hero__sub {
   color: var(--text);
 }
 
@@ -364,49 +364,6 @@ code {
   50% {
     transform: translateY(6px);
   }
-}
-
-/* ─── Feature strip ───────────────────────────────────────────────────────────── */
-.features {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-
-.feature {
-  padding: 1.75rem 2rem;
-  border-right: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-}
-.feature:nth-child(2n) {
-  border-right: none;
-}
-.feature:nth-last-child(-n + 2) {
-  border-bottom: none;
-}
-
-.feature__icon {
-  width: 24px;
-  height: 24px;
-  color: var(--text-muted);
-  margin-bottom: 0.875rem;
-  flex-shrink: 0;
-}
-
-.feature__title {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--text);
-  margin: 0 0 0.4rem;
-}
-
-.feature__desc {
-  font-size: 0.875rem;
-  color: var(--text-muted);
-  margin: 0;
-  line-height: 1.55;
 }
 
 /* ─── Model section ───────────────────────────────────────────────────────────── */
@@ -666,10 +623,6 @@ code {
   padding: 1.25rem 1.5rem;
 }
 
-.why__card--answer {
-  border-color: var(--accent);
-}
-
 .why__card h3 {
   margin: 0 0 0.5rem;
   font-size: 1rem;
@@ -684,6 +637,82 @@ code {
 
 .why__card p:last-child {
   margin-bottom: 0;
+}
+
+/* Section eyebrow: ties a section to one of the three properties in "Why". */
+.section__eyebrow {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 0.75rem;
+}
+
+/* Software versus an organisation, one row per property. */
+.why__table {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.why__row {
+  display: grid;
+  grid-template-columns: 13rem 1fr 1fr;
+  gap: 1.5rem;
+  padding: 1.1rem 1.5rem;
+  border-top: 1px solid var(--border);
+  align-items: baseline;
+}
+
+.why__row--head {
+  border-top: none;
+  background: var(--bg-card);
+  padding-top: 0.7rem;
+  padding-bottom: 0.7rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.why__row p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--text);
+}
+
+.why__row p.why__gap {
+  color: var(--text-muted);
+}
+
+.why__property {
+  display: flex;
+  gap: 0.6rem;
+  align-items: baseline;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text);
+  text-decoration: none;
+}
+.why__property:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.why__num {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--accent);
+}
+
+.why__answer {
+  margin: 1.5rem 0 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
 }
 
 /* ─── How it works ────────────────────────────────────────────────────────────── */
@@ -709,19 +738,36 @@ code {
   margin-top: 2rem;
 }
 
+.how__pair {
+  display: grid;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.how__figure {
+  margin: 0;
+  min-width: 0;
+}
+
+.how__figure figcaption {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.how__figure .how__example {
+  margin: 0.5rem 0 0;
+  max-width: none;
+}
+
 /* ─── Responsive ──────────────────────────────────────────────────────────────── */
 @media (max-width: 640px) {
-  .features,
   .model__grid,
   .why__grid,
   .model-refs {
     grid-template-columns: 1fr;
-  }
-  .feature {
-    border-right: none;
-  }
-  .feature:last-child {
-    border-bottom: none;
   }
 
   .live__grid,
@@ -733,6 +779,25 @@ code {
 
   .hero__headline {
     font-size: clamp(2rem, 10vw, 2.5rem);
+  }
+
+  .why__row {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .why__row--head {
+    display: none;
+  }
+
+  .why__row p::before {
+    content: attr(data-label) " — ";
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+
+  .hero__headline--question {
+    font-size: clamp(1.9rem, 8.5vw, 2.25rem);
   }
 
   .nav__links {
@@ -805,8 +870,7 @@ code {
 }
 
 /* Screenshots need more room than text: image rows are wider than the container. */
-.container.evo-row,
-.container.evo-teaser {
+.container.evo-row {
   max-width: 1120px;
 }
 
@@ -851,7 +915,7 @@ code {
 /* Landing page teaser */
 .evo-teaser {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 2.5rem;
   align-items: center;
 }
@@ -987,7 +1051,6 @@ code {
 
 .how__example {
   margin: 0 0 1.5rem;
-  max-width: 720px;
   overflow-x: auto;
   line-height: 1.55;
 }

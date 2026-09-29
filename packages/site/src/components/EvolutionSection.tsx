@@ -1,11 +1,12 @@
 import summaryShot from "../assets/evolution/01-plan-summary.png";
 
-/** Landing page teaser: business development as reviewed changes to the model. */
+/** Landing page, property 3: business development as reviewed changes to the model. */
 export function EvolutionSection() {
   return (
     <section className="section" aria-labelledby="evolution-heading" id="evolution">
       <div className="container evo-teaser">
         <div>
+          <p className="section__eyebrow">3 · Changed by review</p>
           <h2 className="gs__title" id="evolution-heading">
             A business development plan becomes a pull request
           </h2>
