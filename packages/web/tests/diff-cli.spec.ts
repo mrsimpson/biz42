@@ -49,7 +49,7 @@ test.describe("biz42 diff", () => {
     expect(result.status).toBe(1);
     expect(result.stdout.trim().split("\n")).toEqual([
       `warning ${RISKS}:10  Block 'risk-commoditisation' changed without changing its section prose.`,
-      `warning ${OPPORTUNITIES}:36  Section prose changed without changing block 'opp-word-of-mouth'.`,
+      `warning ${OPPORTUNITIES}:36  Section prose changed without changing block 'opp-word-of-mouth' — it names 'sig-gdpr-pressure'.`,
     ]);
     const head = spawnSync("git", ["-C", diffRepository, "rev-parse", "HEAD"], {
       encoding: "utf8",

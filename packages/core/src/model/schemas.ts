@@ -30,11 +30,12 @@ export const ScopeSchema = z
   .object({
     id: z.string().min(1).meta({ description: "Unique identifier (used in cross-references)" }),
     title: z.string().min(1).meta({ description: "Human-readable name of the scope" }),
-    included: z
-      .string()
-      .optional()
-      .meta({ description: "What is explicitly within this scope (comma-separated or free text)" }),
+    included: z.string().optional().meta({
+      freeText: true,
+      description: "What is explicitly within this scope (comma-separated or free text)",
+    }),
     excluded: z.string().optional().meta({
+      freeText: true,
       description: "What is explicitly outside this scope (comma-separated or free text)",
     }),
     parent: z
@@ -134,10 +135,10 @@ export const RiskSchema = z
     severity: z
       .enum(["high", "medium", "low"])
       .meta({ description: "How critical this risk is to the business model" }),
-    mitigation: z
-      .string()
-      .optional()
-      .meta({ description: "What is being done or could be done to reduce this risk" }),
+    mitigation: z.string().optional().meta({
+      freeText: true,
+      description: "What is being done or could be done to reduce this risk",
+    }),
   })
   .meta({
     description:
