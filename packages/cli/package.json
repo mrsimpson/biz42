@@ -44,6 +44,9 @@
     "check": "pnpm run check:templates && vp check",
     "prepack": "pnpm run check:templates"
   },
+  "dependencies": {
+    "mermaid": "catalog:"
+  },
   "devDependencies": {
     "@biz42/core": "workspace:*",
     "@biz42/web": "workspace:*",
