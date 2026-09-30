@@ -58,6 +58,7 @@ import {
   snapshotTree,
 } from "./history.ts";
 import { commandHelp, rootHelp, guideText } from "./guide.ts";
+import { formatError, USAGE_ERROR } from "@cli42/lib/cli";
 
 // Directory of the running CLI file — used to locate bundled assets
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -68,6 +69,15 @@ const { version: VERSION } = JSON.parse(
 ) as { version: string };
 
 const BLOCK_TYPES: readonly BlockType[] = ELEMENT_KIND_ORDER;
+
+/** Exit with a usage error unless `format` is one the command accepts. */
+function requireFormat(command: string, format: string, accepted: readonly string[]): void {
+  const error = formatError(`biz42 ${command}`, format, accepted);
+  if (error) {
+    console.error(error);
+    process.exit(USAGE_ERROR);
+  }
+}
 
 function isBlockType(s: string): s is BlockType {
   return (BLOCK_TYPES as readonly string[]).includes(s);
@@ -171,6 +181,7 @@ async function runValidate(dir: string, args: string[]) {
   const format = values["format"] as string;
   const quiet = values["quiet"] as boolean;
   const strict = values["strict"] as boolean;
+  requireFormat("validate", format, ["text", "json"]);
 
   try {
     const result = await validateWorkspace(dir);
@@ -228,10 +239,7 @@ async function runGet(dir: string, args: string[]) {
       );
       process.exit(2);
     }
-    if (format !== "text" && format !== "json") {
-      console.error(`--format '${format}' is not supported for --type ignore. Use text or json.`);
-      process.exit(2);
-    }
+    requireFormat("get --type ignore", format, ["text", "json"]);
     try {
       const workspace = await loadWorkspace(dir);
       const directives = workspace.ignoreDirectives ?? [];
@@ -259,13 +267,12 @@ async function runGet(dir: string, args: string[]) {
     process.exit(2);
   }
 
-  const renderer = rendererById.get(format);
-  if (!renderer) {
-    console.error(
-      `Unknown --format '${format}'. Available: ${builtinGetRenderers.map((r) => r.meta.id).join(", ")}`,
-    );
-    process.exit(2);
-  }
+  requireFormat(
+    "get",
+    format,
+    builtinGetRenderers.map((r) => r.meta.id),
+  );
+  const renderer = rendererById.get(format)!;
 
   try {
     const result = await getElements({
@@ -303,6 +310,7 @@ function runRules(args: string[]) {
 
   const chapterFilter = values["chapter"] ? Number(values["chapter"]) : null;
   const format = values["format"] as string;
+  requireFormat("rules", format, ["text", "json"]);
 
   let rules = [...builtinRules];
   if (chapterFilter !== null) {
@@ -370,6 +378,7 @@ function runExplain(args: string[]) {
   });
 
   const format = values["format"] as string;
+  requireFormat("explain", format, ["text", "json"]);
   const firstArg = positionals[0];
 
   // Sub-command: biz42 explain ignore
@@ -566,10 +575,7 @@ async function runDiff(dir: string, args: string[]) {
     process.exit(2);
   }
   const format = values.format;
-  if (format !== "text" && format !== "json") {
-    console.error(`biz42 diff: unknown format '${format}'. Use text or json.`);
-    process.exit(2);
-  }
+  requireFormat("diff", format, ["text", "json"]);
 
   try {
     const { snapshots, result } = await loadDiffPayload(dir, {
