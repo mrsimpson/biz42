@@ -7,8 +7,8 @@ settings:
 catalogs:
   default:
     '@cli42/lib':
-      specifier: ^0.2.0
-      version: 0.2.0
+      specifier: ^0.2.1
+      version: 0.2.1
     '@doctc/arc42':
       specifier: 0.21.1
       version: 0.21.1
@@ -89,7 +89,7 @@ importers:
         version: link:../workspace-fs
       '@cli42/lib':
         specifier: 'catalog:'
-        version: 0.2.0(mermaid@11.17.2)
+        version: 0.2.1(mermaid@11.17.2)
       '@types/node':
         specifier: 'catalog:'
         version: 24.13.4
@@ -104,7 +104,7 @@ importers:
     dependencies:
       '@cli42/lib':
         specifier: 'catalog:'
-        version: 0.2.0(mermaid@11.17.2)
+        version: 0.2.1(mermaid@11.17.2)
       mermaid:
         specifier: 'catalog:'
         version: 11.17.2
@@ -159,7 +159,7 @@ importers:
         version: link:../core
       '@cli42/lib':
         specifier: 'catalog:'
-        version: 0.2.0(mermaid@11.17.2)
+        version: 0.2.1(mermaid@11.17.2)
       marked:
         specifier: ^14.0.0
         version: 14.1.4
@@ -208,7 +208,7 @@ importers:
         version: link:../core
       '@cli42/lib':
         specifier: 'catalog:'
-        version: 0.2.0(mermaid@11.17.2)
+        version: 0.2.1(mermaid@11.17.2)
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
@@ -335,8 +335,8 @@ packages:
   '@chevrotain/types@11.1.2':
     resolution: {integrity: sha512-U+HFai5+zmJCkK86QsaJtoITlboZHBqrVketcO2ROv865xfCMSFpELQoz1GkX5GzME8pTa+3kbKrZHQtI0gdbw==}
 
-  '@cli42/lib@0.2.0':
-    resolution: {integrity: sha512-+NRe5j9PpPdLakc+M8YumZd3mcCJc2CswYNRoICDZrKv5+HQfiBAooAiDFpx7cx15n+BkHFB6TwVWp3yVCmc3w==}
+  '@cli42/lib@0.2.1':
+    resolution: {integrity: sha512-jkGFUKuTlmqUQoJNS5yOmmZLapRyQy0HmprUh4APDbZV5Kol765LCntg2an0+lgGjkEInYI0vdcdr8ePug88Cw==}
     engines: {node: '>=22.6'}
     peerDependencies:
       mermaid: ^11
@@ -3256,7 +3256,7 @@ snapshots:
 
   '@chevrotain/types@11.1.2': {}
 
-  '@cli42/lib@0.2.0(mermaid@11.17.2)':
+  '@cli42/lib@0.2.1(mermaid@11.17.2)':
     dependencies:
       '@asciidoctor/core': 4.1.0
       marked: 14.1.4
