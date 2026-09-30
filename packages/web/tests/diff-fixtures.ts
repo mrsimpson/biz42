@@ -35,7 +35,8 @@ export const OPPORTUNITIES = "05-opportunities.biz42.md";
 /**
  * Create a repository whose working tree differs from HEAD by:
  * - risk-commoditisation: severity changed without prose change (lint warning)
- * - opp-word-of-mouth: prose changed without block change (lint warning)
+ * - opp-word-of-mouth: prose changed without block change, naming a signal the model
+ *   does not connect to it (lint warning)
  * - "Compliance differentiator" section removed (element + section removed)
  * - "Partner channel" opportunity added in a new section, its prose containing
  *   a literal "</script>" and "$&"
@@ -59,7 +60,7 @@ export function createDiffRepository(): string {
     root,
     OPPORTUNITIES,
     "was a lower-cost growth path than direct sales.",
-    "was a far lower-cost growth path than direct sales.",
+    "was a far lower-cost growth path than direct sales, helped by sig-gdpr-pressure.",
   );
   edit(
     root,
