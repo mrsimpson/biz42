@@ -209,7 +209,8 @@ async function runValidate(dir: string, args: string[]) {
     }
 
     const hasHints = result.diagnostics.some((d) => d.severity === "hint");
-    process.exit(!result.valid || (strict && hasHints) ? 1 : 0);
+    const hasWarnings = result.diagnostics.some((d) => d.severity === "warning");
+    process.exit(!result.valid || (strict && (hasHints || hasWarnings)) ? 1 : 0);
   } catch (err) {
     console.error(`Error: ${String(err)}`);
     process.exit(1);
