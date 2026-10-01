@@ -447,8 +447,11 @@ prose is shown as formatted text; biz42 element blocks are revealed by clicking 
 stripe; Mermaid diagrams are rendered inline. An Agent view toggle shows raw DSL fences for
 tooling consumers. A difference is shown as a summary and inline in its chapters; the
 history of the business model is a chain of commits, each with its change, and each commit can
-be browsed as a whole. Designed to work equally as a `localhost` server and as a GitHub Pages
-static deployment.
+be browsed as a whole. Model ids that prose mentions link to their elements, and diagram nodes
+link to their elements by the same route. Routing, the history format, the changes and history
+views and the Mermaid diagram are the shared web view of every \*42 language (`@cli42/lib/web`,
+`@cli42/lib/web-react`); biz42 adds its words and its rendering of document nodes and diagrams.
+Designed to work equally as a `localhost` server and as a GitHub Pages static deployment.
 
 ```arc42
 :::building-block
