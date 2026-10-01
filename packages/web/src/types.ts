@@ -14,6 +14,6 @@ declare global {
     /** The difference injected by `biz42 build --diff`. */
     __DIFF__?: DiffPayload;
     /** Where `biz42 build --with-history` put the history (or the history itself). */
-    __HISTORY__?: import("./useHistory.ts").HistorySource;
+    __HISTORY__?: import("@cli42/lib/web").HistorySource;
   }
 }

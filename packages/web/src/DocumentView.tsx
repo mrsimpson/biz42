@@ -1,9 +1,13 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
+import { groupNodes as groupDocumentNodes } from "@cli42/lib/web";
+import type { ElementLinks, RenderGroup } from "@cli42/lib/web";
+import { ChapterDiff, headingClass } from "@cli42/lib/web-react";
+import type { RenderNodesProps } from "@cli42/lib/web-react";
 import type {
   AstNode,
-  ProseNode,
   BlockNode,
   HeadingNode,
+  IgnoreNode,
   DocumentAst,
   Element,
   Edge,
@@ -13,110 +17,102 @@ import type {
 import styles from "./DocumentView.module.css";
 import { AstNodeRenderer } from "./AstNodeRenderer.tsx";
 import type { ProseRunNode } from "./AstNodeRenderer.tsx";
-import { ChapterDiff } from "./ChapterDiff.tsx";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-/**
- * A render group is either:
- * - A prose-run: one or more consecutive ProseNodes merged into a single string,
- *   optionally followed by a biz42 BlockNode that is "attached" to that prose.
- * - An "other" node: heading, diagram, bare-mermaid, ignore, or standalone block.
- *
- * Grouping is required for two reasons:
- *  1. Tables: the parser emits one ProseNode per source line. If each line is
- *     rendered independently, table rows never assemble into a <table>. Merging
- *     the run and passing the full text to marked restores table rendering.
- *  2. Collapsible cards: the biz42 BlockNode that follows a prose paragraph
- *     should be attached to it — the prose gets a clickable stripe that
- *     expands/collapses the element card below.
- */
-type RenderGroup =
-  | { kind: "prose-run"; text: string; renderedHtml?: string; block: BlockNode | null }
-  | { kind: "other"; node: AstNode };
-
-export function groupNodes(nodes: AstNode[]): RenderGroup[] {
-  const groups: RenderGroup[] = [];
-  let proseLines: string[] = [];
-  let proseRendered: string[] = [];
-  let i = 0;
-
-  function flushProse(attachedBlock: BlockNode | null) {
-    if (proseLines.length === 0 && !attachedBlock) return;
-    // Use the server-rendered HTML when every prose node of the run has it
-    const renderedHtml =
-      proseRendered.length === proseLines.length && proseRendered.length > 0
-        ? proseRendered.join("")
-        : undefined;
-    groups.push({
-      kind: "prose-run",
-      text: proseLines.join("\n"),
-      ...(renderedHtml !== undefined ? { renderedHtml } : {}),
-      block: attachedBlock,
-    });
-    proseLines = [];
-    proseRendered = [];
-  }
-
-  while (i < nodes.length) {
-    const node = nodes[i]!;
-
-    if (node.kind === "prose") {
-      const proseNode = node as ProseNode;
-      proseLines.push(proseNode.text);
-      if (proseNode.renderedHtml !== undefined) proseRendered.push(proseNode.renderedHtml);
-      i++;
-
-      // Check if the next non-ignore node is a biz42 block — if so, attach it
-      let j = i;
-      while (nodes[j]?.kind === "ignore") j++;
-      const next = nodes[j];
-      if (next && next.kind === "block" && (next as BlockNode).inBiz42Fence) {
-        flushProse(next as BlockNode);
-        i = j + 1; // skip past the block (and any ignores before it)
-      }
-      // Otherwise keep accumulating prose lines
-      continue;
-    }
-
-    // Non-prose node — flush any pending prose first (no attached block)
-    if (proseLines.length > 0) {
-      flushProse(null);
-    }
-
-    if (node.kind === "ignore") {
-      // Standalone ignore directive — skip in human view, handled by agent view
-      i++;
-      continue;
-    }
-
-    if (node.kind === "block" && (node as BlockNode).inBiz42Fence) {
-      // biz42 block with no preceding prose — emit as prose-run with empty text
-      groups.push({ kind: "prose-run", text: "", block: node as BlockNode });
-    } else {
-      groups.push({ kind: "other", node });
-    }
-    i++;
-  }
-
-  // Flush any remaining prose lines
-  if (proseLines.length > 0) {
-    flushProse(null);
-  }
-
-  return groups;
+/** Whether a node is a biz42 block, introduced by the prose before it. */
+export function isBiz42Block(node: { kind: string }): node is BlockNode {
+  return node.kind === "block" && (node as BlockNode).inBiz42Fence;
 }
 
-// ─── DocumentView ─────────────────────────────────────────────────────────────
+/**
+ * Prose runs and other nodes of a document (see `groupNodes` of @cli42/lib/web):
+ * consecutive prose renders as one (tables), and the biz42 block that follows
+ * a paragraph is attached to it (the prose stripe opens its card).
+ */
+export function groupNodes(
+  nodes: readonly AstNode[],
+): RenderGroup<AstNode, BlockNode, IgnoreNode>[] {
+  return groupDocumentNodes<AstNode, BlockNode, IgnoreNode>(nodes, { isBlock: isBiz42Block });
+}
 
-interface DocumentViewProps {
-  doc: DocumentAst;
-  viewMode: "human" | "agent";
+/** The workspace the Documents view renders nodes of. */
+export interface NodesWorkspace {
   elementsMap: Map<string, Element>;
-  elementDocMap: Map<string, string>;
+  links: ElementLinks;
   edges: Edge[];
   diagrams: Diagram[];
-  chapterMap: Map<string, number>;
+}
+
+/**
+ * Render document nodes the way the Documents view does. The shared views of
+ * @cli42/lib/web-react call this for unchanged and changed sections; a diff
+ * side (`content`) brings its own elements, edges and diagrams.
+ */
+export function NodesRender({
+  nodes,
+  proseHtml,
+  content,
+  viewMode,
+  targetElementId = null,
+  onTargetConsumed,
+  workspace,
+}: RenderNodesProps & { workspace: NodesWorkspace }) {
+  const own = useMemo<NodesWorkspace>(() => {
+    if (!content) return workspace;
+    const elements = content.elements as Element[];
+    return {
+      elementsMap: new Map(elements.map((element) => [element.id, element])),
+      links: workspace.links,
+      edges: content.edges as Edge[],
+      diagrams: (content.diagrams ?? []) as Diagram[],
+    };
+  }, [content, workspace]);
+  const groups = useMemo(() => groupNodes(nodes as AstNode[]), [nodes]);
+  let run = 0;
+  return (
+    <>
+      {groups.map((group, i) => {
+        if (group.kind === "other") {
+          return (
+            <AstNodeRenderer
+              key={i}
+              node={group.node}
+              viewMode={viewMode}
+              elementsMap={own.elementsMap}
+              links={own.links}
+              edges={own.edges}
+              diagrams={own.diagrams}
+            />
+          );
+        }
+        // prose-run (with optional attached biz42 block)
+        const blockId = group.block?.attributes["id"] ?? null;
+        const proseRunNode: ProseRunNode = {
+          kind: "prose-run",
+          text: group.text,
+          renderedHtml: proseHtml?.[run++] ?? group.renderedHtml,
+          block: group.block,
+        };
+        return (
+          <AstNodeRenderer
+            key={i}
+            node={proseRunNode}
+            viewMode={viewMode}
+            elementsMap={own.elementsMap}
+            links={own.links}
+            edges={own.edges}
+            diagrams={own.diagrams}
+            targetElementId={blockId === targetElementId ? targetElementId : null}
+            onTargetConsumed={blockId === targetElementId ? onTargetConsumed : undefined}
+          />
+        );
+      })}
+    </>
+  );
+}
+
+interface DocumentViewProps extends NodesWorkspace {
+  doc: DocumentAst;
+  viewMode: "human" | "agent";
   targetElementId?: string | null;
   onTargetConsumed?: () => void;
   /** The changes of a visualized difference to this document: shown inline. */
@@ -125,7 +121,7 @@ interface DocumentViewProps {
 
 /**
  * The document — with its changes inline when a visualized difference touches
- * it. A separate component per mode keeps each one's hooks stable.
+ * it.
  */
 export function DocumentView(props: DocumentViewProps) {
   const { diffDocument } = props;
@@ -133,13 +129,7 @@ export function DocumentView(props: DocumentViewProps) {
     return (
       <ChapterDiff
         diff={diffDocument}
-        context={{
-          document: props.doc,
-          elementsMap: props.elementsMap,
-          elementDocMap: props.elementDocMap,
-          edges: props.edges,
-          diagrams: props.diagrams,
-        }}
+        document={props.doc}
         viewMode={props.viewMode}
         targetElementId={props.targetElementId ?? null}
         onTargetConsumed={props.onTargetConsumed}
@@ -153,15 +143,16 @@ function PlainDocumentView({
   doc,
   viewMode,
   elementsMap,
-  elementDocMap,
+  links,
   edges,
   diagrams,
-  chapterMap,
   targetElementId = null,
   onTargetConsumed,
 }: DocumentViewProps) {
-  const groups = useMemo(() => groupNodes(doc.nodes), [doc]);
-
+  const workspace = useMemo(
+    () => ({ elementsMap, links, edges, diagrams }),
+    [elementsMap, links, edges, diagrams],
+  );
   const chapterTitle = useMemo(() => {
     const h1 = doc.nodes.find(
       (n): n is HeadingNode => n.kind === "heading" && (n as HeadingNode).level === 1,
@@ -172,48 +163,15 @@ function PlainDocumentView({
   return (
     <article className={styles.documentView}>
       {chapterTitle && (
-        <h1 className={[styles.heading, styles.heading1, styles.chapterTitle].join(" ")}>
-          {chapterTitle}
-        </h1>
+        <h1 className={[headingClass(1), styles.chapterTitle].join(" ")}>{chapterTitle}</h1>
       )}
-      {groups.map((group, i) => {
-        if (group.kind === "other") {
-          return (
-            <AstNodeRenderer
-              key={i}
-              node={group.node}
-              viewMode={viewMode}
-              elementsMap={elementsMap}
-              elementDocMap={elementDocMap}
-              edges={edges}
-              diagrams={diagrams}
-              chapterMap={chapterMap}
-            />
-          );
-        }
-        // prose-run (with optional attached biz42 block)
-        const blockId = group.block?.attributes["id"] ?? null;
-        const proseRunNode: ProseRunNode = {
-          kind: "prose-run",
-          text: group.text,
-          renderedHtml: group.renderedHtml,
-          block: group.block,
-        };
-        return (
-          <AstNodeRenderer
-            key={i}
-            node={proseRunNode}
-            viewMode={viewMode}
-            elementsMap={elementsMap}
-            elementDocMap={elementDocMap}
-            edges={edges}
-            diagrams={diagrams}
-            chapterMap={chapterMap}
-            targetElementId={blockId === targetElementId ? targetElementId : null}
-            onTargetConsumed={blockId === targetElementId ? onTargetConsumed : undefined}
-          />
-        );
-      })}
+      <NodesRender
+        nodes={doc.nodes}
+        viewMode={viewMode}
+        targetElementId={targetElementId}
+        onTargetConsumed={onTargetConsumed}
+        workspace={workspace}
+      />
     </article>
   );
 }

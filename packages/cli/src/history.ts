@@ -1,10 +1,14 @@
 // Delivers the business model history: plain data from the filesystem
 // workspace adapter, in the Web Renderer's history format.
-import { snapshotBlobFile, snapshotTreeFile, toHistoryPearls } from "@biz42/web/history-format";
-import type { HistoryEntry, HistoryPearl, SnapshotTree } from "@biz42/web/history-format";
+import { snapshotBlobFile, snapshotTreeFile, toHistoryPearls } from "@cli42/lib/web";
+import type { HistoryEntry as Entry, HistoryPearl, SnapshotTree } from "@cli42/lib/web";
+import type { DiffPayload } from "@biz42/core";
 import { renderMarkdown } from "@cli42/lib/markdown";
 import { loadCommitChange, readBusinessModelBlob, readCommitFiles } from "@biz42/workspace-fs";
 import type { BusinessModelCommit, BusinessModelHistory } from "@biz42/workspace-fs";
+
+/** A pearl's entry, with biz42's difference. */
+type HistoryEntry = Entry<DiffPayload>;
 
 /** The pearls of a history, numbered into chunks. */
 export function historyPearls(history: BusinessModelHistory): HistoryPearl[] {

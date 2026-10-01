@@ -37,15 +37,40 @@ describe("business model diff lint", () => {
     expect(result.model.elements).toHaveLength(1);
   });
 
-  test("reports prose-only changes", () => {
-    const result = lint(risk(), risk("Key customers are leaving."));
+  test("accepts prose that adds context the model does not record (arc42-language#90)", () => {
+    const result = lint(risk(), risk("Key customers are leaving; two did so last quarter."));
+    expect(result.findings).toEqual([]);
+  });
+
+  test("reports prose that changes a fact of the unchanged block", () => {
+    const result = lint(
+      risk("The churn risk is high."),
+      risk("The churn risk is moderate at most."),
+    );
     expect(result.findings).toMatchObject([
       {
         kind: "prose-without-block-change",
         elementId: "churn",
-        message: "Section prose changed without changing block 'churn'.",
+        message: "Section prose changed without changing block 'churn' — it names 'high'.",
       },
     ]);
+  });
+
+  test("reports prose that names an element the model does not connect", () => {
+    // A signal can surface a risk; this one surfaces none.
+    const signal = `\n## Price war\n\nCompetitors cut prices.\n\n${block("signal", { id: "price-war", title: "Price war" })}\n`;
+    const result = lint(
+      risk() + signal,
+      risk("Key customers may leave, driven by the Price war.") + signal,
+    );
+    expect(result.findings).toMatchObject([
+      { kind: "prose-without-block-change", elementId: "churn" },
+    ]);
+  });
+
+  test("an element of a kind that cannot relate to the block is not a model statement", () => {
+    const result = lint(risk() + OTHER, risk("Key customers leave once Key person quits.") + OTHER);
+    expect(result.findings).toEqual([]);
   });
 
   test("accepts deletion of a block together with its prose", () => {

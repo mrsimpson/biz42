@@ -230,3 +230,43 @@ date: 2026-08-18
 addresses: qg-agent-writability, qg-readability, risk-template-drift
 :::
 ```
+
+## One Web View for Every \*42 Language
+
+biz42's web renderer was ported from arc42's, and the two drifted apart: biz42 dropped heading
+anchors and linked diagram nodes by a chapter route of its own. Routing, the history format, the
+changes and history views and the Mermaid diagram now come from `@cli42/lib` (`/web`,
+`/web-react`), shared with arc42 and pdt42; biz42 keeps its document, element and diagram
+rendering and passes its words and its node rendering to the shared views. Every link to an
+element is `#<file>:el-<id>`, from the prose, a card or a diagram. Rejected: keeping a copy per
+language (the copies were the problem).
+
+```arc42
+:::decision
+id: dec-shared-web-view
+title: Routing, history format and the changes and history views come from the shared web view
+status: accepted
+date: 2026-10-01
+addresses: qg-extensibility, qg-readability
+:::
+```
+
+## Ids Carry Their Kind's Prefix, Declared in the Schemas
+
+Ids like `risk-commoditisation` tell what they refer to wherever they appear. The diagram rule that
+finds model ids in Mermaid sources kept its own list of prefixes, which had drifted: ids with the
+short prefixes workspaces use (`cap-`, `prod-`, `sig-`, `impr-`, `cf-`) were never checked. Each
+element schema now declares its id prefixes (`idPrefixes`, the canonical one first), and one
+declaration serves the warning about ids off their scheme (WG08), the diagram rule, `explain`, and
+the web view, which links ids mentioned in prose. Rejected: a list per rule (it drifts), and
+linking every token that looks like an id.
+
+```arc42
+:::decision
+id: dec-id-schemes
+title: Each element kind declares its id prefixes; rules, guidance and the web view share them
+status: accepted
+date: 2026-10-01
+addresses: qg-readability, qg-verifiability
+:::
+```

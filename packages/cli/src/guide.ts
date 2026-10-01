@@ -131,9 +131,10 @@ Options:
 Without a flag, the command compares the working tree with the index. With <reference>,
 it compares the working tree with that revision. A commit range cannot be combined with
 --staged. Business model changes are compared semantically: reformatted blocks and
-reflowed prose are not changes. A block changed without the prose of its section (or the
-other way round) is a consistency finding and exits 1; set BIZ42_CONSISTENT to the
-displayed base commit after reviewing them. Documents Git does not track yet are not part
+reflowed prose are not changes. A block changed without the prose of its section is a
+consistency finding and exits 1; so is prose changed around an unchanged block when the
+changed words name a fact of the block or an element the model does not connect to it.
+Set BIZ42_CONSISTENT to the displayed base commit after reviewing them. Documents Git does not track yet are not part
 of a comparison with the working tree; they are listed as a warning. Git, parsing, and
 other operational errors exit 1.
 

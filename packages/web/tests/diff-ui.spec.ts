@@ -74,7 +74,7 @@ test.describe("Changes inline in the chapters", () => {
   test("marks changed words and switches between the versions", async ({ page }) => {
     await page.goto(`/#${OPPORTUNITIES}`);
     const changed = segment(page, "modified: Word-of-mouth from early adopter teams");
-    await expect(changed.locator("ins")).toHaveText(["far"]);
+    await expect(changed.locator("ins")).toHaveText(["far", ", helped by sig-gdpr-pressure"]);
     await changed.getByRole("button", { name: "Previous" }).click();
     await expect(changed.getByTestId("segment-base")).toContainText("was a lower-cost growth path");
     await changed.getByRole("button", { name: "Current" }).click();

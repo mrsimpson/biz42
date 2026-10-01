@@ -1,7 +1,8 @@
 import { useMemo } from "react";
 import type { Diagram, Element } from "@biz42/core";
 import { explainDiagram } from "@biz42/core";
-import { MermaidDiagram } from "./MermaidDiagram.tsx";
+import { MermaidDiagram } from "@cli42/lib/web-react";
+import type { ElementLinks } from "@cli42/lib/web";
 import { BmcDiagram } from "./BmcDiagram.tsx";
 
 // ---------------------------------------------------------------------------
@@ -11,17 +12,15 @@ import { BmcDiagram } from "./BmcDiagram.tsx";
 function buildClickableNodes(
   source: string,
   elements: Element[],
-  chapterMap: Map<string, number>,
+  links: ElementLinks,
 ): Map<string, string> {
   const map = new Map<string, string>();
   for (const el of elements) {
     const escaped = el.id.replace(/[-]/gu, "\\-");
     const pattern = new RegExp(`(?<![a-zA-Z0-9_-])${escaped}(?![a-zA-Z0-9_-])`);
     if (pattern.test(source)) {
-      const ch = chapterMap.get(el.id);
-      if (ch !== undefined) {
-        map.set(el.id, `#chapter-${ch}-${el.id}`);
-      }
+      const href = links.elementHref(el.id);
+      if (href) map.set(el.id, href);
     }
   }
   return map;
@@ -103,19 +102,15 @@ function MethodologyDescription({ notation }: { notation: string }) {
 export interface DiagramViewProps {
   diagram: Diagram;
   elements: Element[];
-  chapterMap: Map<string, number>;
+  /** Links to the elements: diagram nodes open their element. */
+  links: ElementLinks;
   agentView?: boolean;
 }
 
-export function DiagramView({
-  diagram,
-  elements,
-  chapterMap,
-  agentView = false,
-}: DiagramViewProps) {
+export function DiagramView({ diagram, elements, links, agentView = false }: DiagramViewProps) {
   const clickableNodes = useMemo(
-    () => buildClickableNodes(diagram.source, elements, chapterMap),
-    [diagram.source, elements, chapterMap],
+    () => buildClickableNodes(diagram.source, elements, links),
+    [diagram.source, elements, links],
   );
 
   // Human-readable title: prefer explicit title, fall back to formatted id
@@ -170,7 +165,7 @@ export function DiagramView({
       </h3>
       {/* Diagram render — BMC uses custom renderer; all others use Mermaid */}
       {diagram.notation === "bmc" ? (
-        <BmcDiagram diagram={diagram} elements={elements} chapterMap={chapterMap} />
+        <BmcDiagram diagram={diagram} elements={elements} links={links} />
       ) : (
         <MermaidDiagram source={diagram.source} id={diagram.id} clickableNodes={clickableNodes} />
       )}

@@ -6,6 +6,9 @@ import styles from "./AstNodeRenderer.module.css";
 import { ElementCard, elementColor } from "./ElementCard.tsx";
 import { DiagramView } from "./DiagramView.tsx";
 import type { Diagram } from "@biz42/core";
+import type { ElementLinks } from "@cli42/lib/web";
+import { linkElementIds, slug } from "@cli42/lib/web";
+import { headingClass } from "@cli42/lib/web-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -21,10 +24,9 @@ export interface AstNodeRendererProps {
   node: AstNode | ProseRunNode;
   viewMode: "human" | "agent";
   elementsMap: Map<string, Element>;
-  elementDocMap: Map<string, string>;
+  links: ElementLinks;
   edges: Edge[];
   diagrams?: Diagram[];
-  chapterMap?: Map<string, number>;
   /** Element id to auto-expand when this renderer mounts/updates */
   targetElementId?: string | null;
   onTargetConsumed?: () => void;
@@ -36,10 +38,9 @@ export function AstNodeRenderer({
   node,
   viewMode,
   elementsMap,
-  elementDocMap,
+  links,
   edges,
   diagrams = [],
-  chapterMap = new Map(),
   targetElementId,
   onTargetConsumed,
 }: AstNodeRendererProps) {
@@ -49,22 +50,15 @@ export function AstNodeRenderer({
       if (node.level === 1) return null;
       // Shift levels down by one so H2 renders as h1, H3 as h2, etc.
       const Tag = `h${Math.min(node.level, 6)}` as keyof React.JSX.IntrinsicElements;
-      const anchor = node.text
-        .toLowerCase()
-        .replace(/[^\w\s-]/g, "")
-        .replace(/\s+/g, "-");
-      const levelClass =
-        [docStyles.heading2, docStyles.heading3, docStyles.heading4][node.level - 2] ??
-        docStyles.heading4;
       return (
-        <Tag id={anchor} className={[docStyles.heading, levelClass].join(" ")}>
+        <Tag id={slug(node.text)} className={headingClass(node.level + 1)}>
           {node.text}
         </Tag>
       );
     }
 
     case "prose": {
-      return <ProseBlock text={node.text} />;
+      return <ProseBlock text={node.text} links={links} />;
     }
 
     case "prose-run": {
@@ -76,7 +70,7 @@ export function AstNodeRenderer({
           block={runNode.block}
           viewMode={viewMode}
           elementsMap={elementsMap}
-          elementDocMap={elementDocMap}
+          links={links}
           edges={edges}
           targetElementId={targetElementId ?? null}
           onTargetConsumed={onTargetConsumed}
@@ -100,7 +94,7 @@ export function AstNodeRenderer({
             <ElementCard
               elementId={blockNode.attributes["id"] ?? ""}
               elementsMap={elementsMap}
-              elementDocMap={elementDocMap}
+              links={links}
               edges={edges}
             />
           </div>
@@ -131,7 +125,7 @@ export function AstNodeRenderer({
         <DiagramView
           diagram={diagram}
           elements={[...elementsMap.values()]}
-          chapterMap={chapterMap}
+          links={links}
           agentView={viewMode === "agent"}
         />
       );
@@ -164,7 +158,7 @@ interface ProseRunProps {
   block: BlockNode | null;
   viewMode: "human" | "agent";
   elementsMap: Map<string, Element>;
-  elementDocMap: Map<string, string>;
+  links: ElementLinks;
   edges: Edge[];
   targetElementId: string | null;
   onTargetConsumed?: () => void;
@@ -176,7 +170,7 @@ function ProseRun({
   block,
   viewMode,
   elementsMap,
-  elementDocMap,
+  links,
   edges,
   targetElementId,
   onTargetConsumed,
@@ -218,7 +212,9 @@ function ProseRun({
   if (!hasBlock || viewMode === "agent") {
     return (
       <div className={styles.proseRun}>
-        {(text || renderedHtml) && <ProseBlock text={text} html={renderedHtml} />}
+        {(text || renderedHtml) && (
+          <ProseBlock text={text} html={renderedHtml} links={links} own={blockId} />
+        )}
         {hasBlock && viewMode === "agent" && <AgentBlock source={reconstructBlockSource(block!)} />}
       </div>
     );
@@ -234,7 +230,7 @@ function ProseRun({
           <ElementCard
             elementId={block.attributes["id"] ?? ""}
             elementsMap={elementsMap}
-            elementDocMap={elementDocMap}
+            links={links}
             edges={edges}
             accentColor={color}
             onDismiss={() => setShowCard(false)}
@@ -257,7 +253,9 @@ function ProseRun({
       />
       <div className={styles.content}>
         <div data-testid="prose-view" className={styles.proseView}>
-          {(text || renderedHtml) && <ProseBlock text={text} html={renderedHtml} />}
+          {(text || renderedHtml) && (
+            <ProseBlock text={text} html={renderedHtml} links={links} own={blockId} />
+          )}
         </div>
       </div>
     </div>
@@ -275,8 +273,23 @@ export function renderProse(text: string): string {
   }
 }
 
-function ProseBlock({ text, html }: { text: string; html?: string }) {
-  const rendered = useMemo(() => html ?? renderProse(text), [text, html]);
+/** Prose, with the ids of the workspace it mentions linked to their elements. */
+function ProseBlock({
+  text,
+  html,
+  links,
+  own,
+}: {
+  text: string;
+  html?: string;
+  links: ElementLinks;
+  /** The id of the element this prose introduces: not linked to itself. */
+  own?: string | null;
+}) {
+  const rendered = useMemo(
+    () => linkElementIds(html ?? renderProse(text), links, own),
+    [text, html, links, own],
+  );
   return <div className={docStyles.proseBlock} dangerouslySetInnerHTML={{ __html: rendered }} />;
 }
 

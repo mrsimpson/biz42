@@ -1,4 +1,5 @@
 import type { Diagram, Element } from "@biz42/core";
+import type { ElementLinks } from "@cli42/lib/web";
 
 // ---------------------------------------------------------------------------
 // Minimal YAML parser for the flat BMC structure
@@ -74,7 +75,7 @@ const BMC_CELLS: BmcCellDef[] = [
 export interface BmcDiagramProps {
   diagram: Diagram;
   elements: Element[];
-  chapterMap: Map<string, number>;
+  links: ElementLinks;
 }
 
 /** Returns true when the value looks like a biz42 element id (no whitespace). */
@@ -85,22 +86,19 @@ function looksLikeElementId(value: string): boolean {
 function BmcEntry({
   value,
   elements,
-  chapterMap,
+  links,
 }: {
   value: string;
   elements: Element[];
-  chapterMap: Map<string, number>;
+  links: ElementLinks;
 }) {
   if (looksLikeElementId(value)) {
     const el = elements.find((e) => e.id === value);
-    const ch = chapterMap.get(value);
-    if (el && ch !== undefined) {
+    const href = links.elementHref(value);
+    if (el && href) {
       return (
         <li>
-          <a
-            href={`#chapter-${ch}-${el.id}`}
-            style={{ color: "#1a6fa8", textDecoration: "none", fontWeight: 500 }}
-          >
+          <a href={href} style={{ color: "#1a6fa8", textDecoration: "none", fontWeight: 500 }}>
             {el.title}
           </a>
         </li>
@@ -116,12 +114,12 @@ function BmcCell({
   cell,
   entries,
   elements,
-  chapterMap,
+  links,
 }: {
   cell: BmcCellDef;
   entries: string[];
   elements: Element[];
-  chapterMap: Map<string, number>;
+  links: ElementLinks;
 }) {
   return (
     <div
@@ -164,7 +162,7 @@ function BmcCell({
           }}
         >
           {entries.map((v, i) => (
-            <BmcEntry key={i} value={v} elements={elements} chapterMap={chapterMap} />
+            <BmcEntry key={i} value={v} elements={elements} links={links} />
           ))}
         </ul>
       )}
@@ -181,7 +179,7 @@ function BmcCell({
  * |              | Key Resources   |             |              |              |
  * |     Cost Structure             |             |  Revenue Streams             |
  */
-export function BmcDiagram({ diagram, elements, chapterMap }: BmcDiagramProps) {
+export function BmcDiagram({ diagram, elements, links }: BmcDiagramProps) {
   const slots = parseBmcYaml(diagram.source);
 
   return (
@@ -208,7 +206,7 @@ export function BmcDiagram({ diagram, elements, chapterMap }: BmcDiagramProps) {
           cell={cell}
           entries={slots.get(cell.key) ?? []}
           elements={elements}
-          chapterMap={chapterMap}
+          links={links}
         />
       ))}
     </div>

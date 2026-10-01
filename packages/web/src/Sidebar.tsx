@@ -1,6 +1,7 @@
 import React from "react";
 import type { DocumentAst, AstNode, DiffDocument } from "@biz42/core";
-import { ChangeCounts } from "./DiffSegment.tsx";
+import { ChangeCounts } from "@cli42/lib/web-react";
+import type { DocumentRoutes } from "@cli42/lib/web";
 import styles from "./Sidebar.module.css";
 
 function basename(filePath: string): string {
@@ -18,6 +19,8 @@ function docTitle(doc: DocumentAst): string {
 
 interface SidebarProps {
   documents: DocumentAst[];
+  /** The routes of the documents: their keys. */
+  routes: DocumentRoutes;
   activeDocIndex: number;
   onSelectDoc: (index: number) => void;
   /** Present when a difference is visualized (serve/build --diff). */
@@ -45,6 +48,7 @@ interface SidebarProps {
 
 export function Sidebar({
   documents,
+  routes,
   activeDocIndex,
   onSelectDoc,
   changes,
@@ -141,7 +145,7 @@ export function Sidebar({
         <ul className={styles.docs} role="list">
           {documents.map((doc, i) => {
             const isActive = i === activeDocIndex && !changes?.active;
-            const docChanges = changes?.documents.get(basename(doc.filePath));
+            const docChanges = changes?.documents.get(routes.keyOf(doc.filePath));
             const base = basename(doc.filePath);
             const numMatch = /^(\d+)-/.exec(base);
             const num = numMatch ? numMatch[1] : null;

@@ -7,8 +7,8 @@ settings:
 catalogs:
   default:
     '@cli42/lib':
-      specifier: ^0.2.1
-      version: 0.2.1
+      specifier: ^0.6.0
+      version: 0.6.0
     '@doctc/arc42':
       specifier: 0.21.1
       version: 0.21.1
@@ -77,6 +77,10 @@ importers:
         version: 0.1.24(@types/node@24.13.4)(typescript@5.9.3)(vite@8.3.0(@types/node@24.13.4))
 
   packages/cli:
+    dependencies:
+      mermaid:
+        specifier: 'catalog:'
+        version: 11.17.2
     devDependencies:
       '@biz42/core':
         specifier: workspace:*
@@ -89,7 +93,7 @@ importers:
         version: link:../workspace-fs
       '@cli42/lib':
         specifier: 'catalog:'
-        version: 0.2.1(mermaid@11.17.2)
+        version: 0.6.0(mermaid@11.17.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@types/node':
         specifier: 'catalog:'
         version: 24.13.4
@@ -104,7 +108,7 @@ importers:
     dependencies:
       '@cli42/lib':
         specifier: 'catalog:'
-        version: 0.2.1(mermaid@11.17.2)
+        version: 0.6.0(mermaid@11.17.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       mermaid:
         specifier: 'catalog:'
         version: 11.17.2
@@ -159,7 +163,7 @@ importers:
         version: link:../core
       '@cli42/lib':
         specifier: 'catalog:'
-        version: 0.2.1(mermaid@11.17.2)
+        version: 0.6.0(mermaid@11.17.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       marked:
         specifier: ^14.0.0
         version: 14.1.4
@@ -208,7 +212,7 @@ importers:
         version: link:../core
       '@cli42/lib':
         specifier: 'catalog:'
-        version: 0.2.1(mermaid@11.17.2)
+        version: 0.6.0(mermaid@11.17.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
@@ -335,11 +339,18 @@ packages:
   '@chevrotain/types@11.1.2':
     resolution: {integrity: sha512-U+HFai5+zmJCkK86QsaJtoITlboZHBqrVketcO2ROv865xfCMSFpELQoz1GkX5GzME8pTa+3kbKrZHQtI0gdbw==}
 
-  '@cli42/lib@0.2.1':
-    resolution: {integrity: sha512-jkGFUKuTlmqUQoJNS5yOmmZLapRyQy0HmprUh4APDbZV5Kol765LCntg2an0+lgGjkEInYI0vdcdr8ePug88Cw==}
+  '@cli42/lib@0.6.0':
+    resolution: {integrity: sha512-kaDt3Ej6JcwI8P/5nKQ6IzYLQTkV2oscG9ikGDClG0Vn5Q2H9wLtAhzh8iiKFaVWnJffGNASJELRjG2YQuTO8A==}
     engines: {node: '>=22.6'}
     peerDependencies:
       mermaid: ^11
+      react: ^18
+      react-dom: ^18
+    peerDependenciesMeta:
+      react:
+        optional: true
+      react-dom:
+        optional: true
 
   '@colors/colors@1.5.0':
     resolution: {integrity: sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==}
@@ -3256,12 +3267,15 @@ snapshots:
 
   '@chevrotain/types@11.1.2': {}
 
-  '@cli42/lib@0.2.1(mermaid@11.17.2)':
+  '@cli42/lib@0.6.0(mermaid@11.17.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@asciidoctor/core': 4.1.0
       marked: 14.1.4
       mermaid: 11.17.2
       zod: 4.5.4
+    optionalDependencies:
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
     transitivePeerDependencies:
       - highlight.js
 
