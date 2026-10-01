@@ -11,7 +11,7 @@ export default defineConfig({
     },
     copy: [
       {
-        from: "../../packages/skill/SKILL.md",
+        from: "../../skills/biz42/SKILL.md",
         to: "dist/skill",
         flatten: true,
       },

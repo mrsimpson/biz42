@@ -43,6 +43,6 @@ Architecture elements are authored as Markdown sections containing prose followe
 id: con-markdown-authoring
 title: Architecture elements must follow the prose-first Markdown DSL convention
 category: convention
-source: packages/skill/SKILL.md and validation rules W004/W005
+source: skills/biz42/SKILL.md and validation rules W004/W005
 :::
 ```
