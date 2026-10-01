@@ -1,7 +1,8 @@
 // Zod schemas for all 13 biz42 DSL block types.
 // These are the single source of truth for field definitions, required/optional,
-// enum values, AND all guidance metadata (description, biz42Chapter, crossRefs,
-// authoringTips). Nothing is duplicated.
+// enum values, AND all guidance metadata (description, biz42Chapter, idPrefixes,
+// crossRefs, authoringTips). Nothing is duplicated. `idPrefixes` is the id scheme
+// of a kind (canonical prefix first; see WG08 in @cli42/lib/rules).
 //
 // Schema-level metadata is stored via .meta() in Zod's globalRegistry:
 //   z.globalRegistry.get(schema) → { description, biz42Chapter, crossRefs, authoringTips }
@@ -45,6 +46,7 @@ export const ScopeSchema = z
   })
   .meta({
     description: "Defines the organisation, its purpose, and the boundaries of the business model.",
+    idPrefixes: ["scope"],
     biz42Chapter: 1,
     crossRefs: [
       { field: "parent", targetKind: "scope", cardinality: "one", relation: "parent" },
@@ -75,6 +77,7 @@ export const SignalSchema = z
   .meta({
     description:
       "An external or internal factor that could affect the organisation's ability to achieve intended outcomes.",
+    idPrefixes: ["signal", "sig"],
     biz42Chapter: 2,
     crossRefs: [
       {
@@ -109,6 +112,7 @@ export const ExpectationSchema = z
   .meta({
     description:
       "A requirement or need of an interested party that must be considered by the business model.",
+    idPrefixes: ["exp"],
     biz42Chapter: 3,
     crossRefs: [
       {
@@ -143,6 +147,7 @@ export const RiskSchema = z
   .meta({
     description:
       "A potential negative effect on the organisation's ability to achieve its objectives.",
+    idPrefixes: ["risk"],
     biz42Chapter: 4,
     crossRefs: [] satisfies CrossRefMeta[],
     authoringTips: [
@@ -162,6 +167,7 @@ export const OpportunitySchema = z
   .meta({
     description:
       "A potential positive outcome the organisation could pursue to improve its business model.",
+    idPrefixes: ["opp"],
     biz42Chapter: 5,
     crossRefs: [] satisfies CrossRefMeta[],
     authoringTips: [
@@ -197,6 +203,7 @@ export const ObjectiveSchema = z
   .meta({
     description:
       "A specific, time-bound outcome the organisation is committed to achieving. The hub of the biz42 traceability chain.",
+    idPrefixes: ["obj"],
     biz42Chapter: 6,
     crossRefs: [
       {
@@ -231,6 +238,7 @@ export const MeasureSchema = z
   })
   .meta({
     description: "A measurable criterion that defines whether an objective has been achieved.",
+    idPrefixes: ["measure"],
     biz42Chapter: 7,
     crossRefs: [] satisfies CrossRefMeta[],
     authoringTips: [
@@ -252,6 +260,7 @@ export const OwnerSchema = z
   })
   .meta({
     description: "A person or role accountable for one or more objectives.",
+    idPrefixes: ["owner"],
     biz42Chapter: 8,
     crossRefs: [] satisfies CrossRefMeta[],
     authoringTips: [
@@ -281,6 +290,7 @@ export const CapabilitySchema = z
   .meta({
     description:
       "An organisational ability, skill, or resource required to achieve one or more objectives.",
+    idPrefixes: ["capability", "cap"],
     biz42Chapter: 9,
     crossRefs: [
       { field: "enables", targetKind: "product", cardinality: "many", relation: "enables" },
@@ -311,6 +321,7 @@ export const ProductSchema = z
   .meta({
     description:
       "A product or service delivered by the organisation that fulfils stakeholder expectations.",
+    idPrefixes: ["product", "prod"],
     biz42Chapter: 10,
     crossRefs: [
       { field: "fulfills", targetKind: "expectation", cardinality: "many", relation: "fulfills" },
@@ -340,6 +351,7 @@ export const EvaluationSchema = z
   .meta({
     description:
       "A described practice for evaluating performance, customer satisfaction, or system effectiveness.",
+    idPrefixes: ["eval"],
     biz42Chapter: 11,
     crossRefs: [
       { field: "evaluates", targetKind: "measure", cardinality: "many", relation: "evaluates" },
@@ -373,6 +385,7 @@ export const ImprovementSchema = z
   .meta({
     description:
       "A planned or ongoing action to improve the business model in response to evaluation findings.",
+    idPrefixes: ["impr", "improvement"],
     biz42Chapter: 12,
     crossRefs: [
       {
@@ -422,6 +435,7 @@ export const CashflowSchema = z
   })
   .meta({
     description: "A single revenue stream (revenue) or cost item (cost) in the business model.",
+    idPrefixes: ["cashflow", "cf"],
     biz42Chapter: 13,
     crossRefs: [
       {

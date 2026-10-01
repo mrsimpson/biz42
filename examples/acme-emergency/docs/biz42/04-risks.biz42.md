@@ -4,7 +4,7 @@
 
 The works council may block deployment if they conclude the system enables
 employee surveillance. German co-determination law (BetrVG §87) gives the
-works council veto power. If the privacy architecture doesn't convince them,
+works council veto power. If the privacy architecture (`obj-privacy-architecture`) doesn't convince them,
 the project is dead regardless of technical merit.
 
 ```biz42

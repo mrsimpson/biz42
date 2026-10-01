@@ -162,6 +162,22 @@ test.describe("BMC diagram", () => {
   });
 });
 
+// ─── Ids in prose ─────────────────────────────────────────────────────────────
+
+test.describe("Ids in prose", () => {
+  test("an id mentioned in prose links to its element and opens it", async ({ page }) => {
+    await page.goto("/#04-risks.biz42.md");
+    const mention = page.locator("main a[data-id='obj-privacy-architecture']").first();
+    await expect(mention).toBeVisible({ timeout: 8000 });
+    await expect(mention).toHaveAttribute(
+      "href",
+      "#06-objectives.biz42.md:el-obj-privacy-architecture",
+    );
+    await mention.click();
+    await expect(page.locator("#el-obj-privacy-architecture")).toBeVisible({ timeout: 5000 });
+  });
+});
+
 // ─── Dark mode toggle ─────────────────────────────────────────────────────────
 
 test.describe("Dark mode toggle", () => {
