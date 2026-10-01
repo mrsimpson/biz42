@@ -23,6 +23,7 @@ import { h006ImprovementNoTriggeredBy } from "./h006-improvement-no-triggered-by
 import { h007CapabilityNotRequired } from "./h007-capability-not-required.ts";
 import { genericRules } from "@cli42/lib/rules";
 import { ELEMENT_CHAPTER } from "../../model/types.ts";
+import { ELEMENT_SCHEMAS } from "../../model/schemas.ts";
 import type { Rule, ValidationContext } from "../types.ts";
 
 /**
@@ -45,6 +46,7 @@ const sharedRules: Rule[] = genericRules<ValidationContext>({
   chapterOfFile: chapterFromFilePath,
   fenceFlag: "inBiz42Fence",
   fenceDescription: (context) => context?.fenceDescription ?? "```biz42 fence",
+  schemas: ELEMENT_SCHEMAS,
 }).map((rule) => ({
   ...rule,
   meta: { ...rule.meta, docs: { ...rule.meta.docs, biz42Chapter: 0 } },

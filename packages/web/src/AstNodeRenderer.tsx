@@ -7,7 +7,7 @@ import { ElementCard, elementColor } from "./ElementCard.tsx";
 import { DiagramView } from "./DiagramView.tsx";
 import type { Diagram } from "@biz42/core";
 import type { ElementLinks } from "@cli42/lib/web";
-import { slug } from "@cli42/lib/web";
+import { linkElementIds, slug } from "@cli42/lib/web";
 import { headingClass } from "@cli42/lib/web-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -58,7 +58,7 @@ export function AstNodeRenderer({
     }
 
     case "prose": {
-      return <ProseBlock text={node.text} />;
+      return <ProseBlock text={node.text} links={links} />;
     }
 
     case "prose-run": {
@@ -212,7 +212,9 @@ function ProseRun({
   if (!hasBlock || viewMode === "agent") {
     return (
       <div className={styles.proseRun}>
-        {(text || renderedHtml) && <ProseBlock text={text} html={renderedHtml} />}
+        {(text || renderedHtml) && (
+          <ProseBlock text={text} html={renderedHtml} links={links} own={blockId} />
+        )}
         {hasBlock && viewMode === "agent" && <AgentBlock source={reconstructBlockSource(block!)} />}
       </div>
     );
@@ -251,7 +253,9 @@ function ProseRun({
       />
       <div className={styles.content}>
         <div data-testid="prose-view" className={styles.proseView}>
-          {(text || renderedHtml) && <ProseBlock text={text} html={renderedHtml} />}
+          {(text || renderedHtml) && (
+            <ProseBlock text={text} html={renderedHtml} links={links} own={blockId} />
+          )}
         </div>
       </div>
     </div>
@@ -269,8 +273,23 @@ export function renderProse(text: string): string {
   }
 }
 
-function ProseBlock({ text, html }: { text: string; html?: string }) {
-  const rendered = useMemo(() => html ?? renderProse(text), [text, html]);
+/** Prose, with the ids of the workspace it mentions linked to their elements. */
+function ProseBlock({
+  text,
+  html,
+  links,
+  own,
+}: {
+  text: string;
+  html?: string;
+  links: ElementLinks;
+  /** The id of the element this prose introduces: not linked to itself. */
+  own?: string | null;
+}) {
+  const rendered = useMemo(
+    () => linkElementIds(html ?? renderProse(text), links, own),
+    [text, html, links, own],
+  );
   return <div className={docStyles.proseBlock} dangerouslySetInnerHTML={{ __html: rendered }} />;
 }
 

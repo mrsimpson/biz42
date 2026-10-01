@@ -2,6 +2,8 @@ import type { Rule, Diagnostic } from "../types.ts";
 import type { Workspace } from "../../model/types.ts";
 import type { ReferenceIndex } from "../../resolver/types.ts";
 import { extractMermaidSubgraphIds } from "../mermaid-utils.ts";
+import { idMatcher } from "@cli42/lib/schema";
+import { ELEMENT_SCHEMAS } from "../../model/schemas.ts";
 
 /**
  * E011 — A diagram references an element id that does not exist in the workspace.
@@ -13,31 +15,14 @@ import { extractMermaidSubgraphIds } from "../mermaid-utils.ts";
  *
  * Applies to: sipoc, turtle, strategy-map notations.
  *
- * Strategy: only flag tokens whose prefix matches a biz42 element kind
- * (signal-, exp-, risk-, opp-, obj-, measure-, owner-, capability-, product-,
- * eval-, improvement-). Structural subgraph IDs (sipoc-*, turtle-*, etc.)
- * are excluded. Tokens that only appear inside quoted labels are excluded.
+ * Strategy: only flag tokens that are biz42 element ids by their kind's id
+ * scheme (`idPrefixes` in the schemas, e.g. signal-, sig-, cap-, impr-).
+ * Structural subgraph IDs (sipoc-*, turtle-*, etc.) are excluded. Tokens that
+ * only appear inside quoted labels are excluded.
  */
 
-const ELEMENT_PREFIXES = [
-  "signal-",
-  "exp-",
-  "risk-",
-  "opp-",
-  "obj-",
-  "measure-",
-  "owner-",
-  "capability-",
-  "product-",
-  "eval-",
-  "improvement-",
-  "scope-",
-  "cashflow-",
-];
-
-function looksLikeElementId(token: string): boolean {
-  return ELEMENT_PREFIXES.some((prefix) => token.startsWith(prefix));
-}
+/** Whether a token carries a biz42 kind's id prefix (one scheme for every rule, see idMatcher). */
+const looksLikeElementId = idMatcher(ELEMENT_SCHEMAS);
 
 function appearsOnlyInQuotes(source: string, token: string): boolean {
   const escaped = token.replace(/[-]/gu, "\\-");
