@@ -51,6 +51,15 @@ test.describe("Document navigation", () => {
     expect(hash).toContain("04-risks");
   });
 
+  test("a heading anchor opens the document at the heading", async ({ page }) => {
+    await page.goto("/#04-risks.biz42.md");
+    const heading = page.locator("main h2[id]").first();
+    await expect(heading).toBeVisible({ timeout: 5000 });
+    const id = await heading.getAttribute("id");
+    await page.goto(`/#04-risks.biz42.md:${id}`);
+    await expect(page.locator(`main [id="${id}"]`)).toBeInViewport({ timeout: 5000 });
+  });
+
   test("reloading preserves the active document", async ({ page }) => {
     await page.goto("/#06-objectives.biz42.md");
     await page.waitForLoadState("networkidle");
@@ -138,6 +147,18 @@ test.describe("BMC diagram", () => {
     await expect(
       page.getByTestId("bmc-diagram").getByRole("link", { name: "Alert Service" }),
     ).toBeVisible();
+  });
+
+  test("a BMC link opens the element in its document, by the shared element route", async ({
+    page,
+  }) => {
+    await page.goto("/#13-cashflow.biz42.md");
+    const link = page.getByTestId("bmc-diagram").getByRole("link", { name: "Alert Service" });
+    await expect(link).toHaveAttribute("href", /^#[^:]+\.biz42\.md:el-[a-z0-9-]+$/);
+    await link.click();
+    expect(await getHash(page)).toMatch(/:el-/);
+    const id = (await getHash(page)).split(":el-")[1]!;
+    await expect(page.locator(`[id="el-${id}"]`)).toBeVisible({ timeout: 5000 });
   });
 });
 

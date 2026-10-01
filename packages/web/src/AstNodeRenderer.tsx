@@ -6,6 +6,9 @@ import styles from "./AstNodeRenderer.module.css";
 import { ElementCard, elementColor } from "./ElementCard.tsx";
 import { DiagramView } from "./DiagramView.tsx";
 import type { Diagram } from "@biz42/core";
+import type { ElementLinks } from "@cli42/lib/web";
+import { slug } from "@cli42/lib/web";
+import { headingClass } from "@cli42/lib/web-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -21,10 +24,9 @@ export interface AstNodeRendererProps {
   node: AstNode | ProseRunNode;
   viewMode: "human" | "agent";
   elementsMap: Map<string, Element>;
-  elementDocMap: Map<string, string>;
+  links: ElementLinks;
   edges: Edge[];
   diagrams?: Diagram[];
-  chapterMap?: Map<string, number>;
   /** Element id to auto-expand when this renderer mounts/updates */
   targetElementId?: string | null;
   onTargetConsumed?: () => void;
@@ -36,10 +38,9 @@ export function AstNodeRenderer({
   node,
   viewMode,
   elementsMap,
-  elementDocMap,
+  links,
   edges,
   diagrams = [],
-  chapterMap = new Map(),
   targetElementId,
   onTargetConsumed,
 }: AstNodeRendererProps) {
@@ -49,15 +50,8 @@ export function AstNodeRenderer({
       if (node.level === 1) return null;
       // Shift levels down by one so H2 renders as h1, H3 as h2, etc.
       const Tag = `h${Math.min(node.level, 6)}` as keyof React.JSX.IntrinsicElements;
-      const anchor = node.text
-        .toLowerCase()
-        .replace(/[^\w\s-]/g, "")
-        .replace(/\s+/g, "-");
-      const levelClass =
-        [docStyles.heading2, docStyles.heading3, docStyles.heading4][node.level - 2] ??
-        docStyles.heading4;
       return (
-        <Tag id={anchor} className={[docStyles.heading, levelClass].join(" ")}>
+        <Tag id={slug(node.text)} className={headingClass(node.level + 1)}>
           {node.text}
         </Tag>
       );
@@ -76,7 +70,7 @@ export function AstNodeRenderer({
           block={runNode.block}
           viewMode={viewMode}
           elementsMap={elementsMap}
-          elementDocMap={elementDocMap}
+          links={links}
           edges={edges}
           targetElementId={targetElementId ?? null}
           onTargetConsumed={onTargetConsumed}
@@ -100,7 +94,7 @@ export function AstNodeRenderer({
             <ElementCard
               elementId={blockNode.attributes["id"] ?? ""}
               elementsMap={elementsMap}
-              elementDocMap={elementDocMap}
+              links={links}
               edges={edges}
             />
           </div>
@@ -131,7 +125,7 @@ export function AstNodeRenderer({
         <DiagramView
           diagram={diagram}
           elements={[...elementsMap.values()]}
-          chapterMap={chapterMap}
+          links={links}
           agentView={viewMode === "agent"}
         />
       );
@@ -164,7 +158,7 @@ interface ProseRunProps {
   block: BlockNode | null;
   viewMode: "human" | "agent";
   elementsMap: Map<string, Element>;
-  elementDocMap: Map<string, string>;
+  links: ElementLinks;
   edges: Edge[];
   targetElementId: string | null;
   onTargetConsumed?: () => void;
@@ -176,7 +170,7 @@ function ProseRun({
   block,
   viewMode,
   elementsMap,
-  elementDocMap,
+  links,
   edges,
   targetElementId,
   onTargetConsumed,
@@ -234,7 +228,7 @@ function ProseRun({
           <ElementCard
             elementId={block.attributes["id"] ?? ""}
             elementsMap={elementsMap}
-            elementDocMap={elementDocMap}
+            links={links}
             edges={edges}
             accentColor={color}
             onDismiss={() => setShowCard(false)}
