@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import type { Element, Edge, Cashflow } from "@biz42/core";
 import styles from "./ElementCard.module.css";
+import type { ElementLinks } from "@cli42/lib/web";
 
 // ─── Element → accent colour ──────────────────────────────────────────────────
 
@@ -35,7 +36,7 @@ interface ElementCardProps {
   elementId: string;
   elementsMap: Map<string, Element>;
   /** elementId → document filePath (for cross-doc ref links) */
-  elementDocMap: Map<string, string>;
+  links: ElementLinks;
   edges: Edge[];
   accentColor?: string;
   onDismiss?: () => void;
@@ -44,7 +45,7 @@ interface ElementCardProps {
 export function ElementCard({
   elementId,
   elementsMap,
-  elementDocMap,
+  links,
   edges,
   accentColor,
   onDismiss,
@@ -97,7 +98,7 @@ export function ElementCard({
                 {outgoing.map((e) => (
                   <a
                     key={`${e.to}-${e.relation}`}
-                    href={refHref(e.to, elementDocMap)}
+                    href={refHref(e.to, links)}
                     className={styles.refChip}
                   >
                     <span className={styles.refRel}>{e.relation}</span>
@@ -120,7 +121,7 @@ export function ElementCard({
                   incoming.map((e) => (
                     <a
                       key={`${e.from}-${e.relation}`}
-                      href={refHref(e.from, elementDocMap)}
+                      href={refHref(e.from, links)}
                       className={`${styles.refChip} ${styles.refChipIncoming}`}
                     >
                       <span className={styles.refRel}>{e.relation}</span>
@@ -138,15 +139,8 @@ export function ElementCard({
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-function refHref(targetId: string, elementDocMap: Map<string, string>): string {
-  const filePath = elementDocMap.get(targetId);
-  if (filePath) {
-    // Navigate to the owning document and auto-expand the element card.
-    // Hash scheme: #filename:el-{id}  (same as arc42-language)
-    const file = filePath.split("/").pop() ?? filePath;
-    return `#${file}:el-${targetId}`;
-  }
-  return `#el-${targetId}`;
+function refHref(targetId: string, links: ElementLinks): string {
+  return links.elementHref(targetId) ?? `#el-${targetId}`;
 }
 
 function renderFields(el: Element): React.ReactNode {

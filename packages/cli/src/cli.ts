@@ -30,7 +30,7 @@ import {
   isBusinessModelDocument,
 } from "@biz42/core";
 import { builtinGetRenderers, rendererById } from "./renderer/index.ts";
-import type { BlockType, Diagnostic } from "@biz42/core";
+import type { BlockType, Diagnostic, DiffPayload } from "@biz42/core";
 import {
   HISTORY_INDEX_FILE,
   historyChunkFile,
@@ -38,8 +38,8 @@ import {
   snapshotBlobOf,
   snapshotTreeOf,
   toJsonLines,
-} from "@biz42/web/history-format";
-import type { HistoryEntry } from "@biz42/web/history-format";
+} from "@cli42/lib/web";
+import type { HistoryEntry as Entry } from "@cli42/lib/web";
 import {
   getElements,
   listBusinessModelHistory,
@@ -48,6 +48,9 @@ import {
   readBusinessModelBlob,
   validateWorkspace,
 } from "@biz42/workspace-fs";
+
+/** A pearl's entry, with biz42's difference. */
+type HistoryEntry = Entry<DiffPayload>;
 import type { BusinessModelCommit, BusinessModelHistory, DiffSpec } from "@biz42/workspace-fs";
 import {
   chunkCommits,
