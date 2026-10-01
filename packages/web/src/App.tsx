@@ -28,6 +28,7 @@ import type { Element, DocumentAst, DiffDocument, DiffPayload } from "@biz42/cor
 import type { WorkspacePayload } from "./types.ts";
 import { DocumentView, NodesRender, isBiz42Block } from "./DocumentView.tsx";
 import type { NodesWorkspace } from "./DocumentView.tsx";
+import { MetaModelView } from "./MetaModelView.tsx";
 import { Sidebar } from "./Sidebar.tsx";
 import styles from "./App.module.css";
 import "@cli42/lib/web-react/styles.css";
@@ -74,9 +75,12 @@ async function fetchDiff(): Promise<DiffState> {
 
 /** The route, following the hash. */
 function useRoute(): Route {
-  const [route, setRoute] = useState(() => parseRoute(window.location.hash));
+  const [route, setRoute] = useState(() =>
+    parseRoute(window.location.hash, { views: ["meta-model"] }),
+  );
   useEffect(() => {
-    const onHashChange = () => setRoute(parseRoute(window.location.hash));
+    const onHashChange = () =>
+      setRoute(parseRoute(window.location.hash, { views: ["meta-model"] }));
     window.addEventListener("hashchange", onHashChange);
     return () => window.removeEventListener("hashchange", onHashChange);
   }, []);
@@ -289,6 +293,9 @@ function WorkspaceApp({
   const hasDiff = diff !== null || diffError !== null;
   const showChanges = hasDiff && route.view === "changes";
 
+  // Meta-model view — #meta-model
+  const showMetaModel = route.view === "app" && route.name === "meta-model";
+
   // History — #history, #history:<commit|worktree>[:message]
   const showHistory = history !== null && route.view === "history";
   const historyKey = route.view === "history" ? route.key : undefined;
@@ -447,6 +454,10 @@ function WorkspaceApp({
           onToggleTheme={toggleTheme}
           open={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
+          metaModel={{
+            active: showMetaModel,
+            onSelect: () => navigate({ view: "app", name: "meta-model" }),
+          }}
         />
 
         <main className={styles.main}>
@@ -494,6 +505,16 @@ function WorkspaceApp({
               viewMode={viewMode}
               elementLink={diffElementLink}
               documentLink={(file) => ({ href: routes.documentHref(file) })}
+            />
+          ) : showMetaModel ? (
+            <MetaModelView
+              onNavigateToChapter={(ch) => {
+                const doc = documents.find((d) => {
+                  const m = /^(\d+)-/.exec(d.filePath.split("/").pop() ?? "");
+                  return m ? parseInt(m[1]!, 10) === ch : false;
+                });
+                if (doc) window.location.hash = routes.documentHref(doc.filePath);
+              }}
             />
           ) : activeDoc ? (
             <DocumentView

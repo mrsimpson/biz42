@@ -38,6 +38,11 @@ interface SidebarProps {
     /** The pearl chain, shown instead of the documents while active. */
     panel: React.ReactNode;
   };
+  /** Present when the meta-model view is available. */
+  metaModel?: {
+    active: boolean;
+    onSelect: () => void;
+  };
   viewMode: "human" | "agent";
   onToggleViewMode: () => void;
   theme: "dark" | "light";
@@ -53,6 +58,7 @@ export function Sidebar({
   onSelectDoc,
   changes,
   history,
+  metaModel,
   viewMode,
   onToggleViewMode,
   theme,
@@ -172,6 +178,21 @@ export function Sidebar({
             );
           })}
         </ul>
+      )}
+
+      {metaModel && (
+        <div className={styles.footer}>
+          <button
+            className={[styles.docBtn, metaModel.active ? styles.docBtnActive : ""]
+              .filter(Boolean)
+              .join(" ")}
+            onClick={metaModel.onSelect}
+            aria-current={metaModel.active ? "page" : undefined}
+          >
+            <span className={styles.docNum}>~</span>
+            <span className={styles.docLabel}>Meta-model</span>
+          </button>
+        </div>
       )}
     </nav>
   );
