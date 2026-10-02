@@ -86,6 +86,15 @@ function isBlockType(s: string): s is BlockType {
   return (BLOCK_TYPES as readonly string[]).includes(s);
 }
 
+/** Flush stdout before exiting — prevents truncation when piped on macOS. */
+function exitAfterFlush(code: number): void {
+  if (process.stdout.writableNeedDrain || process.stdout.writableLength > 0) {
+    process.stdout.once("drain", () => process.exit(code));
+  } else {
+    process.exit(code);
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Global flag parsing
 // Resolution order: --dir flag > BIZ42_DIR env > auto-discover > cwd
@@ -292,7 +301,7 @@ async function runGet(dir: string, args: string[]) {
     }
 
     console.log(renderer.render(result));
-    process.exit(0);
+    exitAfterFlush(0);
   } catch (err) {
     console.error(`Error: ${String(err)}`);
     process.exit(1);
