@@ -20,5 +20,9 @@ export default defineConfig({
   test: {
     // Exclude Playwright test files — they run via `playwright test`, not vitest.
     exclude: ["**/node_modules/**", "**/dist/**", "**/packages/web/tests/**"],
+    // Cold-start import (Mermaid, Asciidoctor) + Git I/O can easily exceed the
+    // default 5 s on a slower machine or under CI load.
+    testTimeout: 15000,
+    hookTimeout: 15000,
   },
 });

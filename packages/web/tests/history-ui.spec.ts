@@ -88,11 +88,10 @@ async function expectCurrentVersion(page: Page) {
 test.describe("History in biz42 serve", () => {
   let root: string;
   let server: { url: string; stop: () => Promise<void> };
-  let port = 3410;
 
   test.beforeEach(async () => {
     root = createStoryRepository();
-    server = await startServer(root, port++);
+    server = await startServer(root);
   });
 
   test.afterEach(async () => {
@@ -140,7 +139,7 @@ test.describe("History in biz42 build --with-history", () => {
     const root = createStoryRepository();
     const out = mkdtempSync(join(tmpdir(), "biz42-e2e-history-site-"));
     runCli("--dir", root, "build", "--out", out, "--with-history");
-    const site = await serveStatic(out, 3420);
+    const site = await serveStatic(out);
     try {
       await page.goto(`${site.url}/#history`);
       await expectPearlChain(page);

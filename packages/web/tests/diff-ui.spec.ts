@@ -100,7 +100,7 @@ test.describe("Changes inline in the chapters", () => {
 test.describe("Changes view — live updates", () => {
   test("follows edits, reports an empty difference and surfaces errors", async ({ page }) => {
     const root = createDiffRepository();
-    const server = await startDiffServer(root, 3392);
+    const server = await startDiffServer(root);
     try {
       await page.goto(`${server.url}/`);
       await expect(page.getByTestId("diff-index-item")).toHaveCount(4);
@@ -138,7 +138,7 @@ test.describe("Changes view — static build", () => {
   test("renders the difference frozen into build --diff", async ({ page, diffRepository }) => {
     const out = mkdtempSync(join(tmpdir(), "biz42-e2e-diff-site-"));
     runCli("--dir", diffRepository, "build", "--out", out, "--diff");
-    const site = await serveStatic(out, 3393);
+    const site = await serveStatic(out);
     try {
       await page.goto(`${site.url}/`);
       await expect(page.getByTestId("changes-view")).toBeVisible();
