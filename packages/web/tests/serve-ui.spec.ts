@@ -165,7 +165,7 @@ test.describe("BMC diagram", () => {
 // ─── Ids in prose ─────────────────────────────────────────────────────────────
 
 test.describe("Ids in prose", () => {
-  test("an id mentioned in prose links to its element and opens it", async ({ page }) => {
+  test("an id mentioned in prose links to its element, bringing it into view", async ({ page }) => {
     await page.goto("/#04-risks.biz42.md");
     const mention = page.locator("main a[data-id='obj-privacy-architecture']").first();
     await expect(mention).toBeVisible({ timeout: 8000 });
@@ -175,6 +175,54 @@ test.describe("Ids in prose", () => {
     );
     await mention.click();
     await expect(page.locator("#el-obj-privacy-architecture")).toBeVisible({ timeout: 5000 });
+    await expect(page.getByTestId("element-card")).toHaveCount(0);
+  });
+});
+
+// ─── Navigating to a block ────────────────────────────────────────────────────
+
+/** Whether the block's prose run has settled at the top of the view. */
+async function expectAtTop(page: Page, id: string) {
+  await expect
+    .poll(
+      async () =>
+        page.evaluate((el) => document.getElementById(el)?.getBoundingClientRect().top ?? 1e6, id),
+      { timeout: 8000 },
+    )
+    .toBeLessThan(4);
+}
+
+test.describe("Navigating to a block", () => {
+  test("scrolls to the prose of the block without opening its card", async ({ page }) => {
+    await page.goto("/#06-objectives.biz42.md:el-obj-privacy-architecture");
+    await expectAtTop(page, "el-obj-privacy-architecture");
+    await expect(page.getByTestId("element-card")).toHaveCount(0);
+    await expect(
+      page.locator("#el-obj-privacy-architecture").getByTestId("prose-view"),
+    ).toBeVisible();
+  });
+
+  test("still reaches the block when the page is zoomed in", async ({ page }) => {
+    // 200 % zoom of a 1280 px window: text wraps more, the page reflows after the scroll
+    await page.setViewportSize({ width: 640, height: 400 });
+    await page.goto("/#06-objectives.biz42.md:el-obj-privacy-architecture");
+    await expectAtTop(page, "el-obj-privacy-architecture");
+  });
+
+  test("what was opened in a chapter is closed when another chapter is navigated to", async ({
+    page,
+  }) => {
+    await page.goto("/#04-risks.biz42.md");
+    await page.getByTestId("prose-stripe").first().click();
+    await expect(page.getByTestId("element-card")).toHaveCount(1);
+
+    await page.goto("/#06-objectives.biz42.md");
+    await expect(page.getByTestId("prose-stripe").first()).toBeVisible({ timeout: 5000 });
+    await expect(page.getByTestId("element-card")).toHaveCount(0);
+
+    await page.goto("/#04-risks.biz42.md");
+    await expect(page.getByTestId("prose-stripe").first()).toBeVisible({ timeout: 5000 });
+    await expect(page.getByTestId("element-card")).toHaveCount(0);
   });
 });
 

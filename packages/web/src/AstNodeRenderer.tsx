@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo } from "react";
 import { marked } from "marked";
 import type { AstNode, BlockNode, DiagramNode, Element, Edge } from "@biz42/core";
 import docStyles from "./DocumentView.module.css";
@@ -8,7 +8,7 @@ import { DiagramView } from "./DiagramView.tsx";
 import type { Diagram } from "@biz42/core";
 import type { ElementLinks } from "@cli42/lib/web";
 import { linkElementIds, slug } from "@cli42/lib/web";
-import { headingClass } from "@cli42/lib/web-react";
+import { blockAnchor, headingClass, useBlockExpansion } from "@cli42/lib/web-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -28,8 +28,6 @@ export interface AstNodeRendererProps {
   edges: Edge[];
   diagrams?: Diagram[];
   /** Element id to auto-expand when this renderer mounts/updates */
-  targetElementId?: string | null;
-  onTargetConsumed?: () => void;
 }
 
 // ─── Main renderer ────────────────────────────────────────────────────────────
@@ -41,8 +39,6 @@ export function AstNodeRenderer({
   links,
   edges,
   diagrams = [],
-  targetElementId,
-  onTargetConsumed,
 }: AstNodeRendererProps) {
   switch (node.kind) {
     case "heading": {
@@ -72,8 +68,6 @@ export function AstNodeRenderer({
           elementsMap={elementsMap}
           links={links}
           edges={edges}
-          targetElementId={targetElementId ?? null}
-          onTargetConsumed={onTargetConsumed}
         />
       );
     }
@@ -160,8 +154,6 @@ interface ProseRunProps {
   elementsMap: Map<string, Element>;
   links: ElementLinks;
   edges: Edge[];
-  targetElementId: string | null;
-  onTargetConsumed?: () => void;
 }
 
 function ProseRun({
@@ -172,30 +164,10 @@ function ProseRun({
   elementsMap,
   links,
   edges,
-  targetElementId,
-  onTargetConsumed,
 }: ProseRunProps) {
   const blockId = block?.attributes["id"] ?? null;
-  const autoExpand = targetElementId !== null && blockId === targetElementId;
-  const [showCard, setShowCard] = useState(autoExpand);
-
-  // Auto-expand and scroll when targetElementId matches this block
-  useEffect(() => {
-    if (autoExpand && block !== null) {
-      setShowCard(true);
-      onTargetConsumed?.();
-      // Scroll after React renders the card
-      const id = block.attributes["id"] ?? "";
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          document.getElementById(`el-${id}`)?.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-          });
-        });
-      });
-    }
-  }, [autoExpand]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Opened by the reader only, and per chapter: a link to a block lands on its prose.
+  const [showCard, setShowCard] = useBlockExpansion(blockId ?? "");
 
   // Determine stripe colour from the attached block's element kind
   const stripeColor = useMemo(() => {
@@ -211,7 +183,7 @@ function ProseRun({
   // Agent view: show prose source + block source
   if (!hasBlock || viewMode === "agent") {
     return (
-      <div className={styles.proseRun}>
+      <div className={styles.proseRun} id={blockId ? blockAnchor(blockId) : undefined}>
         {(text || renderedHtml) && (
           <ProseBlock text={text} html={renderedHtml} links={links} own={blockId} />
         )}
@@ -242,7 +214,10 @@ function ProseRun({
 
   // Human view with card collapsed: narrow stripe + prose text
   return (
-    <div className={[styles.proseRun, styles.proseRunHasBlock].join(" ")}>
+    <div
+      className={[styles.proseRun, styles.proseRunHasBlock].join(" ")}
+      id={blockAnchor(blockId ?? "")}
+    >
       <button
         data-testid="prose-stripe"
         className={styles.stripe}
